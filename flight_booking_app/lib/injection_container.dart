@@ -1,20 +1,120 @@
+import 'package:dio/dio.dart';
+import 'package:flight_booking_app/core/constants/app_constant.dart';
+import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
+import 'package:flight_booking_app/data/datasources/mock/onboarding_mock_data_source.dart';
+import 'package:flight_booking_app/data/datasources/remote/auth_remote_data_source.dart';
+import 'package:flight_booking_app/data/datasources/remote/location_remote_data_source.dart';
+import 'package:flight_booking_app/data/repositories/auth_repository_impl.dart';
+import 'package:flight_booking_app/data/repositories/location_repository_impl.dart';
 import 'package:flight_booking_app/data/repositories/onboarding_repository_impl.dart';
+import 'package:flight_booking_app/data/services/auth_service.dart';
+import 'package:flight_booking_app/data/services/location_service.dart';
+import 'package:flight_booking_app/domain/repositories/auth_repository.dart';
+import 'package:flight_booking_app/domain/repositories/location_repository.dart';
 import 'package:flight_booking_app/domain/repositories/onboarding_repository.dart';
-import 'package:flight_booking_app/domain/usecase/get_onboarding_data.dart';
-import 'package:flight_booking_app/ui/onboarding/cubit/onboarding_cubit.dart';
+import 'package:flight_booking_app/domain/usecase/get_city_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/get_country_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/get_onboardin_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/login_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/logout_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/register_usecase.dart';
+import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
+import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
+import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:get_it/get_it.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
-final sl = GetIt.instance;
+final getIt = GetIt.instance;
 
 Future<void> init() async {
-  //cubit
-  sl.registerFactory(() => OnboardingCubit(sl()));
+  final sharedPreferences = await SharedPreferences.getInstance();
+  getIt.registerLazySingleton(() => sharedPreferences);
+
+  getIt.registerLazySingleton(
+    () => Dio(
+      BaseOptions(
+        baseUrl: AppConstant.baseUrl,
+        connectTimeout: Duration(seconds: 30),
+        receiveTimeout: Duration(seconds: 30),
+      ),
+    ),
+  );
+
+  // Service
+  getIt.registerLazySingleton<AuthService>(() => AuthService(getIt<Dio>()));
+  getIt.registerLazySingleton<LocationService>(
+    () => LocationService(getIt<Dio>()),
+  );
+
+  // Data Source
+  getIt.registerLazySingleton<OnboardingMockDataSource>(
+    () => OnboardingMockDataSource(),
+  );
+
+  // Local Data Source
+  getIt.registerLazySingleton<AuthLocalDataSource>(
+    () => AuthLocalDataSourceImpl(getIt<SharedPreferences>()),
+  );
+
+  // Remote Data Source
+  getIt.registerLazySingleton<AuthRemoteDataSource>(
+    () => AuthRemoteDataSource(getIt<AuthService>()),
+  );
+  getIt.registerLazySingleton<LocationRemoteDataSource>(
+    () => LocationRemoteDataSource(getIt<LocationService>(), userMock: true),
+  );
+
+  // Repositories
+  getIt.registerLazySingleton<OnboardingRepository>(
+    () => OnboardingRepositoryImpl(
+      mockDataSource: getIt<OnboardingMockDataSource>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<AuthRepository>(
+    () => AuthRepositoryImpl(
+      localDataSource: getIt<AuthLocalDataSource>(),
+      remoteDataSource: getIt<AuthRemoteDataSource>(),
+    ),
+  );
+
+  getIt.registerLazySingleton<LocationRepository>(
+    () => LocationRepositoryImpl(getIt<LocationRemoteDataSource>()),
+  );
 
   //usecase
-  sl.registerLazySingleton(() => GetOnboardingData(sl()));
+  getIt.registerLazySingleton<GetOnboardingData>(
+    () => GetOnboardingData(getIt<OnboardingRepository>()),
+  );
+  getIt.registerLazySingleton<LoginUsecase>(
+    () => LoginUsecase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<RegisterUsecase>(
+    () => RegisterUsecase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<LogoutUsecase>(
+    () => LogoutUsecase(getIt<AuthRepository>()),
+  );
+  getIt.registerLazySingleton<GetCountryUsecase>(
+    () => GetCountryUsecase(getIt<LocationRepository>()),
+  );
+  getIt.registerLazySingleton<GetCityUsecase>(
+    () => GetCityUsecase(getIt<LocationRepository>()),
+  );
 
-  //reppository
-  sl.registerLazySingleton<OnboardingRepository>(
-    () => OnboardingRepositoryImpl(),
+  //cubit
+  getIt.registerFactory(() => OnboardingCubit(getIt()));
+  getIt.registerFactory(
+    () => AuthCubit(
+      loginUsecase: getIt<LoginUsecase>(),
+      registerUsecase: getIt<RegisterUsecase>(),
+      logoutUsecase: getIt<LogoutUsecase>(),
+    ),
+  );
+  getIt.registerFactory(
+    () => LocationCubit(
+      getCountryUsecase: getIt<GetCountryUsecase>(),
+      getCityUsecase: getIt<GetCityUsecase>(),
+    ),
   );
 }
