@@ -1,71 +1,51 @@
-import 'package:flight_booking_app/data/mock/mock_user_data.dart';
-import 'package:flight_booking_app/domain/models/user.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
+import 'package:flight_booking_app/data/datasources/remote/auth_remote_data_source.dart';
+import 'package:flight_booking_app/domain/Entities/user.dart';
 import 'package:flight_booking_app/domain/repositories/auth_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
 class AuthRepositoryImpl implements AuthRepository {
-  static const String _userKey = "current_user";
+  final AuthLocalDataSource _localDataSource;
+  final AuthRemoteDataSource _remoteDataSource;
+
+  AuthRepositoryImpl({
+    required AuthLocalDataSource localDataSource,
+    required AuthRemoteDataSource remoteDataSource,
+  }) : _remoteDataSource = remoteDataSource,
+       _localDataSource = localDataSource;
 
   @override
-  Future<void> login(String email, String password) async {
-    final prefs = await SharedPreferences.getInstance();
-
-    if (email == userData.email && password == userData.password) {
-      await prefs.setString(_userKey, email);
-    } else {
-      throw Exception("Invalid email or password");
-    }
-  }
-
-  @override
-  Future<void> register(
-    String name,
+  Future<Either<Exception, UserEntity>> login(
     String email,
     String password,
-    String phone,
-    String country,
-    String city,
   ) async {
-    final prefs = await SharedPreferences.getInstance();
+    try {
+      final user = await _remoteDataSource.login(email, password);
 
-    final newUser = UserModel(
-      id: DateTime.now().microsecondsSinceEpoch,
-      name: name,
-      password: password,
-      phone: phone,
-      country: country,
-      city: city,
-      email: email,
-    );
-
-    await prefs.setString('user_$email', newUser.toJsonString());
-    await prefs.setString(_userKey, email);
+      return Right(user);
+    } on Exception catch (e) {
+      return Left(e);
+    }
   }
 
   @override
-  Future<void> logOut() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.remove(_userKey);
+  Future<Either<Exception, UserEntity>> register(UserEntity user) async {
+    try {
+      final registerdUser = await _remoteDataSource.register(user);
+
+      return Right(registerdUser);
+    } on Exception catch (e) {
+      return Left(e);
+    }
   }
 
   @override
-  Future<UserModel> getProfile() async {
-    final prefs = await SharedPreferences.getInstance();
-    final email = prefs.getString(_userKey);
-
-    if (email == null) {
-      throw Exception("User not logged in");
+  Future<Either<Exception, Unit>> logOut() async {
+    try {
+      await _localDataSource.clear();
+      return const Right(unit);
+    } on Exception catch (e) {
+      return Left(e);
     }
-
-    if (email == userData.email) {
-      return userData;
-    }
-
-    final userJson = prefs.getString('$_userKey$email');
-    if (userJson != null) {
-      return UserModel.fromJsonString(userJson);
-    }
-
-    throw Exception("User not found");
   }
 }

@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/domain/models/onboarding.dart';
+import 'package:flight_booking_app/domain/Entities/onboarding.dart';
 
 abstract class OnboardingRepository {
-  Future<List<OnboardingModel>> getData();
+  Future<List<Onboarding>> getData();
 }

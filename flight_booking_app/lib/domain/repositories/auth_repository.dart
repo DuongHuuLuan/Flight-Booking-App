@@ -1,15 +1,8 @@
-import 'package:flight_booking_app/domain/models/user.dart';
+import 'package:dartz/dartz.dart';
+import 'package:flight_booking_app/domain/Entities/user.dart';
 
 abstract class AuthRepository {
-  Future<void> login(String email, String password);
-  Future<void> register(
-    String name,
-    String email,
-    String password,
-    String phone,
-    String country,
-    String city,
-  );
-  Future<void> logOut();
-  Future<UserModel> getProfile();
+  Future<Either<Exception, UserEntity>> login(String email, String password);
+  Future<Either<Exception, UserEntity>> register(UserEntity user);
+  Future<Either<Exception, Unit>> logOut();
 }

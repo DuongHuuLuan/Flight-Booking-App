@@ -1,11 +1,16 @@
-import 'package:flight_booking_app/data/mock/mock_onboarding_data.dart';
-import 'package:flight_booking_app/domain/models/onboarding.dart';
+import 'package:flight_booking_app/data/datasources/mock/onboarding_mock_data_source.dart';
+import 'package:flight_booking_app/domain/Entities/onboarding.dart';
 import 'package:flight_booking_app/domain/repositories/onboarding_repository.dart';
 
 class OnboardingRepositoryImpl implements OnboardingRepository {
+  final OnboardingMockDataSource _mockDataSource;
+
+  OnboardingRepositoryImpl({required OnboardingMockDataSource mockDataSource})
+    : _mockDataSource = mockDataSource;
+
   @override
-  Future<List<OnboardingModel>> getData() async {
-    await Future.delayed(const Duration(seconds: 1));
-    return onboardingData;
+  Future<List<Onboarding>> getData() async {
+    final list = await _mockDataSource.getOnboardingData();
+    return list;
   }
 }
