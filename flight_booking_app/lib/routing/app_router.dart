@@ -1,5 +1,8 @@
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
+import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
+import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verification_screen.dart';
+import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_page.dart';
 import 'package:flight_booking_app/presentation/home/home_page.dart';
@@ -48,6 +51,28 @@ class AppRouter {
       ),
 
       GoRoute(path: "/home", builder: (context, state) => const HomePage()),
+
+      GoRoute(
+        path: "/forgot-password",
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: const ForgotPasswordScreen(),
+        ),
+      ),
+      GoRoute(
+        path: "/otp-verification",
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: OtpVerificationScreen(),
+        ),
+      ),
+      GoRoute(
+        path: "/reset-password",
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: ResetPasswordScreen(),
+        ),
+      ),
     ],
   );
 }
