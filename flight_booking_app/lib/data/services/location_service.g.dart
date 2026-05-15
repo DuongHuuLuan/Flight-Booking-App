@@ -36,7 +36,6 @@ class _LocationService implements LocationService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-
     late BaseResponse<dynamic> _value;
     try {
       _value = BaseResponse<dynamic>.fromJson(_result.data!);

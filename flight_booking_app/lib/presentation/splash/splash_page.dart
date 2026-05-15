@@ -1,5 +1,5 @@
+import 'package:flight_booking_app/presentation/onboarding/view/onboarding_page.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class SplashPage extends StatefulWidget {
   const SplashPage({super.key});
@@ -20,7 +20,7 @@ class _SplashPageState extends State<SplashPage> {
       const Duration(seconds: 2),
     ); // giữ màn hình splash trong 2 giây
     if (mounted) {
-      context.go("/onboarding");
+      context.goToOnboarding();
     }
   }
 

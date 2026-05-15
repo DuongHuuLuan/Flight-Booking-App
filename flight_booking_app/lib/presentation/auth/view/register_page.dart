@@ -1,14 +1,21 @@
+import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/domain/Entities/user.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/view/widgets/form_register.dart';
+import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
+import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/presentation/home/home_page.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+extension RegisterNavigation on BuildContext {
+  void goToRegister() => go('/register');
+}
 
 class RegisterPage extends StatefulWidget {
   const RegisterPage({super.key});
@@ -18,8 +25,10 @@ class RegisterPage extends StatefulWidget {
 }
 
 class _RegisterPageState extends State<RegisterPage> {
-  final _formKey = GlobalKey<FormState>();
+  late final LocationCubit _locationCubit;
+  late final AuthCubit _authCubit;
 
+  final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
   final emailController = TextEditingController();
   final phoneController = TextEditingController();
@@ -31,11 +40,8 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   void initState() {
     super.initState();
-    nameController.addListener(() => setState(() {}));
-    emailController.addListener(() => setState(() {}));
-    phoneController.addListener(() => setState(() {}));
-    passwordController.addListener(() => setState(() {}));
-    confirmPasswordController.addListener(() => setState(() {}));
+    _locationCubit = context.read<LocationCubit>();
+    _authCubit = context.read<AuthCubit>();
   }
 
   @override
@@ -67,7 +73,7 @@ class _RegisterPageState extends State<RegisterPage> {
         password: passwordController.text.trim(),
       );
 
-      context.read<AuthCubit>().register(user);
+      _authCubit.register(user);
     }
   }
 
@@ -85,7 +91,7 @@ class _RegisterPageState extends State<RegisterPage> {
               }
 
               if (state is AuthAuthenticated) {
-                context.go(""); // chuyển vào home page
+                context.goToHome();
               }
             },
           ),
@@ -108,7 +114,14 @@ class _RegisterPageState extends State<RegisterPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const LogoWidget(),
+                  FittedBox(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: const LogoWidget(
+                        imagePath: "assets/images/logo.png",
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 40),
 
                   Text(
@@ -135,8 +148,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       final cities = state is LocationDataLoaded
                           ? state.cities
                           : <String>[];
-
-                      return RegisterForm(
+                      return AuthForm(
                         formKey: _formKey,
                         nameController: nameController,
                         emailController: emailController,
@@ -151,9 +163,7 @@ class _RegisterPageState extends State<RegisterPage> {
                             selectedCity = null;
                           });
                           if (value != null) {
-                            await context.read<LocationCubit>().loadCities(
-                              value,
-                            );
+                            await _locationCubit.loadCities(value);
                           }
                         },
                         onCityChanged: (String? value) {
@@ -166,57 +176,20 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     },
                   ),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            (emailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty &&
-                                nameController.text.isNotEmpty &&
-                                phoneController.text.isNotEmpty &&
-                                selectedCountry != null &&
-                                selectedCity != null)
-                            ? AppColor.primary
-                            : AppColor.greyLight,
-                        foregroundColor:
-                            (emailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty &&
-                                nameController.text.isNotEmpty &&
-                                phoneController.text.isNotEmpty &&
-                                selectedCountry != null &&
-                                selectedCity != null)
-                            ? AppColor.white
-                            : AppColor.greyDark,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          if (passwordController.text !=
-                              confirmPasswordController.text) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text("Passwords do not match"),
-                              ),
-                            );
-                            return;
-                          }
-
-                          _register();
-                        }
-                      },
-                      child: Text(
-                        "Register",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  SubmitButton(
+                    controllers: [
+                      nameController,
+                      emailController,
+                      phoneController,
+                      passwordController,
+                      confirmPasswordController,
+                    ],
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) _register();
+                    },
+                    label: "Register",
                   ),
+
                   const SizedBox(height: 40),
 
                   Row(
@@ -225,7 +198,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       Text("Already a member?"),
                       TextButton(
                         onPressed: () {
-                          context.go("/login");
+                          context.goToLogin();
                         },
                         child: Text(
                           "Login",

@@ -1,12 +1,20 @@
+import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/view/widgets/form_login.dart';
+import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
+import 'package:flight_booking_app/presentation/auth/view/register_page.dart';
+import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_button.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/presentation/home/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+extension LoginNavigation on BuildContext {
+  void goToLogin() => go('/login');
+}
 
 class LoginPage extends StatefulWidget {
   const LoginPage({super.key});
@@ -16,6 +24,7 @@ class LoginPage extends StatefulWidget {
 }
 
 class _LoginPageState extends State<LoginPage> {
+  late final AuthCubit _authCubit;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -23,8 +32,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   void initState() {
     super.initState();
-    emailController.addListener(() => setState(() {}));
-    passwordController.addListener(() => setState(() {}));
+    _authCubit = context.read<AuthCubit>();
   }
 
   @override
@@ -45,7 +53,7 @@ class _LoginPageState extends State<LoginPage> {
       return;
     }
 
-    context.read<AuthCubit>().login(email, password);
+    _authCubit.login(email, password);
   }
 
   @override
@@ -60,7 +68,7 @@ class _LoginPageState extends State<LoginPage> {
           }
 
           if (state is AuthAuthenticated) {
-            context.go("/home");
+            context.goToHome();
           }
         },
         child: SafeArea(
@@ -71,7 +79,14 @@ class _LoginPageState extends State<LoginPage> {
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const LogoWidget(),
+                  FittedBox(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.35,
+                      child: const LogoWidget(
+                        imagePath: "assets/images/logo.png",
+                      ),
+                    ),
+                  ),
                   const SizedBox(height: 40),
 
                   Text(
@@ -109,7 +124,7 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 35),
 
-                  LoginForm(
+                  AuthForm(
                     formKey: _formKey,
                     emailController: emailController,
                     passwordController: passwordController,
@@ -118,7 +133,9 @@ class _LoginPageState extends State<LoginPage> {
                   Align(
                     alignment: Alignment.centerRight,
                     child: TextButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        context.goToForgotPassword();
+                      },
                       child: Text(
                         "Forgot Password?",
                         style: Theme.of(context).textTheme.bodyMedium?.copyWith(
@@ -130,39 +147,14 @@ class _LoginPageState extends State<LoginPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  SizedBox(
-                    width: double.infinity,
-                    height: 60,
-                    child: ElevatedButton(
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor:
-                            (emailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty)
-                            ? Theme.of(context).colorScheme.primary
-                            : AppColor.greyLight,
-                        foregroundColor:
-                            (emailController.text.isNotEmpty &&
-                                passwordController.text.isNotEmpty)
-                            ? AppColor.white
-                            : AppColor.greyDark,
-                        elevation: 0,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
-                      ),
-                      onPressed: () {
-                        if (_formKey.currentState!.validate()) {
-                          _login();
-                        }
-                      },
-                      child: Text(
-                        "Login",
-                        style: Theme.of(context).textTheme.bodyLarge?.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
+                  SubmitButton(
+                    controllers: [emailController, passwordController],
+                    onPressed: () {
+                      if (_formKey.currentState!.validate()) _login();
+                    },
+                    label: "Login",
                   ),
+
                   const SizedBox(height: 40),
 
                   Row(
@@ -171,7 +163,7 @@ class _LoginPageState extends State<LoginPage> {
                       Text("Don't have an account?"),
                       TextButton(
                         onPressed: () {
-                          context.go("/register");
+                          context.goToRegister();
                         },
                         child: Text(
                           "Register Now",

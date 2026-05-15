@@ -1,7 +1,12 @@
 import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/usecase/forgot_password_with_email_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/forgot_password_with_sms_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/login_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/logout_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/register_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/reset_password_by_email_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/reset_password_by_sms_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/verify_otp_usecase.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -9,11 +14,21 @@ class AuthCubit extends Cubit<AuthState> {
   final LoginUsecase loginUsecase;
   final RegisterUsecase registerUsecase;
   final LogoutUsecase logoutUsecase;
+  final ForgotPasswordWithSmsUsecase forgotPasswordWithSmsUsecase;
+  final ForgotPasswordWithEmailUsecase forgotPasswordWithEmailUsecase;
+  final VerifyOtpUsecase verifyOtpUsecase;
+  final ResetPasswordByEmailUsecase resetPasswordByEmailUsecase;
+  final ResetPasswordBySmsUsecase resetPasswordBySmsUsecase;
 
   AuthCubit({
     required this.loginUsecase,
     required this.registerUsecase,
     required this.logoutUsecase,
+    required this.forgotPasswordWithEmailUsecase,
+    required this.forgotPasswordWithSmsUsecase,
+    required this.resetPasswordByEmailUsecase,
+    required this.resetPasswordBySmsUsecase,
+    required this.verifyOtpUsecase,
   }) : super(AuthInitial());
 
   Future<void> login(String email, String password) async {
@@ -73,5 +88,56 @@ class AuthCubit extends Cubit<AuthState> {
         );
       }
     }, (r) => emit(AuthUnauthenticated()));
+  }
+
+  Future<void> forgotPasswordWithSMS(String phone) async {
+    emit(ForgotPasswordLoading());
+    final failureOrSuccess = await forgotPasswordWithSmsUsecase(phone);
+
+    failureOrSuccess.fold(
+      (exception) => emit(ForgotPasswordFailure(exception.toString())),
+      (result) => emit(ForgotPasswordSuccess(result.message, result.nextStep)),
+    );
+  }
+
+  Future<void> forgotPasswordWithEmail(String email) async {
+    emit(ForgotPasswordLoading());
+    final result = await forgotPasswordWithEmailUsecase(email);
+
+    result.fold(
+      (exception) => emit(ForgotPasswordFailure(exception.toString())),
+      (result) => emit(ForgotPasswordSuccess(result.message, result.nextStep)),
+    );
+  }
+
+  Future<void> verifyOtpCode({
+    String? email,
+    String? phone,
+    required String otp,
+  }) async {
+    emit(VerifyOtpLoading());
+    final result = await verifyOtpUsecase(email: email, phone: phone, otp: otp);
+
+    result.fold(
+      (exception) => emit(VerifyOtpFailure(exception.toString())),
+      (result) => emit(VerifyOtpSuccess(result.message)),
+    );
+  }
+
+  Future<void> resetPassword({
+    required String newPassword,
+    String? email,
+    String? phone,
+  }) async {
+    emit(ResetPasswordLoading());
+
+    final result = email != null
+        ? await resetPasswordByEmailUsecase(email, newPassword)
+        : await resetPasswordBySmsUsecase(phone!, newPassword);
+
+    result.fold(
+      (exception) => emit(ResetPasswordFailure(exception.toString())),
+      (result) => emit(ResetPasswordSuccess(result.message)),
+    );
   }
 }

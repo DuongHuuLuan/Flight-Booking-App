@@ -1,15 +1,10 @@
 import 'package:flutter/widgets.dart';
 
 class LogoWidget extends StatelessWidget {
-  const LogoWidget({super.key});
-
+  final String imagePath;
+  const LogoWidget({super.key, required this.imagePath});
   @override
   Widget build(BuildContext context) {
-    return Image.asset(
-      "assets/images/logo.png",
-      width: 150,
-      height: 150,
-      fit: BoxFit.contain,
-    );
+    return Image.asset(imagePath, fit: BoxFit.contain);
   }
 }
