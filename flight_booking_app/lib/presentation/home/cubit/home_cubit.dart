@@ -37,8 +37,8 @@ class HomeCubit extends Cubit<HomeState> {
 
       searchEither.fold(
         (exception) => emit(state.copyWith(status: HomeStatus.failure)),
-        (flight) {
-          emit(state.copyWith(status: HomeStatus.success, popular: flight));
+        (flights) {
+          emit(state.copyWith(status: HomeStatus.success, popular: flights));
         },
       );
     } catch (_) {
@@ -47,13 +47,14 @@ class HomeCubit extends Cubit<HomeState> {
   }
 
   Future<void> getAllFlights() async {
+    emit(state.copyWith(status: HomeStatus.loading));
     try {
       final flights = await getAllFlightsUsecase();
-
       flights.fold(
         (exception) => emit(state.copyWith(status: HomeStatus.failure)),
-        (flight) =>
-            emit(state.copyWith(status: HomeStatus.success, popular: flight)),
+        (flightsList) => emit(
+          state.copyWith(status: HomeStatus.success, popular: flightsList),
+        ),
       );
     } catch (_) {
       emit(state.copyWith(status: HomeStatus.failure));

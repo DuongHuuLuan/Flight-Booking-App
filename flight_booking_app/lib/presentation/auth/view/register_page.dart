@@ -85,13 +85,13 @@ class _RegisterPageState extends State<RegisterPage> {
         listeners: [
           BlocListener<AuthCubit, AuthState>(
             listener: (context, state) {
-              if (state is AuthFailed) {
+              if (state.status == AuthStatus.failed && state.errorMessage != null) {
                 ScaffoldMessenger.of(
                   context,
-                ).showSnackBar(SnackBar(content: Text(state.error)));
+                ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
               }
 
-              if (state is AuthAuthenticated) {
+              if (state.status == AuthStatus.authAuthenticated) {
                 context.goToHome();
               }
             },

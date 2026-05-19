@@ -65,19 +65,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is VerifyOtpSuccess) {
+          if (state.status == AuthStatus.verifyOtpSuccess) {
             context.goToResetPassword();
-          } else if (state is VerifyOtpFailure) {
+          } else if (state.status == AuthStatus.verifyOtpFailure && state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error),
+                content: Text(state.errorMessage!),
                 backgroundColor: AppColor.error,
               ),
             );
           }
         },
         builder: (context, state) {
-          final isLoading = state is VerifyOtpLoading;
+          final isLoading = state.status == AuthStatus.verifyOtpLoading;
 
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),

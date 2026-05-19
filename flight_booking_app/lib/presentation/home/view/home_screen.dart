@@ -53,8 +53,8 @@ class _FlightBookingState extends State<HomePage> {
                     children: [
                       BlocBuilder<AuthCubit, AuthState>(
                         builder: (context, state) {
-                          final username = state is AuthAuthenticated
-                              ? state.user.name
+                          final username = state.status == AuthStatus.authAuthenticated
+                              ? state.user?.name ?? "A"
                               : "A";
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.start,

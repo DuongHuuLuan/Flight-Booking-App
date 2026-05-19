@@ -38,7 +38,7 @@ class AuthCubit extends Cubit<AuthState> {
   }) : super(const AuthState());
 
   Future<void> login(String email, String password) async {
-    emit(state.copywith(status: AuthStatus.loading));
+    emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await loginUsecase(email, password);
 
     failureOrSuccess.fold(
@@ -47,35 +47,35 @@ class AuthCubit extends Cubit<AuthState> {
         if (message.contains('network') ||
             message.contains('SocketException')) {
           emit(
-            state.copywith(
+            state.copyWith(
               status: AuthStatus.failed,
               errorMessage: "network error.",
             ),
           );
         } else if (message.contains('timeout.')) {
           emit(
-            state.copywith(
+            state.copyWith(
               status: AuthStatus.failed,
               errorMessage: "Connection timed out. Please try again.",
             ),
           );
         } else if (message.contains('401') || message.contains('credential')) {
           emit(
-            state.copywith(
+            state.copyWith(
               status: AuthStatus.failed,
               errorMessage: "Incorrect email or password.",
             ),
           );
         } else if (message.contains('400')) {
           emit(
-            state.copywith(
+            state.copyWith(
               status: AuthStatus.failed,
               errorMessage: "Invalid data.",
             ),
           );
         } else {
           emit(
-            state.copywith(
+            state.copyWith(
               status: AuthStatus.failed,
               errorMessage: "Error: ${message.replaceAll("Exception:", "")}",
             ),
@@ -85,35 +85,36 @@ class AuthCubit extends Cubit<AuthState> {
       (user) async {
         await localStorage.saveToken(user.password);
         await localStorage.saveUser(user);
-        emit(state.copywith(status: AuthStatus.authAuthenticated, user: user));
+        emit(state.copyWith(status: AuthStatus.authAuthenticated, user: user));
       },
     );
   }
 
   Future<void> register(UserEntity user) async {
-    emit(state.copywith(status: AuthStatus.loading));
+    emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await registerUsecase(user);
 
     failureOrSuccess.fold(
       (exception) {
         final message = exception.toString().toLowerCase();
         if (message.contains('network')) {
-          emit(AuthFailed('Network error.'));
+          emit(state.copyWith(status: AuthStatus.failed, errorMessage: 'Network error.'));
         } else if (message.contains('409') ||
             message.contains('already exists')) {
-          emit(AuthFailed('Email it has been used.'));
+          emit(state.copyWith(status: AuthStatus.failed, errorMessage: 'Email it has been used.'));
         } else if (message.contains('400')) {
-          emit(AuthFailed('The registration data is invalid.'));
+          emit(state.copyWith(status: AuthStatus.failed, errorMessage: 'The registration data is invalid.'));
         } else {
           emit(
-            AuthFailed(
-              'Register failed: ${message.replaceAll("Exception:", "")}',
+            state.copyWith(
+              status: AuthStatus.failed,
+              errorMessage: 'Register failed: ${message.replaceAll("Exception:", "")}',
             ),
           );
         }
       },
       (user) => emit(
-        state.copywith(status: AuthStatus.authAuthenticated, user: user),
+        state.copyWith(status: AuthStatus.authAuthenticated, user: user),
       ),
     );
   }
@@ -123,37 +124,37 @@ class AuthCubit extends Cubit<AuthState> {
 
     failureOrSusscess.fold(
       (exception) =>
-          emit(state.copywith(status: AuthStatus.authUnauthenticated)),
+          emit(state.copyWith(status: AuthStatus.authUnauthenticated)),
       (user) => emit(
-        state.copywith(status: AuthStatus.authAuthenticated, user: user),
+        state.copyWith(status: AuthStatus.authAuthenticated, user: user),
       ),
     );
   }
 
   Future<void> logout() async {
-    emit(state.copywith(status: AuthStatus.loading));
+    emit(state.copyWith(status: AuthStatus.loading));
     final failureOrSuccess = await logoutUsecase();
 
     failureOrSuccess.fold((exception) {
       final message = exception.toString().toLowerCase();
       if (message.contains('cache')) {
-        emit(AuthFailed('Error deleting archived data.'));
+        emit(state.copyWith(status: AuthStatus.failed, errorMessage: 'Error deleting archived data.'));
       } else {
         emit(
-          AuthFailed('Logout failed: ${message.replaceAll("Exception:", "")}'),
+          state.copyWith(status: AuthStatus.failed, errorMessage: 'Logout failed: ${message.replaceAll("Exception:", "")}'),
         );
       }
-    }, (r) => emit(state.copywith(status: AuthStatus.authUnauthenticated)));
+    }, (r) => emit(state.copyWith(status: AuthStatus.authUnauthenticated)));
   }
 
   Future<void> forgotPasswordWithSMS(String phone) async {
-    emit(state.copywith(status: AuthStatus.forgotPasswordLoading));
+    emit(state.copyWith(status: AuthStatus.forgotPasswordLoading));
     final failureOrSuccess = await forgotPasswordWithSmsUsecase(phone);
 
     failureOrSuccess.fold(
-      (exception) => emit(ForgotPasswordFailure(exception.toString())),
+      (exception) => emit(state.copyWith(status: AuthStatus.forgotPasswordFailure, errorMessage: exception.toString())),
       (result) => emit(
-        state.copywith(
+        state.copyWith(
           status: AuthStatus.forgotPasswordSuccess,
           successMessage: result.message,
           nextStep: result.nextStep,
@@ -163,12 +164,12 @@ class AuthCubit extends Cubit<AuthState> {
   }
 
   Future<void> forgotPasswordWithEmail(String email) async {
-    emit(ForgotPasswordLoading());
+    emit(state.copyWith(status: AuthStatus.forgotPasswordLoading));
     final result = await forgotPasswordWithEmailUsecase(email);
 
     result.fold(
-      (exception) => emit(ForgotPasswordFailure(exception.toString())),
-      (result) => emit(ForgotPasswordSuccess(result.message, result.nextStep)),
+      (exception) => emit(state.copyWith(status: AuthStatus.forgotPasswordFailure, errorMessage: exception.toString())),
+      (result) => emit(state.copyWith(status: AuthStatus.forgotPasswordSuccess, successMessage: result.message, nextStep: result.nextStep)),
     );
   }
 
@@ -177,12 +178,12 @@ class AuthCubit extends Cubit<AuthState> {
     String? phone,
     required String otp,
   }) async {
-    emit(VerifyOtpLoading());
+    emit(state.copyWith(status: AuthStatus.verifyOtpLoading));
     final result = await verifyOtpUsecase(email: email, phone: phone, otp: otp);
 
     result.fold(
-      (exception) => emit(VerifyOtpFailure(exception.toString())),
-      (result) => emit(VerifyOtpSuccess(result.message)),
+      (exception) => emit(state.copyWith(status: AuthStatus.verifyOtpFailure, errorMessage: exception.toString())),
+      (result) => emit(state.copyWith(status: AuthStatus.verifyOtpSuccess, successMessage: result.message)),
     );
   }
 
@@ -191,7 +192,7 @@ class AuthCubit extends Cubit<AuthState> {
     String? email,
     String? phone,
   }) async {
-    emit(state.copywith(status: AuthStatus.resetPasswordLoading));
+    emit(state.copyWith(status: AuthStatus.resetPasswordLoading));
 
     final result = email != null
         ? await resetPasswordByEmailUsecase(email, newPassword)
@@ -199,13 +200,13 @@ class AuthCubit extends Cubit<AuthState> {
 
     result.fold(
       (exception) => emit(
-        state.copywith(
+        state.copyWith(
           status: AuthStatus.resetPasswordFailure,
           errorMessage: exception.toString(),
         ),
       ),
       (result) => emit(
-        state.copywith(
+        state.copyWith(
           status: AuthStatus.resetPasswordSuccess,
           successMessage: result.message,
         ),

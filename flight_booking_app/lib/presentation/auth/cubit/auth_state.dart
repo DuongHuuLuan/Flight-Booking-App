@@ -36,7 +36,7 @@ class AuthState extends Equatable {
     this.successMessage,
   });
 
-  AuthState copywith({
+  AuthState copyWith({
     AuthStatus? status,
     UserEntity? user,
     String? errorMessage,
@@ -51,5 +51,5 @@ class AuthState extends Equatable {
   );
 
   @override
-  List<Object?> get props => [];
+  List<Object?> get props => [status, user, errorMessage, successMessage, nextStep];
 }

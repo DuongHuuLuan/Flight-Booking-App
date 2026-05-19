@@ -23,7 +23,7 @@ class _FlightSeatchCardState extends State<FlightSearchCard> {
   final TextEditingController departureDateController = TextEditingController();
   TripType _selectedType = TripType.oneWay;
   CabinClass _selectedClass = CabinClass.business;
-  final String _passengerCount = "1";
+  String _passengerCount = "1";
 
   final List<String> _passengerOptions = List.generate(
     9,
@@ -217,7 +217,7 @@ class _FlightSeatchCardState extends State<FlightSearchCard> {
                               )
                               .toList(),
                           onChanged: (v) =>
-                              setState(() => _passengerCount == v!),
+                              setState(() => _passengerCount = v!),
                         ),
                       ),
                       const SizedBox(width: 10),

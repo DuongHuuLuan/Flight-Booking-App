@@ -67,16 +67,16 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is ForgotPasswordSuccess) {
+          if (state.status == AuthStatus.forgotPasswordSuccess) {
             context.goToOtpVerification();
-          } else if (state is ForgotPasswordFailure) {
+          } else if (state.status == AuthStatus.forgotPasswordFailure && state.errorMessage != null) {
             ScaffoldMessenger.of(
               context,
-            ).showSnackBar(SnackBar(content: Text(state.error)));
+            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
           }
         },
         builder: (context, state) {
-          final isLoading = state is ForgotPasswordLoading;
+          final isLoading = state.status == AuthStatus.forgotPasswordLoading;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(

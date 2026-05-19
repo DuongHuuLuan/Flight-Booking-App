@@ -71,17 +71,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
         listener: (context, state) {
-          if (state is ResetPasswordFailure) {
+          if (state.status == AuthStatus.resetPasswordFailure && state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
-                content: Text(state.error),
+                content: Text(state.errorMessage!),
                 backgroundColor: AppColor.error,
               ),
             );
           }
         },
         builder: (context, state) {
-          if (state is ResetPasswordSuccess) {
+          if (state.status == AuthStatus.resetPasswordSuccess) {
             return Padding(
               padding: const EdgeInsets.all(20),
               child: Column(
@@ -123,7 +123,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             );
           }
 
-          final isLoading = state is ResetPasswordLoading;
+          final isLoading = state.status == AuthStatus.resetPasswordLoading;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
