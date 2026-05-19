@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
@@ -7,7 +8,7 @@ import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_button.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/presentation/home/home_page.dart';
+import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -71,14 +72,16 @@ class _LoginPageState extends State<LoginPage> {
             context.goToHome();
           }
         },
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
+        child: Stack(
+          children: [
+            AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
+            SingleChildScrollView(
               padding: const EdgeInsets.all(25),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 40),
                   FittedBox(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.35,
@@ -87,7 +90,7 @@ class _LoginPageState extends State<LoginPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
 
                   Text(
                     "Let's get you Login!",
@@ -103,7 +106,7 @@ class _LoginPageState extends State<LoginPage> {
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
                   ),
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 25),
 
                   const SocialLoginButtons(),
                   const SizedBox(height: 35),
@@ -179,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

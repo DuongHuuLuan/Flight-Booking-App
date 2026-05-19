@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/core/widgets/app_elevatedButton.dart';
+import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';

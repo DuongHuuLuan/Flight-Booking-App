@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/domain/Entities/user.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
@@ -6,7 +7,7 @@ import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/presentation/home/home_page.dart';
+import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_state.dart';
 import 'package:flutter/material.dart';
@@ -106,14 +107,16 @@ class _RegisterPageState extends State<RegisterPage> {
             },
           ),
         ],
-        child: SafeArea(
-          child: Center(
-            child: SingleChildScrollView(
+        child: Stack(
+          children: [
+            AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
+            SingleChildScrollView(
               padding: const EdgeInsets.all(25),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  const SizedBox(height: 40),
                   FittedBox(
                     child: SizedBox(
                       width: MediaQuery.of(context).size.width * 0.35,
@@ -122,7 +125,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       ),
                     ),
                   ),
-                  const SizedBox(height: 40),
+                  const SizedBox(height: 20),
 
                   Text(
                     "Let's get you Login!",
@@ -138,7 +141,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       context,
                     ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
                   ),
-                  const SizedBox(height: 35),
+                  const SizedBox(height: 25),
 
                   BlocBuilder<LocationCubit, LocationState>(
                     builder: (context, state) {
@@ -176,6 +179,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       );
                     },
                   ),
+                  const SizedBox(height: 30),
                   SubmitButton(
                     controllers: [
                       nameController,
@@ -184,9 +188,7 @@ class _RegisterPageState extends State<RegisterPage> {
                       passwordController,
                       confirmPasswordController,
                     ],
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) _register();
-                    },
+                    onPressed: () => _register(),
                     label: "Register",
                   ),
 
@@ -214,7 +216,7 @@ class _RegisterPageState extends State<RegisterPage> {
                 ],
               ),
             ),
-          ),
+          ],
         ),
       ),
     );

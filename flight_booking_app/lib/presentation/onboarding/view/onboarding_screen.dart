@@ -1,9 +1,9 @@
+import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_state.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -29,7 +29,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
         curve: Curves.easeInOut,
       );
     } else {
-      context.go("/login");
+      context.goToLogin();
     }
   }
 
@@ -58,6 +58,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       data: state.data[index],
                       isLastPage: index == state.data.length - 1,
                       onNextPressed: _nextPage,
+                      currenPage: _currentPage,
+                      totalPages: state.data.length,
                     );
                   },
                 ),
