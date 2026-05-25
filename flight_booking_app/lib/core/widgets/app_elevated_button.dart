@@ -27,7 +27,7 @@ class AppElevatedButton extends StatelessWidget {
     final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
-      height: height ?? 56,
+      height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(

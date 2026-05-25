@@ -35,12 +35,5 @@ flutter:
 
   assets:
     - .env
-    - assets/images/splash.jpg
-    - assets/images/onboarding_1.avif
-    - assets/images/onboarding_2.webp
-    - assets/images/onboarding_3.webp
-    - assets/images/logo.png
-    - assets/images/lock.png
-    - assets/images/oke.png
-
-    - assets/data/mock/onboarding.json
+    - assets/images/
+    - assets/data/mock/

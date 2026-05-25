@@ -5,7 +5,7 @@ class AppTextFormField extends StatelessWidget {
   final TextEditingController controller;
   final String labelText;
   final String hintText;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
   final String? Function(String?)? validator;
   final bool obscureText;
   final Widget? suffixIcon;
@@ -15,7 +15,7 @@ class AppTextFormField extends StatelessWidget {
     required this.controller,
     required this.labelText,
     required this.hintText,
-    required this.prefixIcon,
+    this.prefixIcon,
     this.validator,
     this.obscureText = false,
     this.suffixIcon,

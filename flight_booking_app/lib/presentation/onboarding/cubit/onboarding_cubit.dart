@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/domain/usecase/get_onboardin_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/auth/get_onboardin_usecase.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

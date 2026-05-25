@@ -77,6 +77,16 @@ class AuthRepositoryImpl implements AuthRepository {
   }
 
   @override
+  Future<Either<Exception, UserEntity?>> getCurrentUser() async {
+    try {
+      final user = await _localDataSource.getUser();
+      return Right(user);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
   Future<Either<Exception, VerifyOtpResult>> verifyOtp({
     String? email,
     String? phone,

@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/domain/usecase/get_country_usecase.dart';
-import 'package:flight_booking_app/domain/usecase/get_city_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/auth/get_country_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/auth/get_city_usecase.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 

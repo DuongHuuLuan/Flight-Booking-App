@@ -14,6 +14,8 @@ abstract class AuthRepository {
   Future<Either<Exception, ForgotPasswordResult>> forgotPasswordWithEmail(
     String email,
   );
+
+  Future<Either<Exception, UserEntity?>> getCurrentUser();
   Future<Either<Exception, VerifyOtpResult>> verifyOtp({
     String? email,
     String? phone,

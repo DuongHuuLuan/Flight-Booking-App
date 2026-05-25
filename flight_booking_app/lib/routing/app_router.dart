@@ -5,17 +5,19 @@ import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verific
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_page.dart';
-import 'package:flight_booking_app/presentation/home/home_page.dart';
+import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
+import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
+import 'package:flight_booking_app/presentation/search/search_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: "/",
+    initialLocation: "/login",
     debugLogDiagnostics: true,
 
     routes: [
@@ -50,7 +52,18 @@ class AppRouter {
         ),
       ),
 
-      GoRoute(path: "/home", builder: (context, state) => const HomePage()),
+      GoRoute(
+        path: "/home",
+        builder: (context, state) => MultiBlocProvider(
+          providers: [
+            BlocProvider(create: (context) => getIt<AuthCubit>()..getUser()),
+            BlocProvider(
+              create: (context) => getIt<HomeCubit>()..loadHomeData(),
+            ),
+          ],
+          child: const HomePage(),
+        ),
+      ),
 
       GoRoute(
         path: "/forgot-password",
@@ -71,6 +84,14 @@ class AppRouter {
         builder: (context, state) => BlocProvider(
           create: (context) => getIt<AuthCubit>(),
           child: ResetPasswordScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: "/search",
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<HomeCubit>(),
+          child: SearchScreen(),
         ),
       ),
     ],

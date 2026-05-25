@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 class AppDropdownButtonFormField<T> extends StatelessWidget {
   final T? value;
   final String labelText;
-  final IconData prefixIcon;
+  final IconData? prefixIcon;
+  final bool? isExpanded;
   final List<DropdownMenuItem<T>> items;
   final void Function(T?)? onChanged;
   final String? Function(T?)? validator;
@@ -13,15 +14,17 @@ class AppDropdownButtonFormField<T> extends StatelessWidget {
     super.key,
     required this.value,
     required this.labelText,
-    required this.prefixIcon,
+    this.prefixIcon,
     required this.items,
     required this.onChanged,
     this.validator,
+    this.isExpanded,
   });
 
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<T>(
+      isExpanded: isExpanded ?? false,
       initialValue: value,
       decoration: InputDecoration(
         labelText: labelText,
