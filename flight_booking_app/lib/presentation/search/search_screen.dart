@@ -122,6 +122,57 @@ class _SearchScreenState extends State<SearchScreen> {
         filteredFlights: _filteredFlights,
         searchQuery: _searchController.text,
       ),
+
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
+      floatingActionButton: Container(
+        width: MediaQuery.of(context).size.width * 0.15,
+        height: MediaQuery.of(context).size.height * 0.15,
+        decoration: BoxDecoration(
+          color: AppColor.primary,
+          shape: BoxShape.circle,
+        ),
+        child: RawMaterialButton(
+          shape: const CircleBorder(),
+          onPressed: () {},
+          child: Icon(Icons.qr_code_scanner, color: AppColor.white, size: 28),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        shape: const CircularNotchedRectangle(),
+        notchMargin: 10.0,
+        color: AppColor.white,
+        elevation: 10,
+        clipBehavior: Clip.antiAlias,
+        child: SizedBox(
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceAround,
+            children: [
+              IconButton(
+                onPressed: () {
+                  context.goToHome();
+                },
+                icon: Icon(Icons.home, color: AppColor.black87),
+              ),
+
+              IconButton(
+                onPressed: () {
+                  context.goToSearch();
+                },
+                icon: Icon(Icons.search, color: AppColor.primary),
+              ),
+
+              IconButton(
+                onPressed: () {},
+                icon: Icon(Icons.wallet, color: AppColor.black87),
+              ),
+              IconButton(
+                icon: const Icon(Icons.person, color: Colors.black87),
+                onPressed: () {},
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

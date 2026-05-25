@@ -34,8 +34,7 @@ class SearchBody extends StatelessWidget {
       );
     }
 
-    return Center(
-      child: Column(
+    return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Icon(Icons.flight, size: 64, color: Colors.grey[300]),
@@ -50,7 +49,6 @@ class SearchBody extends StatelessWidget {
             ),
           ),
         ],
-      ),
     );
   }
 }

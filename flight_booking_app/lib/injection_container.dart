@@ -103,7 +103,7 @@ Future<void> init() async {
     () => HomeRepositoryImpl(getIt<HomeRemoteDataSource>()),
   );
 
-  //usecase
+  //use case
   getIt.registerLazySingleton<GetOnboardingData>(
     () => GetOnboardingData(getIt<OnboardingRepository>()),
   );
