@@ -14,10 +14,10 @@ class FlightSearchCard extends StatefulWidget {
   const FlightSearchCard({super.key});
 
   @override
-  State<FlightSearchCard> createState() => _FlightSeatchCardState();
+  State<FlightSearchCard> createState() => _FlightSearchCardState();
 }
 
-class _FlightSeatchCardState extends State<FlightSearchCard> {
+class _FlightSearchCardState extends State<FlightSearchCard> {
   final TextEditingController fromController = TextEditingController();
   final TextEditingController toController = TextEditingController();
   final TextEditingController departureDateController = TextEditingController();

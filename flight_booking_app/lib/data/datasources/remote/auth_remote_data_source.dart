@@ -12,7 +12,7 @@ class AuthRemoteDataSource {
   AuthRemoteDataSource(this._authService);
 
   Future<UserEntity> login(String email, String password) async {
-    if (email == "tim.jennings@example.com" && password == "123456") {
+    if (email == "test@gmail.com" && password == "123456") {
       return UserEntity(
         id: 1,
         name: "Tim Jennings",
@@ -70,7 +70,7 @@ class AuthRemoteDataSource {
 
   Future<ForgotPasswordResult> forgotPasswordWithEmail(String email) async {
     try {
-      if (email == "tim.jennings@example.com") {
+      if (email == "test@gmail.com") {
         return ForgotPasswordResult(message: email);
       }
 
