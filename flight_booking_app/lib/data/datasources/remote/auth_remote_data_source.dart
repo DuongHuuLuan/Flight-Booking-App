@@ -1,5 +1,7 @@
+import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
 import 'package:flight_booking_app/data/mappers/forgot_password_mapper.dart';
 import 'package:flight_booking_app/data/mappers/user_mapper.dart';
+import 'package:flight_booking_app/data/models/user.dart';
 import 'package:flight_booking_app/data/services/auth_service.dart';
 import 'package:flight_booking_app/domain/Entities/auth/forgot_password_result.dart';
 import 'package:flight_booking_app/domain/Entities/auth/reset_password_result.dart';
@@ -8,11 +10,13 @@ import 'package:flight_booking_app/domain/Entities/user.dart';
 
 class AuthRemoteDataSource {
   final AuthService _authService;
+  final AuthLocalDataSource _localDataSource;
 
-  AuthRemoteDataSource(this._authService);
+  AuthRemoteDataSource(this._authService, this._localDataSource);
 
   Future<UserEntity> login(String email, String password) async {
     if (email == "test@gmail.com" && password == "123456") {
+      await _localDataSource.saveToken("mock_token_abc123");
       return UserEntity(
         id: 1,
         name: "Tim Jennings",
@@ -30,9 +34,12 @@ class AuthRemoteDataSource {
       'email': email,
       'password': password,
     });
-    final user = UserMapper.fromModel(response.data.data!);
+    final rawData = response.data.data!;
+    final token = rawData['access_token'] as String;
+    await _localDataSource.saveToken(token);
+    return UserMapper.fromModel(UserModel.fromJson(rawData as Map<String, dynamic>));
 
-    return user;
+
   }
 
   Future<UserEntity> register(UserEntity user) async {

@@ -26,4 +26,6 @@ class UserModel {
       _$UserModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$UserModelToJson(this);
+
+  void operator [](String other) {}
 }

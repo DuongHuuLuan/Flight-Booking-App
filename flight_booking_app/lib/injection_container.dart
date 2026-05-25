@@ -44,14 +44,25 @@ Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerLazySingleton(() => sharedPreferences);
 
-  getIt.registerLazySingleton(
-    () => Dio(
-      BaseOptions(
-        baseUrl: AppConstant.baseUrl,
-        connectTimeout: Duration(seconds: 30),
-        receiveTimeout: Duration(seconds: 30),
-      ),
-    ),
+  getIt.registerLazySingleton<Dio>(
+    () {
+      final dio =  Dio(
+        BaseOptions(
+          baseUrl: AppConstant.baseUrl,
+          connectTimeout: Duration(seconds: 30),
+          receiveTimeout: Duration(seconds: 30),
+        ),
+      );
+      dio.interceptors.add(InterceptorsWrapper(onRequest:(options, handler) async{
+        final prefs = getIt<SharedPreferences>();
+        final token = prefs.getString("access_token");
+        if(token != null){
+          options.headers["Authorization"] = "Bearer $token";
+        }
+        handler.next(options);
+      }, ));
+      return dio;
+    }
   );
 
   // Service
@@ -73,7 +84,7 @@ Future<void> init() async {
 
   // Remote Data Source
   getIt.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSource(getIt<AuthService>()),
+    () => AuthRemoteDataSource(getIt<AuthService>(), getIt<AuthLocalDataSource>()),
   );
   getIt.registerLazySingleton<LocationRemoteDataSource>(
     () => LocationRemoteDataSource(getIt<LocationService>(), userMock: true),

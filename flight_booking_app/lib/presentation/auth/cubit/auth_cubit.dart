@@ -83,7 +83,6 @@ class AuthCubit extends Cubit<AuthState> {
         }
       },
       (user) async {
-        await localStorage.saveToken(user.password);
         await localStorage.saveUser(user);
         emit(state.copyWith(status: AuthStatus.authAuthenticated, user: user));
       },

@@ -82,33 +82,39 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                 children: [
                   Row(
                     children: [
-                      TypeButton(
-                        text: "One Way",
-                        activeColor: AppColor.primary,
-                        icon: Icons.arrow_right_alt,
-                        isSelected: _selectedType == TripType.oneWay,
-                        onPressed: () =>
-                            setState(() => _selectedType = TripType.oneWay),
+                      Expanded(
+                        child: TypeButton(
+                          text: "One Way",
+                          activeColor: AppColor.primary,
+                          icon: Icons.arrow_right_alt,
+                          isSelected: _selectedType == TripType.oneWay,
+                          onPressed: () =>
+                              setState(() => _selectedType = TripType.oneWay),
+                        ),
                       ),
                       const SizedBox(width: 5),
 
-                      TypeButton(
-                        text: "Round Trip",
-                        activeColor: AppColor.primary,
-                        icon: Icons.autorenew,
-                        isSelected: _selectedType == TripType.roundTrip,
-                        onPressed: () =>
-                            setState(() => _selectedType = TripType.roundTrip),
+                      Expanded(
+                        child: TypeButton(
+                          text: "Round Trip",
+                          activeColor: AppColor.primary,
+                          icon: Icons.autorenew,
+                          isSelected: _selectedType == TripType.roundTrip,
+                          onPressed: () =>
+                              setState(() => _selectedType = TripType.roundTrip),
+                        ),
                       ),
                       const SizedBox(width: 5),
 
-                      TypeButton(
-                        text: "Multi City",
-                        activeColor: AppColor.primary,
-                        icon: Icons.call_made,
-                        isSelected: _selectedType == TripType.multiCity,
-                        onPressed: () =>
-                            setState(() => _selectedType = TripType.multiCity),
+                      Expanded(
+                        child: TypeButton(
+                          text: "Multi City",
+                          activeColor: AppColor.primary,
+                          icon: Icons.call_made,
+                          isSelected: _selectedType == TripType.multiCity,
+                          onPressed: () =>
+                              setState(() => _selectedType = TripType.multiCity),
+                        ),
                       ),
                     ],
                   ),

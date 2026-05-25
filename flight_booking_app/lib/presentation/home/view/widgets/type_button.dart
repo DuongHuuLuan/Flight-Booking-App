@@ -47,10 +47,14 @@ class TypeButton extends StatelessWidget {
               ),
             ),
             const SizedBox(width: 5),
-            Text(
-              text,
-              style: AppTextStyles.bodySmall.copyWith(
-                color: isSelected ? AppColor.white : AppColor.black87,
+            Expanded(
+              child: Text(
+                text,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: AppTextStyles.bodySmall.copyWith(
+                  color: isSelected ? AppColor.white : AppColor.black87,
+                ),
               ),
             ),
           ],
