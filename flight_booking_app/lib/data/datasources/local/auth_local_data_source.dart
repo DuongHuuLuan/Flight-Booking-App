@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/data/mappers/user_mapper.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/Entities/user_entity.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 abstract class AuthLocalDataSource {

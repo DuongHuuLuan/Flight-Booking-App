@@ -1,6 +1,6 @@
 import 'dart:convert';
 
-import 'package:flight_booking_app/domain/Entities/onboarding.dart';
+import 'package:cardly_app/domain/Entities/onboarding.dart';
 
 class OnboardingMapper {
   static Onboarding fromJson(Map<String, dynamic> json) {

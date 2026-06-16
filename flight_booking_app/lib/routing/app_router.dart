@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
@@ -11,13 +12,15 @@ import 'package:flight_booking_app/presentation/location/cubit/location_cubit.da
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
+import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
+import 'package:flight_booking_app/presentation/select_flight/view/select_flight_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: "/login",
+    initialLocation: "/home",
     debugLogDiagnostics: true,
 
     routes: [
@@ -92,6 +95,16 @@ class AppRouter {
         builder: (context, state) => BlocProvider(
           create: (context) => getIt<HomeCubit>(),
           child: SearchScreen(),
+        ),
+      ),
+
+      GoRoute(
+        path: "/select-flight",
+        builder: (context, state) => BlocProvider(
+          create: (context) =>
+              getIt<SelectFlightCubit>()
+                ..loadFlights(state.extra as FlightSearchParams),
+          child: SelectFlightScreen(),
         ),
       ),
     ],

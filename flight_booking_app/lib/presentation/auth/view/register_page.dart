@@ -1,6 +1,6 @@
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/Entities/user_entity.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_page.dart';

@@ -4,7 +4,9 @@ part 'user.g.dart';
 
 @JsonSerializable()
 class UserModel {
+  @JsonKey(name: "access_token")
   final int id;
+  final String? accessToken;
   final String name;
   final String email;
   final String password;
@@ -14,6 +16,7 @@ class UserModel {
 
   UserModel({
     required this.id,
+    this.accessToken,
     required this.name,
     required this.email,
     required this.password,

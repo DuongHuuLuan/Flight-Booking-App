@@ -2,7 +2,7 @@ import 'package:dartz/dartz.dart';
 import 'package:flight_booking_app/domain/Entities/auth/forgot_password_result.dart';
 import 'package:flight_booking_app/domain/Entities/auth/reset_password_result.dart';
 import 'package:flight_booking_app/domain/Entities/auth/verify_otp_result.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/Entities/user_entity.dart';
 
 abstract class AuthRepository {
   Future<Either<Exception, UserEntity>> login(String email, String password);

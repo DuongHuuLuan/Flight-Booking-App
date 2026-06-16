@@ -35,6 +35,7 @@ import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
+import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,26 +45,28 @@ Future<void> init() async {
   final sharedPreferences = await SharedPreferences.getInstance();
   getIt.registerLazySingleton(() => sharedPreferences);
 
-  getIt.registerLazySingleton<Dio>(
-    () {
-      final dio =  Dio(
-        BaseOptions(
-          baseUrl: AppConstant.baseUrl,
-          connectTimeout: Duration(seconds: 30),
-          receiveTimeout: Duration(seconds: 30),
-        ),
-      );
-      dio.interceptors.add(InterceptorsWrapper(onRequest:(options, handler) async{
-        final prefs = getIt<SharedPreferences>();
-        final token = prefs.getString("access_token");
-        if(token != null){
-          options.headers["Authorization"] = "Bearer $token";
-        }
-        handler.next(options);
-      }, ));
-      return dio;
-    }
-  );
+  getIt.registerLazySingleton<Dio>(() {
+    final dio = Dio(
+      BaseOptions(
+        baseUrl: AppConstant.baseUrl,
+        connectTimeout: Duration(seconds: 30),
+        receiveTimeout: Duration(seconds: 30),
+      ),
+    );
+    dio.interceptors.add(
+      InterceptorsWrapper(
+        onRequest: (options, handler) async {
+          final prefs = getIt<SharedPreferences>();
+          final token = prefs.getString("access_token");
+          if (token != null) {
+            options.headers["Authorization"] = "Bearer $token";
+          }
+          handler.next(options);
+        },
+      ),
+    );
+    return dio;
+  });
 
   // Service
   getIt.registerLazySingleton<AuthService>(() => AuthService(getIt<Dio>()));
@@ -84,7 +87,7 @@ Future<void> init() async {
 
   // Remote Data Source
   getIt.registerLazySingleton<AuthRemoteDataSource>(
-    () => AuthRemoteDataSource(getIt<AuthService>(), getIt<AuthLocalDataSource>()),
+    () => AuthRemoteDataSource(getIt<AuthService>()),
   );
   getIt.registerLazySingleton<LocationRemoteDataSource>(
     () => LocationRemoteDataSource(getIt<LocationService>(), userMock: true),
@@ -192,6 +195,13 @@ Future<void> init() async {
       getPopularFlights: getIt<GetPopularFlightsUsecase>(),
       searchFlightsUsecase: getIt<SearchFlightsUsecsase>(),
       getAllFlightsUsecase: getIt<GetAllFlightsUsecase>(),
+    ),
+  );
+
+  getIt.registerFactory(
+    () => SelectFlightCubit(
+      getAllFlightsUsecase: getIt<GetAllFlightsUsecase>(),
+      searchFlightsUsecsase: getIt<SearchFlightsUsecsase>(),
     ),
   );
 }
