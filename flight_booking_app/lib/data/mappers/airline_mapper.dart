@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/data/models/airline_model.dart';
-import 'package:flight_booking_app/domain/Entities/airline.dart';
+import 'package:flight_booking_app/domain/entities/airline.dart';
 
 class AirlineMapper {
   static AirlineEntity fromModel(AirlineModel model) {

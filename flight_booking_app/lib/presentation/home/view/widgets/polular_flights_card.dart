@@ -1,6 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flutter/material.dart';
 
 class PopularFlightCard extends StatelessWidget {

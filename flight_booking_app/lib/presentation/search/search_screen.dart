@@ -1,19 +1,15 @@
 import 'dart:async';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
 import 'package:flight_booking_app/injection_container.dart';
-import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/search/widgets/search_body.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-extension SearchNavigation on BuildContext {
-  void goToSearch() => go('/search');
-}
 
 class SearchScreen extends StatefulWidget {
+  static String get routerName => '/search';
   const SearchScreen({super.key});
   @override
   State<SearchScreen> createState() => _SearchScreenState();

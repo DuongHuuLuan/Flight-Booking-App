@@ -3,10 +3,10 @@ import 'package:flight_booking_app/data/mappers/forgot_password_mapper.dart';
 import 'package:flight_booking_app/data/mappers/user_mapper.dart';
 import 'package:flight_booking_app/data/models/user.dart';
 import 'package:flight_booking_app/data/services/auth_service.dart';
-import 'package:flight_booking_app/domain/Entities/auth/forgot_password_result.dart';
-import 'package:flight_booking_app/domain/Entities/auth/reset_password_result.dart';
-import 'package:flight_booking_app/domain/Entities/auth/verify_otp_result.dart';
-import 'package:flight_booking_app/domain/Entities/user_entity.dart';
+import 'package:flight_booking_app/domain/entities/auth/forgot_password_result.dart';
+import 'package:flight_booking_app/domain/entities/auth/reset_password_result.dart';
+import 'package:flight_booking_app/domain/entities/auth/verify_otp_result.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
 class AuthRemoteDataSource {
   final AuthService _authService;

@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/usecase/home/get_popular_flights_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/home/search_flights_usecsase.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';

@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flight_booking_app/data/mappers/flight_mapper.dart';
 import 'package:flight_booking_app/data/models/flight_model.dart';
 import 'package:flight_booking_app/data/services/home_service.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 
 class HomeRemoteDataSource {
   final HomeService _homeService;

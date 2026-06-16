@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flight_booking_app/data/mappers/onboarding_mapper.dart';
-import 'package:flight_booking_app/domain/Entities/onboarding.dart';
+import 'package:flight_booking_app/domain/entities/onboarding_entity.dart';
 import 'package:flutter/services.dart';
 
 class OnboardingMockDataSource {
@@ -9,7 +9,7 @@ class OnboardingMockDataSource {
 
   OnboardingMockDataSource({this.useEmbeddedData = false});
 
-  Future<List<Onboarding>> getOnboardingData() async {
+  Future<List<OnboardingEntity>> getOnboardingData() async {
     final String jsonString = await rootBundle.loadString(
       "assets/data/mock/onboarding.json",
     );

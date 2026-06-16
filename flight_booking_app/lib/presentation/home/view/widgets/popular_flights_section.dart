@@ -1,13 +1,13 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_state.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/polular_flights_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class PopularFlightsSection extends StatelessWidget {
   const PopularFlightsSection({super.key});
@@ -76,7 +76,7 @@ class PopularFlightsSection extends StatelessWidget {
                           passengerCount: 1,
                           cabinClass: state.popular[index].cabinClass,
                         );
-                        context.go('/select-flight', extra: params);
+                        context.goToSelectFlight(params);
                       },
                     );
                   },
