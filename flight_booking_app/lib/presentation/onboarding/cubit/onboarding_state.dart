@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flight_booking_app/domain/Entities/onboarding.dart';
+import 'package:flight_booking_app/domain/entities/onboarding_entity.dart';
 
 class OnboardingState extends Equatable {
   const OnboardingState();
@@ -13,7 +13,7 @@ class OnboardingInitial extends OnboardingState {}
 class OnboardingLoading extends OnboardingState {}
 
 class OnboardingLoaded extends OnboardingState {
-  final List<Onboarding> data;
+  final List<OnboardingEntity> data;
 
   const OnboardingLoaded(this.data);
 

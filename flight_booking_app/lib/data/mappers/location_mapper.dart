@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/domain/Entities/location.dart';
+import 'package:flight_booking_app/domain/entities/location.dart';
 
 class LocationMapper {
   static Location fromJson(Map<String, dynamic> json) {

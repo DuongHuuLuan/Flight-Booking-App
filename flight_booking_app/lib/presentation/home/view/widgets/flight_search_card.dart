@@ -2,7 +2,7 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/widgets/app_dropdown_button_form_field.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';

@@ -1,7 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flight_booking_app/data/datasources/remote/home_remote_data_source.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/repositories/home_repository.dart';
 
 class HomeRepositoryImpl implements HomeRepository {

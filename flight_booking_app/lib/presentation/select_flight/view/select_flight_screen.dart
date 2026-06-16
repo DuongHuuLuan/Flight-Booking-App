@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/date_selector_bar.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/filter_bottom_sheet.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/flight_ticket_card.dart';
@@ -8,9 +8,9 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
-import 'package:go_router/go_router.dart';
 
 class SelectFlightScreen extends StatelessWidget {
+  static String get routerName => '/select-flight';
   const SelectFlightScreen({super.key});
   @override
   Widget build(BuildContext context) {

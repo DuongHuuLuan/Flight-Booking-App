@@ -1,7 +1,8 @@
-import 'package:flight_booking_app/presentation/onboarding/view/onboarding_page.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flutter/material.dart';
 
 class SplashPage extends StatefulWidget {
+  static String get routerName => '/';
   const SplashPage({super.key});
 
   @override

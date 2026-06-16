@@ -1,19 +1,15 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/flight_search_card.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/popular_flights_section.dart';
-import 'package:flight_booking_app/presentation/search/search_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-extension HomeNavigation on BuildContext {
-  void goToHome() => go('/home');
-}
 
 class HomePage extends StatefulWidget {
+  static String get routerName => '/home';
   const HomePage({super.key});
 
   @override

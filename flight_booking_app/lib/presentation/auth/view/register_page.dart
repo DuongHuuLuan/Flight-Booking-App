@@ -1,24 +1,19 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
-import 'package:flight_booking_app/domain/Entities/user_entity.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-extension RegisterNavigation on BuildContext {
-  void goToRegister() => go('/register');
-}
 
 class RegisterPage extends StatefulWidget {
+  static String get routerName => '/register';
   const RegisterPage({super.key});
 
   @override

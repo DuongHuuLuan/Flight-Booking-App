@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:flight_booking_app/data/models/user.dart';
-import 'package:flight_booking_app/domain/Entities/user_entity.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
 class UserMapper {
   static UserEntity fromJson(Map<String, dynamic> json) {
