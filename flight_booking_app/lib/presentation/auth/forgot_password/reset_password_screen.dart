@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_password_text_form_field.dart';
@@ -77,9 +78,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         },
         builder: (context, state) {
           if (state.status == AuthStatus.resetPasswordSuccess) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
+            return Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
                   Center(
@@ -114,8 +113,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                     onPressed: () => context.goToLogin(),
                   ),
                 ],
-              ),
-            );
+              ).paddingAll(20);
           }
 
           final isLoading = state.status == AuthStatus.resetPasswordLoading;

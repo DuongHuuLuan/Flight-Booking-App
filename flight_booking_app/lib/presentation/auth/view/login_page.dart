@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
@@ -108,14 +109,11 @@ class _LoginPageState extends State<LoginPage> {
                   Row(
                     children: [
                       Expanded(child: Divider(color: AppColor.greyLight)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text(
-                          "Or login with",
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColor.greyDark),
-                        ),
-                      ),
+                      Text(
+                        "Or login with",
+                        style: Theme.of(context).textTheme.bodySmall
+                            ?.copyWith(color: AppColor.greyDark),
+                      ).paddingHorizontal(15),
                       Expanded(child: Divider(color: AppColor.greyLight)),
                     ],
                   ),

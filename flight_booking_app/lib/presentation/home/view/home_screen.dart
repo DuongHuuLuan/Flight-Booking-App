@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
@@ -37,14 +38,7 @@ class _FlightBookingState extends State<HomePage> {
 
             Column(
               children: [
-                Padding(
-                  padding: const EdgeInsets.only(
-                    top: 60,
-                    left: 30,
-                    bottom: 30,
-                    right: 30,
-                  ),
-                  child: Row(
+                Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
                       BlocBuilder<AuthCubit, AuthState>(
@@ -101,8 +95,7 @@ class _FlightBookingState extends State<HomePage> {
                         icon: Icon(Icons.notifications, color: AppColor.white),
                       ),
                     ],
-                  ),
-                ),
+                  ).paddingOnly(top: 60, left: 30, bottom: 30, right: 30),
 
                 const SizedBox(height: 20),
                 FlightSearchCard(),

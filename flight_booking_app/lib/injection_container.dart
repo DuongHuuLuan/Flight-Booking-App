@@ -65,6 +65,16 @@ Future<void> init() async {
         },
       ),
     );
+    dio.interceptors.add(
+      LogInterceptor(
+        request: true,
+        requestHeader: true,
+        requestBody: true, // ← show body gửi đi
+        responseHeader: false,
+        responseBody: true, // ← show response nhận về
+        error: true,
+      ),
+    );
     return dio;
   });
 
@@ -90,10 +100,10 @@ Future<void> init() async {
     () => AuthRemoteDataSource(getIt<AuthService>()),
   );
   getIt.registerLazySingleton<LocationRemoteDataSource>(
-    () => LocationRemoteDataSource(getIt<LocationService>(), userMock: true),
+    () => LocationRemoteDataSource(getIt<LocationService>(), userMock: false),
   );
   getIt.registerLazySingleton<HomeRemoteDataSource>(
-    () => HomeRemoteDataSource(getIt<HomeService>(), userMock: true),
+    () => HomeRemoteDataSource(getIt<HomeService>(), userMock: false),
   );
 
   // Repositories

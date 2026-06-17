@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
@@ -16,9 +17,7 @@ class PopularFlightsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<HomeCubit, HomeState>(
       builder: (context, state) {
-        return Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 16),
-          child: Column(
+        return Column(
             children: [
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -82,8 +81,7 @@ class PopularFlightsSection extends StatelessWidget {
                   },
                 ),
             ],
-          ),
-        );
+          ).paddingHorizontal(16);
       },
     );
   }
