@@ -3,8 +3,8 @@ import 'dart:convert';
 import 'package:flight_booking_app/data/mappers/flight_mapper.dart';
 import 'package:flight_booking_app/data/models/flight_model.dart';
 import 'package:flight_booking_app/data/services/home_service.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
-import 'package:flight_booking_app/domain/Entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 
 class HomeRemoteDataSource {
   final HomeService _homeService;
@@ -199,6 +199,140 @@ class HomeRemoteDataSource {
     "duration": 75,
     "price": 1800000,
     "stops": 0,
+    "cabinClass": "economy"
+  },
+  {
+    "id": "FL008",
+    "airline": {
+      "id": "QR",
+      "name": "Qatar Airways",
+      "logoUrl": ""
+    },
+    "flightNumber": "QR920",
+    "departureAirport": {
+      "code": "DXB",
+      "name": "Dubai International Airport",
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    "arrivalAirport": {
+      "code": "AKL",
+      "name": "Auckland Airport",
+      "city": "Auckland",
+      "country": "New Zealand"
+    },
+    "departureTime": "2026-06-05T17:45:00",
+    "arrivalTime": "2026-06-06T13:05:00",
+    "duration": 1340,
+    "price": 1400,
+    "stops": 1,
+    "cabinClass": "economy"
+  },
+  {
+    "id": "FL009",
+    "airline": {
+      "id": "EK",
+      "name": "Emirates",
+      "logoUrl": ""
+    },
+    "flightNumber": "EK448",
+    "departureAirport": {
+      "code": "DXB",
+      "name": "Dubai International Airport",
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    "arrivalAirport": {
+      "code": "AKL",
+      "name": "Auckland Airport",
+      "city": "Auckland",
+      "country": "New Zealand"
+    },
+    "departureTime": "2026-06-05T10:45:00",
+    "arrivalTime": "2026-06-06T18:55:00",
+    "duration": 1390,
+    "price": 1530,
+    "stops": 1,
+    "cabinClass": "economy"
+  },
+  {
+    "id": "FL010",
+    "airline": {
+      "id": "SQ",
+      "name": "Singapore Airlines",
+      "logoUrl": ""
+    },
+    "flightNumber": "SQ285",
+    "departureAirport": {
+      "code": "DXB",
+      "name": "Dubai International Airport",
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    "arrivalAirport": {
+      "code": "AKL",
+      "name": "Auckland Airport",
+      "city": "Auckland",
+      "country": "New Zealand"
+    },
+    "departureTime": "2026-06-05T23:00:00",
+    "arrivalTime": "2026-06-06T19:20:00",
+    "duration": 1340,
+    "price": 1210,
+    "stops": 1,
+    "cabinClass": "economy"
+  },
+  {
+    "id": "FL011",
+    "airline": {
+      "id": "QF",
+      "name": "Qantas",
+      "logoUrl": ""
+    },
+    "flightNumber": "QF842",
+    "departureAirport": {
+      "code": "DXB",
+      "name": "Dubai International Airport",
+      "city": "Dubai",
+      "country": "UAE"
+    },
+    "arrivalAirport": {
+      "code": "AKL",
+      "name": "Auckland Airport",
+      "city": "Auckland",
+      "country": "New Zealand"
+    },
+    "departureTime": "2026-06-05T23:15:00",
+    "arrivalTime": "2026-06-06T18:55:00",
+    "duration": 1270,
+    "price": 1160,
+    "stops": 1,
+    "cabinClass": "economy"
+  },
+  {
+    "id": "FL012",
+    "airline": {"id": "EK", "name": "Emirates", "logoUrl": ""},
+    "flightNumber": "EK451",
+    "departureAirport": {"code": "DXB", "name": "Dubai International Airport", "city": "Dubai", "country": "UAE"},
+    "arrivalAirport": {"code": "AKL", "name": "Auckland Airport", "city": "Auckland", "country": "New Zealand"},
+    "departureTime": "2026-06-05T06:00:00",
+    "arrivalTime": "2026-06-05T21:30:00",
+    "duration": 930,
+    "price": 1890,
+    "stops": 0,
+    "cabinClass": "first"
+  },
+  {
+    "id": "FL013",
+    "airline": {"id": "QR", "name": "Qatar Airways", "logoUrl": ""},
+    "flightNumber": "QR923",
+    "departureAirport": {"code": "DXB", "name": "Dubai International Airport", "city": "Dubai", "country": "UAE"},
+    "arrivalAirport": {"code": "AKL", "name": "Auckland Airport", "city": "Auckland", "country": "New Zealand"},
+    "departureTime": "2026-06-05T19:45:00",
+    "arrivalTime": "2026-06-06T11:00:00",
+    "duration": 915,
+    "price": 980,
+    "stops": 2,
     "cabinClass": "economy"
   }
 ]

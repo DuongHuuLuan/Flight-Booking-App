@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/domain/Entities/airline.dart';
-import 'package:flight_booking_app/domain/Entities/airport.dart';
+import 'package:flight_booking_app/domain/entities/airline.dart';
+import 'package:flight_booking_app/domain/entities/airport.dart';
 import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 
 class FlightEntity {

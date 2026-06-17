@@ -1,10 +1,10 @@
 import 'package:dartz/dartz.dart';
 import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
 import 'package:flight_booking_app/data/datasources/remote/auth_remote_data_source.dart';
-import 'package:flight_booking_app/domain/Entities/auth/forgot_password_result.dart';
-import 'package:flight_booking_app/domain/Entities/auth/reset_password_result.dart';
-import 'package:flight_booking_app/domain/Entities/auth/verify_otp_result.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/entities/auth/forgot_password_result.dart';
+import 'package:flight_booking_app/domain/entities/auth/reset_password_result.dart';
+import 'package:flight_booking_app/domain/entities/auth/verify_otp_result.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/domain/repositories/auth_repository.dart';
 
 class AuthRepositoryImpl implements AuthRepository {

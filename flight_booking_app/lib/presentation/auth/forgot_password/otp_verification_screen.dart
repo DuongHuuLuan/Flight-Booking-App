@@ -1,20 +1,15 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
-import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:go_router/go_router.dart';
 import 'widgets/otp_input_field.dart';
 
-extension OtpVerificationNavigation on BuildContext {
-  void goToOtpVerification() => go('/otp-verification');
-}
-
 class OtpVerificationScreen extends StatefulWidget {
+  static String get routerName => '/otp-verification';
   const OtpVerificationScreen({super.key});
 
   @override

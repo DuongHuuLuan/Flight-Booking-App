@@ -1,20 +1,15 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_password_text_form_field.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
-import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-extension ResetPasswordNavigation on BuildContext {
-  void goToResetPassword() => go('/reset-password');
-}
 
 class ResetPasswordScreen extends StatefulWidget {
+  static String get routerName => '/reset-password';
   const ResetPasswordScreen({super.key});
   @override
   State<ResetPasswordScreen> createState() => _ResetPasswordScreenState();

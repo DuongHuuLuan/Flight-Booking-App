@@ -1,5 +1,6 @@
 class UserEntity {
   final int id;
+  final String? accessToken;
   final String name;
   final String email;
   final String phone;
@@ -10,6 +11,7 @@ class UserEntity {
 
   UserEntity({
     required this.id,
+    this.accessToken,
     required this.name,
     required this.email,
     required this.phone,
@@ -21,6 +23,7 @@ class UserEntity {
 
   UserEntity copyWith({
     int? id,
+    String? accessToken,
     String? name,
     String? email,
     String? phone,
@@ -31,6 +34,7 @@ class UserEntity {
   }) {
     return UserEntity(
       id: id ?? this.id,
+      accessToken: accessToken ?? this.accessToken,
       name: name ?? this.name,
       email: email ?? this.email,
       phone: phone ?? this.phone,

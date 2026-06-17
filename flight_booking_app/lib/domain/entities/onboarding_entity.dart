@@ -1,23 +1,23 @@
-class Onboarding {
+class OnboardingEntity {
   final int id;
   final String title;
   final String description;
-  final String? imageUrl;
+  final String imageUrl;
 
-  Onboarding({
+  const OnboardingEntity({
     required this.id,
     required this.title,
     required this.description,
-    this.imageUrl,
+    required this.imageUrl,
   });
 
-  Onboarding copyWith({
+  OnboardingEntity copyWith({
     int? id,
     String? title,
     String? description,
     String? imageUrl,
   }) {
-    return Onboarding(
+    return OnboardingEntity(
       id: id ?? this.id,
       title: title ?? this.title,
       description: description ?? this.description,

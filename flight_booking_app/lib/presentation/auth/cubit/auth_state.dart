@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
 enum AuthStatus {
   initial,

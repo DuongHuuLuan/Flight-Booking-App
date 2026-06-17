@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
-import 'package:flight_booking_app/domain/Entities/user.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_email_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_sms_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/get_current_user_usecase.dart';
@@ -83,6 +83,7 @@ class AuthCubit extends Cubit<AuthState> {
         }
       },
       (user) async {
+        await localStorage.saveToken(user.accessToken!);
         await localStorage.saveUser(user);
         emit(state.copyWith(status: AuthStatus.authAuthenticated, user: user));
       },

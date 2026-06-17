@@ -1,5 +1,5 @@
 import 'package:equatable/equatable.dart';
-import 'package:flight_booking_app/domain/Entities/flight.dart';
+import 'package:flight_booking_app/domain/entities/flight.dart';
 
 enum HomeStatus { initial, loading, success, failure }
 

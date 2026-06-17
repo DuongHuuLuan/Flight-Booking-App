@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/presentation/auth/view/login_page.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_state.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_page.dart';
@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class OnboardingScreen extends StatefulWidget {
+  static String get routerName => '/onboarding';
   const OnboardingScreen({super.key});
 
   @override

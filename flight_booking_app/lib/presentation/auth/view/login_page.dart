@@ -1,23 +1,17 @@
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
-import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
-import 'package:flight_booking_app/presentation/auth/view/register_page.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_button.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
-
-extension LoginNavigation on BuildContext {
-  void goToLogin() => go('/login');
-}
 
 class LoginPage extends StatefulWidget {
+  static String get routerName => '/login';
   const LoginPage({super.key});
 
   @override

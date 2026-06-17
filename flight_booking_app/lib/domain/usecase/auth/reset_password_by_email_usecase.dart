@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flight_booking_app/domain/Entities/auth/reset_password_result.dart';
+import 'package:flight_booking_app/domain/entities/auth/reset_password_result.dart';
 import 'package:flight_booking_app/domain/repositories/auth_repository.dart';
 
 class ResetPasswordByEmailUsecase {

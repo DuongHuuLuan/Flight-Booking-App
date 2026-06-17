@@ -1,15 +1,10 @@
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
-import 'package:flight_booking_app/domain/Entities/onboarding.dart';
+import 'package:flight_booking_app/domain/entities/onboarding_entity.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/widgets/content_section.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-
-extension OnboardingNavigation on BuildContext {
-  void goToOnboarding() => go('/onboarding');
-}
 
 class OnboardingPage extends StatelessWidget {
-  final Onboarding data;
+  final OnboardingEntity data;
   final bool isLastPage;
   final VoidCallback onNextPressed;
   final int currenPage;
