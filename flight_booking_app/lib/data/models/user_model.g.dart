@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'user.dart';
+part of 'user_model.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
@@ -9,6 +9,7 @@ part of 'user.dart';
 UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
   id: (json['access_token'] as num).toInt(),
   accessToken: json['accessToken'] as String?,
+  refreshToken: json['refresh_token'] as String?,
   name: json['name'] as String,
   email: json['email'] as String,
   password: json['password'] as String,
@@ -20,6 +21,7 @@ UserModel _$UserModelFromJson(Map<String, dynamic> json) => UserModel(
 Map<String, dynamic> _$UserModelToJson(UserModel instance) => <String, dynamic>{
   'access_token': instance.id,
   'accessToken': instance.accessToken,
+  'refresh_token': instance.refreshToken,
   'name': instance.name,
   'email': instance.email,
   'password': instance.password,

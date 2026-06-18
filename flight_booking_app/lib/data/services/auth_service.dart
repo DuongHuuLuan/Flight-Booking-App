@@ -2,7 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:flight_booking_app/data/models/base_response.dart';
 import 'package:flight_booking_app/data/models/forgot_password_response.dart';
 import 'package:flight_booking_app/data/models/reset_password_response.dart';
-import 'package:flight_booking_app/data/models/user.dart';
+import 'package:flight_booking_app/data/models/user_model.dart';
 import 'package:flight_booking_app/data/models/verify_otp_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';

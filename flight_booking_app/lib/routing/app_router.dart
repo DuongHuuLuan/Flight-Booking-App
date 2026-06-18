@@ -26,7 +26,10 @@ class AppRouter {
     routes: [
       GoRoute(
         path: SplashPage.routerName,
-        builder: (context, state) => const SplashPage(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: const SplashPage(),
+        ),
       ),
 
       GoRoute(

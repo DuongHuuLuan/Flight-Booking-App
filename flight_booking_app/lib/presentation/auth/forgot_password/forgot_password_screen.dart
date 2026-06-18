@@ -1,6 +1,7 @@
-import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
+import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
@@ -61,17 +62,25 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         ),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
+          if (state.status == AuthStatus.forgotPasswordLoading) {
+            context.showLoading("");
+          }
+          if (state.status == AuthStatus.forgotPasswordFailure ||
+              state.status == AuthStatus.forgotPasswordSuccess) {
+            context.hideLoading();
+          }
           if (state.status == AuthStatus.forgotPasswordSuccess) {
             context.goToOtpVerification();
-          } else if (state.status == AuthStatus.forgotPasswordFailure && state.errorMessage != null) {
+          } else if (state.status == AuthStatus.forgotPasswordFailure &&
+              state.errorMessage != null) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
           }
         },
         builder: (context, state) {
-          final isLoading = state.status == AuthStatus.forgotPasswordLoading;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -117,11 +126,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   prefixIcon: Icons.email_outlined,
                 ),
                 const SizedBox(height: 40),
-                AppElevatedButton(
-                  label: "Continue",
-                  isLoading: isLoading,
-                  onPressed: _continue,
-                ),
+                AppElevatedButton(label: "Continue", onPressed: _continue),
                 const SizedBox(height: 20),
               ],
             ),

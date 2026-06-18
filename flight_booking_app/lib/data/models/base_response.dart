@@ -2,7 +2,7 @@ import 'package:flight_booking_app/data/models/flight_model.dart';
 import 'package:flight_booking_app/data/models/flight_search_response.dart';
 import 'package:flight_booking_app/data/models/forgot_password_response.dart';
 import 'package:flight_booking_app/data/models/reset_password_response.dart';
-import 'package:flight_booking_app/data/models/user.dart';
+import 'package:flight_booking_app/data/models/user_model.dart';
 import 'package:flight_booking_app/data/models/verify_otp_response.dart';
 
 class BaseResponse<T> {

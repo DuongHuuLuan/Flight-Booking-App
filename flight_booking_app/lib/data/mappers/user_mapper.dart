@@ -1,12 +1,14 @@
 import 'dart:convert';
-import 'package:flight_booking_app/data/models/user.dart';
+
+import 'package:flight_booking_app/data/models/user_model.dart';
 import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
 class UserMapper {
   static UserEntity fromJson(Map<String, dynamic> json) {
     return UserEntity(
       id: json["id"] as int,
-      accessToken: json["accessToken"] as String,
+      accessToken: json["accessToken"],
+      refresh_token: json["refresh_token"],
       name: json["name"] as String,
       email: json["email"] as String,
       phone: json["phone"] as String,
@@ -21,6 +23,7 @@ class UserMapper {
     return {
       "id": user.id,
       "accessToken": user.accessToken,
+      "refresh_token": user.refresh_token,
       "name": user.name,
       "email": user.email,
       "phone": user.phone,
@@ -51,6 +54,7 @@ class UserMapper {
     return UserEntity(
       id: model.id,
       accessToken: model.accessToken,
+      refresh_token: model.refreshToken,
       name: model.name,
       email: model.email,
       phone: model.phone,
