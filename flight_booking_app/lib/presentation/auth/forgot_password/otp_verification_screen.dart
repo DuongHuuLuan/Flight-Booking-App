@@ -1,11 +1,14 @@
-import 'package:flight_booking_app/core/utils/navigation_exp.dart';
-import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'dart:async';
+
+import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
+import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
+import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
+import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
+
 import 'widgets/otp_input_field.dart';
 
 class OtpVerificationScreen extends StatefulWidget {
@@ -59,10 +62,19 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
         ),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
           if (state.status == AuthStatus.verifyOtpSuccess) {
+            if (state.status == AuthStatus.verifyOtpLoading) {
+              context.showLoading("");
+            }
+            if (state.status == AuthStatus.verifyOtpFailure ||
+                state.status == AuthStatus.verifyOtpSuccess) {
+              context.hideLoading();
+            }
             context.goToResetPassword();
-          } else if (state.status == AuthStatus.verifyOtpFailure && state.errorMessage != null) {
+          } else if (state.status == AuthStatus.verifyOtpFailure &&
+              state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage!),
@@ -72,8 +84,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           }
         },
         builder: (context, state) {
-          final isLoading = state.status == AuthStatus.verifyOtpLoading;
-
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20.0),
             child: Column(
@@ -126,7 +136,6 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   onPressed: _otp.length == 4
                       ? () => _authCubit.verifyOtpCode(otp: _otp)
                       : null,
-                  isLoading: isLoading,
                 ),
                 const SizedBox(height: 20),
               ],

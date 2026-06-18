@@ -1,7 +1,5 @@
-import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
 import 'package:flight_booking_app/data/mappers/forgot_password_mapper.dart';
 import 'package:flight_booking_app/data/mappers/user_mapper.dart';
-import 'package:flight_booking_app/data/models/user.dart';
 import 'package:flight_booking_app/data/services/auth_service.dart';
 import 'package:flight_booking_app/domain/entities/auth/forgot_password_result.dart';
 import 'package:flight_booking_app/domain/entities/auth/reset_password_result.dart';
@@ -35,8 +33,6 @@ class AuthRemoteDataSource {
     });
     final user = UserMapper.fromModel(response.data.data!);
     return user;
-
-
   }
 
   Future<UserEntity> register(UserEntity user) async {

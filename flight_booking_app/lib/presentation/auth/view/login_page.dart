@@ -1,12 +1,14 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
+import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_button.dart';
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,130 +56,134 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: BlocListener<AuthCubit, AuthState>(
+      body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
+          if (state.status == AuthStatus.loading) {
+            context.showLoading("Signing in...");
+          } else {
+            context.hideLoading();
+          }
           if (state.status == AuthStatus.failed && state.errorMessage != null) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
           }
-
           if (state.status == AuthStatus.authAuthenticated) {
             context.goToHome();
           }
         },
-        child: Stack(
-          children: [
-            AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
-            SingleChildScrollView(
-              padding: const EdgeInsets.all(25),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const SizedBox(height: 40),
-                  FittedBox(
-                    child: SizedBox(
-                      width: MediaQuery.of(context).size.width * 0.35,
-                      child: const LogoWidget(
-                        imagePath: "assets/images/logo.png",
+        builder: (context, state) {
+          return Stack(
+            children: [
+              AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
+              SingleChildScrollView(
+                padding: const EdgeInsets.all(25),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const SizedBox(height: 40),
+                    FittedBox(
+                      child: SizedBox(
+                        width: MediaQuery.of(context).size.width * 0.35,
+                        child: const LogoWidget(
+                          imagePath: "assets/images/logo.png",
+                        ),
                       ),
                     ),
-                  ),
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 20),
 
-                  Text(
-                    "Let's get you Login!",
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
+                    Text(
+                      "Let's get you Login!",
+                      style: Theme.of(context).textTheme.headlineLarge
+                          ?.copyWith(fontWeight: FontWeight.bold),
                     ),
-                  ),
 
-                  const SizedBox(height: 8),
-                  Text(
-                    "Enter your information below",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
-                  ),
-                  const SizedBox(height: 25),
+                    const SizedBox(height: 8),
+                    Text(
+                      "Enter your information below",
+                      style: Theme.of(
+                        context,
+                      ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
+                    ),
+                    const SizedBox(height: 25),
 
-                  const SocialLoginButtons(),
-                  const SizedBox(height: 35),
+                    const SocialLoginButtons(),
+                    const SizedBox(height: 35),
 
-                  Row(
-                    children: [
-                      Expanded(child: Divider(color: AppColor.greyLight)),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 15),
-                        child: Text(
+                    Row(
+                      children: [
+                        Expanded(child: Divider(color: AppColor.greyLight)),
+                        Text(
                           "Or login with",
                           style: Theme.of(context).textTheme.bodySmall
                               ?.copyWith(color: AppColor.greyDark),
-                        ),
-                      ),
-                      Expanded(child: Divider(color: AppColor.greyLight)),
-                    ],
-                  ),
-                  const SizedBox(height: 35),
-
-                  AuthForm(
-                    formKey: _formKey,
-                    emailController: emailController,
-                    passwordController: passwordController,
-                  ),
-
-                  Align(
-                    alignment: Alignment.centerRight,
-                    child: TextButton(
-                      onPressed: () {
-                        context.goToForgotPassword();
-                      },
-                      child: Text(
-                        "Forgot Password?",
-                        style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                          color: AppColor.primary,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
+                        ).paddingHorizontal(15),
+                        Expanded(child: Divider(color: AppColor.greyLight)),
+                      ],
                     ),
-                  ),
-                  const SizedBox(height: 20),
+                    const SizedBox(height: 35),
 
-                  SubmitButton(
-                    controllers: [emailController, passwordController],
-                    onPressed: () {
-                      if (_formKey.currentState!.validate()) _login();
-                    },
-                    label: "Login",
-                  ),
+                    AuthForm(
+                      formKey: _formKey,
+                      emailController: emailController,
+                      passwordController: passwordController,
+                    ),
 
-                  const SizedBox(height: 40),
-
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text("Don't have an account?"),
-                      TextButton(
+                    Align(
+                      alignment: Alignment.centerRight,
+                      child: TextButton(
                         onPressed: () {
-                          context.goToRegister();
+                          context.goToForgotPassword();
                         },
                         child: Text(
-                          "Register Now",
-                          style: Theme.of(context).textTheme.bodyLarge
+                          "Forgot Password?",
+                          style: Theme.of(context).textTheme.bodyMedium
                               ?.copyWith(
                                 color: AppColor.primary,
                                 fontWeight: FontWeight.bold,
                               ),
                         ),
                       ),
-                    ],
-                  ),
-                ],
+                    ),
+                    const SizedBox(height: 20),
+
+                    SubmitButton(
+                      controllers: [emailController, passwordController],
+                      onPressed: () {
+                        if (_formKey.currentState!.validate()) _login();
+                      },
+                      label: "Login",
+                    ),
+
+                    const SizedBox(height: 40),
+
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text("Don't have an account?"),
+                        TextButton(
+                          onPressed: () {
+                            context.goToRegister();
+                          },
+                          child: Text(
+                            "Register Now",
+                            style: Theme.of(context).textTheme.bodyLarge
+                                ?.copyWith(
+                                  color: AppColor.primary,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
               ),
-            ),
-          ],
-        ),
+            ],
+          );
+        },
       ),
     );
   }

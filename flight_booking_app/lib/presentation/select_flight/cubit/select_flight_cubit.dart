@@ -3,7 +3,6 @@ import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/usecase/home/search_flights_usecsase.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
-import 'package:flutter/animation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -51,6 +50,12 @@ class SelectFlightCubit extends Cubit<SelectFlightState> {
             isLoading: false,
             allFlights: filtered,
             filteredFlights: filtered,
+            originAirport: filtered.isNotEmpty
+                ? filtered.first.departureAirport
+                : null,
+            destinationAirport: filtered.isNotEmpty
+                ? filtered.first.arrivalAirport
+                : null,
             minPrice: minP,
             maxPrice: maxP,
             priceRange: RangeValues(minP, maxP),

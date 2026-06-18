@@ -1,12 +1,13 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
+import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_state.dart';
 import 'package:flutter/material.dart';
@@ -79,8 +80,20 @@ class _RegisterPageState extends State<RegisterPage> {
       body: MultiBlocListener(
         listeners: [
           BlocListener<AuthCubit, AuthState>(
+            listenWhen: (previous, current) {
+              return previous.status != current.status ||
+                  previous.errorMessage != current.errorMessage;
+            },
             listener: (context, state) {
-              if (state.status == AuthStatus.failed && state.errorMessage != null) {
+              if (state.status == AuthStatus.loading) {
+                context.showLoading("Creating account...");
+              }
+              if (state.status == AuthStatus.failed ||
+                  state.status == AuthStatus.authAuthenticated) {
+                context.hideLoading();
+              }
+              if (state.status == AuthStatus.failed &&
+                  state.errorMessage != null) {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -94,6 +107,14 @@ class _RegisterPageState extends State<RegisterPage> {
 
           BlocListener<LocationCubit, LocationState>(
             listener: (context, state) {
+              if (state is LocationLoading) {
+                context.showLoading("Loading locations...");
+              }
+
+              if (state is LocationDataLoaded || state is LocationFailed) {
+                context.hideLoading();
+              }
+
               if (state is LocationFailed) {
                 ScaffoldMessenger.of(
                   context,

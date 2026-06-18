@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
@@ -26,14 +27,7 @@ class FilterBottomSheet extends StatelessWidget {
     return BlocBuilder<SelectFlightCubit, SelectFlightState>(
       builder: (context, state) {
         final cubit = context.read<SelectFlightCubit>();
-        return Padding(
-          padding: EdgeInsets.only(
-            left: 20,
-            right: 20,
-            top: 20,
-            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
-          ),
-          child: Column(
+        return Column(
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -185,8 +179,12 @@ class FilterBottomSheet extends StatelessWidget {
                 ],
               ),
             ],
-          ),
-        );
+          ).paddingOnly(
+            left: 20,
+            right: 20,
+            top: 20,
+            bottom: MediaQuery.of(context).viewInsets.bottom + 20,
+          );
       },
     );
   }

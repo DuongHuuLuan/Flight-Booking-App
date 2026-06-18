@@ -1,4 +1,5 @@
 import 'package:equatable/equatable.dart';
+import 'package:flight_booking_app/domain/entities/airport.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flutter/material.dart';
 
@@ -17,6 +18,8 @@ class SelectFlightState extends Equatable {
   final RangeValues priceRange;
   final double minPrice;
   final double maxPrice;
+  final AirportEntity? originAirport;
+  final AirportEntity? destinationAirport;
 
   SelectFlightState({
     this.isLoading = true,
@@ -29,6 +32,8 @@ class SelectFlightState extends Equatable {
     this.priceRange = const RangeValues(0, 10000),
     this.minPrice = 0,
     this.maxPrice = 10000,
+    this.originAirport,
+    this.destinationAirport,
   }) : selectedDate = selectedDate ?? DateTime.now();
 
   SelectFlightState copyWith({
@@ -42,6 +47,8 @@ class SelectFlightState extends Equatable {
     RangeValues? priceRange,
     double? minPrice,
     double? maxPrice,
+    AirportEntity? originAirport,
+    AirportEntity? destinationAirport,
   }) {
     return SelectFlightState(
       isLoading: isLoading ?? this.isLoading,
@@ -54,6 +61,8 @@ class SelectFlightState extends Equatable {
       priceRange: priceRange ?? this.priceRange,
       minPrice: minPrice ?? this.minPrice,
       maxPrice: maxPrice ?? this.maxPrice,
+      originAirport: originAirport ?? this.originAirport,
+      destinationAirport: destinationAirport ?? this.destinationAirport,
     );
   }
 
@@ -69,5 +78,7 @@ class SelectFlightState extends Equatable {
     priceRange,
     minPrice,
     maxPrice,
+    originAirport,
+    destinationAirport,
   ];
 }

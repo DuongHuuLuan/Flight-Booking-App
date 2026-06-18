@@ -1,6 +1,9 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
+import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/app_password_text_form_field.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
 import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
@@ -65,8 +68,17 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         ),
       ),
       body: BlocConsumer<AuthCubit, AuthState>(
+        listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
-          if (state.status == AuthStatus.resetPasswordFailure && state.errorMessage != null) {
+          if (state.status == AuthStatus.resetPasswordLoading) {
+            context.showLoading("");
+          }
+          if (state.status == AuthStatus.resetPasswordSuccess ||
+              state.status == AuthStatus.resetPasswordFailure) {
+            context.hideLoading();
+          }
+          if (state.status == AuthStatus.resetPasswordFailure &&
+              state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage!),
@@ -77,48 +89,44 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
         },
         builder: (context, state) {
           if (state.status == AuthStatus.resetPasswordSuccess) {
-            return Padding(
-              padding: const EdgeInsets.all(20),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Center(
-                    child: FittedBox(
-                      child: SizedBox(
-                        width: MediaQuery.of(context).size.width * 0.3,
-                        child: const LogoWidget(
-                          imagePath: "assets/images/oke.png",
-                        ),
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Center(
+                  child: FittedBox(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width * 0.3,
+                      child: const LogoWidget(
+                        imagePath: "assets/images/oke.png",
                       ),
                     ),
                   ),
-                  const SizedBox(height: 32),
-                  Text(
-                    "Password Update\nSuccessfully",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
+                ),
+                const SizedBox(height: 32),
+                Text(
+                  "Password Update\nSuccessfully",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
+                    fontWeight: FontWeight.bold,
                   ),
-                  const SizedBox(height: 12),
-                  Text(
-                    "Your password has been\nupdated successfully",
-                    textAlign: TextAlign.center,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyLarge?.copyWith(color: AppColor.grey),
-                  ),
-                  const SizedBox(height: 50),
-                  AppElevatedButton(
-                    label: "Back to Login",
-                    onPressed: () => context.goToLogin(),
-                  ),
-                ],
-              ),
-            );
+                ),
+                const SizedBox(height: 12),
+                Text(
+                  "Your password has been\nupdated successfully",
+                  textAlign: TextAlign.center,
+                  style: Theme.of(
+                    context,
+                  ).textTheme.bodyLarge?.copyWith(color: AppColor.grey),
+                ),
+                const SizedBox(height: 50),
+                AppElevatedButton(
+                  label: "Back to Login",
+                  onPressed: () => context.goToLogin(),
+                ),
+              ],
+            ).paddingAll(20);
           }
 
-          final isLoading = state.status == AuthStatus.resetPasswordLoading;
           return SingleChildScrollView(
             padding: const EdgeInsets.all(20),
             child: Column(
@@ -162,11 +170,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   hintText: "Confirm password",
                 ),
                 const SizedBox(height: 40),
-                AppElevatedButton(
-                  label: "Save",
-                  onPressed: _save,
-                  isLoading: isLoading,
-                ),
+                AppElevatedButton(label: "Save", onPressed: _save),
                 const SizedBox(height: 20),
               ],
             ),

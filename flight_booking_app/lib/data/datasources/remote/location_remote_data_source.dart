@@ -32,8 +32,6 @@ class LocationRemoteDataSource {
 
     final response = await _locationService.getCitiesForCountry(countryId);
 
-    return List<String>.from(
-      response.data.data["citiesByCountry"][countryId] ?? [],
-    );
+    return List<String>.from(response.data.data["cities"] ?? []);
   }
 }

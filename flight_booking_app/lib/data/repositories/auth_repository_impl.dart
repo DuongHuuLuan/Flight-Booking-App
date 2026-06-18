@@ -23,9 +23,9 @@ class AuthRepositoryImpl implements AuthRepository {
     String password,
   ) async {
     try {
-      final user = await _remoteDataSource.login(email, password);
+      final token = await _remoteDataSource.login(email, password);
 
-      return Right(user);
+      return Right(token);
     } on Exception catch (e) {
       return Left(e);
     }

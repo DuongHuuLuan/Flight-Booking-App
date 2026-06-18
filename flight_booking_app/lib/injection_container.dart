@@ -1,5 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flight_booking_app/core/constants/app_constant.dart';
+import 'package:flight_booking_app/core/cubit/loading/app_loading_cubit.dart';
+import 'package:flight_booking_app/core/network/auth_interceptor.dart';
 import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
 import 'package:flight_booking_app/data/datasources/mock/onboarding_mock_data_source.dart';
 import 'package:flight_booking_app/data/datasources/remote/auth_remote_data_source.dart';
@@ -53,16 +55,15 @@ Future<void> init() async {
         receiveTimeout: Duration(seconds: 30),
       ),
     );
+    dio.interceptors.add(AuthInterceptor());
     dio.interceptors.add(
-      InterceptorsWrapper(
-        onRequest: (options, handler) async {
-          final prefs = getIt<SharedPreferences>();
-          final token = prefs.getString("access_token");
-          if (token != null) {
-            options.headers["Authorization"] = "Bearer $token";
-          }
-          handler.next(options);
-        },
+      LogInterceptor(
+        request: true,
+        requestHeader: true,
+        requestBody: true, // ← show body gửi đi
+        responseHeader: false,
+        responseBody: true, // ← show response nhận về
+        error: true,
       ),
     );
     return dio;
@@ -90,10 +91,10 @@ Future<void> init() async {
     () => AuthRemoteDataSource(getIt<AuthService>()),
   );
   getIt.registerLazySingleton<LocationRemoteDataSource>(
-    () => LocationRemoteDataSource(getIt<LocationService>(), userMock: true),
+    () => LocationRemoteDataSource(getIt<LocationService>(), userMock: false),
   );
   getIt.registerLazySingleton<HomeRemoteDataSource>(
-    () => HomeRemoteDataSource(getIt<HomeService>(), userMock: true),
+    () => HomeRemoteDataSource(getIt<HomeService>(), userMock: false),
   );
 
   // Repositories
@@ -204,4 +205,5 @@ Future<void> init() async {
       searchFlightsUsecsase: getIt<SearchFlightsUsecsase>(),
     ),
   );
+  getIt.registerFactory(() => AppLoadingCubit());
 }

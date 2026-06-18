@@ -20,13 +20,16 @@ import 'package:go_router/go_router.dart';
 
 class AppRouter {
   static final GoRouter router = GoRouter(
-    initialLocation: HomePage.routerName,
+    initialLocation: SplashPage.routerName,
     debugLogDiagnostics: true,
 
     routes: [
       GoRoute(
         path: SplashPage.routerName,
-        builder: (context, state) => const SplashPage(),
+        builder: (context, state) => BlocProvider(
+          create: (context) => getIt<AuthCubit>(),
+          child: const SplashPage(),
+        ),
       ),
 
       GoRoute(
