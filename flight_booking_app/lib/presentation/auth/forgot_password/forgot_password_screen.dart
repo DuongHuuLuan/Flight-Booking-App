@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -87,16 +87,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Forgot Password",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Forgot Password", style: AppTextStyles.heading2),
                 const SizedBox(height: 12),
                 Text(
                   "Select which contact details should we use to your password",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w300,
                     color: AppColor.greyDark,
                   ),
@@ -127,7 +122,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   prefixIcon: Icons.email_outlined,
                 ),
                 const SizedBox(height: 40),
-                AppElevatedButton(label: "Continue", onPressed: _continue),
+                AppElevatedButton(
+                  label: "Continue",
+                  onPressed: _continue,
+                  height: MediaQuery.of(context).size.height * 0.06,
+                ),
                 const SizedBox(height: 20),
               ],
             ),

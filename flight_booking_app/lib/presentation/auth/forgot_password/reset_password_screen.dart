@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
@@ -106,17 +106,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 Text(
                   "Password Update\nSuccessfully",
                   textAlign: TextAlign.center,
-                  style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+                  style: AppTextStyles.heading1,
                 ),
                 const SizedBox(height: 12),
                 Text(
                   "Your password has been\nupdated successfully",
                   textAlign: TextAlign.center,
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(color: AppColor.grey),
+                  style: AppTextStyles.bodyLarge.copyWith(color: AppColor.grey),
                 ),
                 const SizedBox(height: 50),
                 AppElevatedButton(
@@ -132,16 +128,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Enter New Password",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Enter New Password", style: AppTextStyles.heading2),
                 const SizedBox(height: 8),
                 Text(
                   "Please enter your new password",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  style: AppTextStyles.bodyMedium.copyWith(
                     color: AppColor.greyDark,
                     fontWeight: FontWeight.w300,
                   ),

@@ -5,7 +5,7 @@ import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_pass
 import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verification_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_screen.dart';
-import 'package:flight_booking_app/presentation/auth/view/register_page.dart';
+import 'package:flight_booking_app/presentation/auth/view/register_screen.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
@@ -49,7 +49,7 @@ class AppRouter {
       ),
 
       GoRoute(
-        path: RegisterPage.routerName,
+        path: RegisterScreen.routerName,
         builder: (context, state) => MultiBlocProvider(
           providers: [
             BlocProvider(create: (context) => getIt<AuthCubit>()),
@@ -57,7 +57,7 @@ class AppRouter {
               create: (context) => getIt<LocationCubit>()..loadCountries(),
             ),
           ],
-          child: const RegisterPage(),
+          child: const RegisterScreen(),
         ),
       ),
 

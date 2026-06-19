@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -89,18 +90,13 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text(
-                  "Enter OTP Code",
-                  style: Theme.of(context).textTheme.headlineMedium?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
-                ),
+                Text("Enter OTP Code", style: AppTextStyles.heading2),
                 const SizedBox(height: 8),
                 Text(
                   "OTP code has been sent to your contact",
-                  style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: AppColor.greyDark,
+                  style: AppTextStyles.bodyMedium.copyWith(
                     fontWeight: FontWeight.w300,
+                    color: AppColor.greyDark,
                   ),
                 ),
                 const SizedBox(height: 40),

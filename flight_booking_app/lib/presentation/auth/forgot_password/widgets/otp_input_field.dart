@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flutter/material.dart';
 
 class OtpInputField extends StatefulWidget {
@@ -57,7 +58,7 @@ class _OtpInputFieldState extends State<OtpInputField> {
             textAlign: TextAlign.center,
             keyboardType: TextInputType.number,
             maxLength: 1,
-            style: Theme.of(context).textTheme.headlineLarge,
+            style: AppTextStyles.heading1,
             decoration: InputDecoration(
               counterText: "",
               border: OutlineInputBorder(
