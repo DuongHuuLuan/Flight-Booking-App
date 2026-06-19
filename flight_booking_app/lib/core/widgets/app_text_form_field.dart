@@ -29,9 +29,7 @@ class AppTextFormField extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: AppColor.grey),
-        floatingLabelStyle: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        floatingLabelStyle: TextStyle(color: AppColor.primary),
         hintText: hintText,
         hintStyle: TextStyle(color: AppColor.greyLight),
         prefixIcon: Icon(prefixIcon, color: AppColor.grey),
