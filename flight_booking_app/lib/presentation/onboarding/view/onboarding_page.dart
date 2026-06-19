@@ -25,7 +25,7 @@ class OnboardingPage extends StatelessWidget {
         AppBackgroundImage(imageUrl: data.imageUrl),
 
         Positioned(
-          bottom: 40,
+          bottom: 70,
           left: 20,
           right: 20,
           child: ContentSection(
