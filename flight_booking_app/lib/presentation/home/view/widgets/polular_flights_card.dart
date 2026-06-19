@@ -30,9 +30,9 @@ class PopularFlightCard extends StatelessWidget {
                   ),
                   Text(
                     flight.flightNumber,
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodySmall?.copyWith(color: AppColor.grey),
+                    style: AppTextStyles.bodySmall.copyWith(
+                      color: AppColor.grey,
+                    ),
                   ),
                 ],
               ),

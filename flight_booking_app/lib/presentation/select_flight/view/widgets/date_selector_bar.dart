@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flutter/material.dart';
 
 class DateSelectorBar extends StatelessWidget {
   final DateTime selectedDate;
@@ -56,25 +57,22 @@ class DateSelectorBar extends StatelessWidget {
                 children: [
                   Text(
                     dayName,
-                    style: TextStyle(
+                    style: AppTextStyles.caption.copyWith(
                       color: isSelected ? AppColor.white : AppColor.greyDark,
-                      fontSize: 12,
                     ),
                   ),
                   const SizedBox(height: 4),
                   Text(
                     "${date.day}",
-                    style: TextStyle(
+                    style: AppTextStyles.heading3.copyWith(
                       color: isSelected ? AppColor.white : AppColor.black87,
                       fontSize: 20,
-                      fontWeight: FontWeight.bold,
                     ),
                   ),
                   Text(
                     monthName,
-                    style: TextStyle(
+                    style: AppTextStyles.caption.copyWith(
                       color: isSelected ? AppColor.white : AppColor.greyDark,
-                      fontSize: 12,
                     ),
                   ),
                 ],

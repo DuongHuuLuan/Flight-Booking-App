@@ -29,9 +29,7 @@ class AppDropdownButtonFormField<T> extends StatelessWidget {
       decoration: InputDecoration(
         labelText: labelText,
         labelStyle: TextStyle(color: AppColor.grey),
-        floatingLabelStyle: TextStyle(
-          color: Theme.of(context).colorScheme.primary,
-        ),
+        floatingLabelStyle: TextStyle(color: AppColor.primary),
         prefixIcon: Icon(prefixIcon, color: AppColor.grey),
         filled: true,
         fillColor: AppColor.white,

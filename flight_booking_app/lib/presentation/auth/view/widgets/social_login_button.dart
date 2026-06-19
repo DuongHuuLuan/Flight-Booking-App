@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flutter/material.dart';
 
 class SocialLoginButtons extends StatelessWidget {
@@ -29,9 +30,9 @@ class SocialLoginButtons extends StatelessWidget {
                 const SizedBox(width: 8),
                 Text(
                   "Google",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                  style: AppTextStyles.bodyLarge.copyWith(
+                    fontWeight: FontWeight.w500,
+                  ),
                 ),
               ],
             ),
@@ -55,9 +56,7 @@ class SocialLoginButtons extends StatelessWidget {
                 const SizedBox(width: 5),
                 Text(
                   "Facebook",
-                  style: Theme.of(
-                    context,
-                  ).textTheme.bodyLarge?.copyWith(fontWeight: FontWeight.w500),
+                   style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.w500),
                 ),
               ],
             ),

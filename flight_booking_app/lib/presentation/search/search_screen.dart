@@ -1,7 +1,8 @@
 import 'dart:async';
-import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
 import 'package:flight_booking_app/injection_container.dart';
@@ -90,7 +91,7 @@ class _SearchScreenState extends State<SearchScreen> {
           decoration: InputDecoration(
             hintText: "Tìm sân bay, chuyến bay...",
             border: InputBorder.none,
-            hintStyle: TextStyle(color: AppColor.grey),
+            hintStyle: AppTextStyles.bodySmall.copyWith(color: AppColor.grey),
           ),
           style: AppTextStyles.bodyLarge.copyWith(
             color: AppColor.grey,

@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class AppElevatedButton extends StatelessWidget {
@@ -24,19 +25,18 @@ class AppElevatedButton extends StatelessWidget {
   });
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return SizedBox(
       width: double.infinity,
       height: height,
       child: ElevatedButton(
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
-          backgroundColor: backgroundColor ?? theme.colorScheme.primary,
-          foregroundColor: foregroundColor ?? theme.colorScheme.onPrimary,
+          backgroundColor: backgroundColor ?? AppColor.primary,
+          foregroundColor: foregroundColor ?? AppColor.primary,
           disabledBackgroundColor:
-              disabledBackgroundColor ?? theme.disabledColor,
+              disabledBackgroundColor ?? AppColor.greyLight,
           disabledForegroundColor:
-              disabledForegroundColor ?? theme.colorScheme.onSurface,
+              disabledForegroundColor ?? AppColor.greyLight,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.circular(borderRadius ?? 12),
           ),
@@ -47,7 +47,7 @@ class AppElevatedButton extends StatelessWidget {
                 height: 20,
                 child: CircularProgressIndicator(
                   strokeWidth: 2,
-                  color: foregroundColor ?? theme.colorScheme.onPrimary,
+                  color: foregroundColor ?? AppColor.white,
                 ),
               )
             : Text(label),

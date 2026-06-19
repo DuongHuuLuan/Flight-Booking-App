@@ -112,13 +112,15 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
                   child: _remainingSeconds > 0
                       ? Text(
                           "Resend code 00:${_remainingSeconds.toString().padLeft(2, '0')}s",
-                          style: TextStyle(color: AppColor.greyDark),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColor.greyDark,
+                          ),
                         )
                       : GestureDetector(
                           onTap: _startTimer,
                           child: Text(
                             "Resend code",
-                            style: TextStyle(
+                            style: AppTextStyles.bodyMedium.copyWith(
                               color: AppColor.primary,
                               fontWeight: FontWeight.bold,
                             ),
