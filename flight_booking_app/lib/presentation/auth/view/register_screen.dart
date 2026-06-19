@@ -14,15 +14,15 @@ import 'package:flight_booking_app/presentation/location/cubit/location_state.da
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class RegisterPage extends StatefulWidget {
+class RegisterScreen extends StatefulWidget {
   static String get routerName => '/register';
-  const RegisterPage({super.key});
+  const RegisterScreen({super.key});
 
   @override
-  State<RegisterPage> createState() => _RegisterPageState();
+  State<RegisterScreen> createState() => _RegisterScreenState();
 }
 
-class _RegisterPageState extends State<RegisterPage> {
+class _RegisterScreenState extends State<RegisterScreen> {
   late final LocationCubit _locationCubit;
   late final AuthCubit _authCubit;
 
