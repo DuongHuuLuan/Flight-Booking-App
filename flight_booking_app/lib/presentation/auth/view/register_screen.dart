@@ -5,8 +5,9 @@ import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
 import 'package:flight_booking_app/domain/entities/user_entity.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
@@ -24,7 +25,7 @@ class RegisterScreen extends StatefulWidget {
 
 class _RegisterScreenState extends State<RegisterScreen> {
   late final LocationCubit _locationCubit;
-  late final AuthCubit _authCubit;
+  late final AuthBloc _authBloc;
 
   final _formKey = GlobalKey<FormState>();
   final nameController = TextEditingController();
@@ -39,7 +40,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   void initState() {
     super.initState();
     _locationCubit = context.read<LocationCubit>();
-    _authCubit = context.read<AuthCubit>();
+    _authBloc = context.read<AuthBloc>();
   }
 
   @override
@@ -71,7 +72,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
         password: passwordController.text.trim(),
       );
 
-      _authCubit.register(user);
+      _authBloc.add(RegisterEvent(user));
     }
   }
 
@@ -81,26 +82,21 @@ class _RegisterScreenState extends State<RegisterScreen> {
       resizeToAvoidBottomInset: false,
       body: MultiBlocListener(
         listeners: [
-          BlocListener<AuthCubit, AuthState>(
+          BlocListener<AuthBloc, AuthState>(
             listenWhen: (previous, current) {
               return previous.status != current.status ||
                   previous.errorMessage != current.errorMessage;
             },
             listener: (context, state) {
-              if (state.status == AuthStatus.loading) {
-                context.showLoading("Creating account...");
-              }
-              if (state.status == AuthStatus.failed ||
-                  state.status == AuthStatus.authAuthenticated) {
+              if (state.status == AuthStatus.authAuthenticated ||
+                  state.errorMessage != null) {
                 context.hideLoading();
               }
-              if (state.status == AuthStatus.failed &&
-                  state.errorMessage != null) {
+              if (state.errorMessage != null) {
                 ScaffoldMessenger.of(
                   context,
                 ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
               }
-
               if (state.status == AuthStatus.authAuthenticated) {
                 context.goToHome();
               }
@@ -203,7 +199,10 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       passwordController,
                       confirmPasswordController,
                     ],
-                    onPressed: () => _register(),
+                    onPressed: (){
+                      context.showLoading("Registering...");
+                      _register();
+                    },
                     label: "Register",
                   ),
 

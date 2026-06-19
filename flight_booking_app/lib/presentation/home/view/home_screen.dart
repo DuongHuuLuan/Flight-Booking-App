@@ -4,8 +4,9 @@ import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/utils/widget_pop_scope.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_state.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/flight_search_card.dart';
@@ -60,7 +61,7 @@ class _FlightBookingState extends State<HomePage> {
         }
       },
       builder: (context, homeState) {
-        return BlocBuilder<AuthCubit, AuthState>(
+        return BlocBuilder<AuthBloc, AuthState>(
           builder: (context, authState) {
             final username = authState.status == AuthStatus.authAuthenticated
                 ? authState.user?.name ?? "A"
@@ -219,7 +220,7 @@ class _FlightBookingState extends State<HomePage> {
                     IconButton(
                       icon: const Icon(Icons.person, color: Colors.black87),
                       onPressed: () {
-                        context.read<AuthCubit>().logout();
+                        context.read<AuthBloc>().add(LogoutEvent());
                         context.goToLogin();
                       },
                     ),

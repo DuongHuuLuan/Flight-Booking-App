@@ -100,8 +100,9 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                           activeColor: AppColor.primary,
                           icon: Icons.autorenew,
                           isSelected: _selectedType == TripType.roundTrip,
-                          onPressed: () =>
-                              setState(() => _selectedType = TripType.roundTrip),
+                          onPressed: () => setState(
+                            () => _selectedType = TripType.roundTrip,
+                          ),
                         ),
                       ),
                       const SizedBox(width: 5),
@@ -112,8 +113,9 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                           activeColor: AppColor.primary,
                           icon: Icons.call_made,
                           isSelected: _selectedType == TripType.multiCity,
-                          onPressed: () =>
-                              setState(() => _selectedType = TripType.multiCity),
+                          onPressed: () => setState(
+                            () => _selectedType = TripType.multiCity,
+                          ),
                         ),
                       ),
                     ],

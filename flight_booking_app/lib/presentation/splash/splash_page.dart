@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -22,12 +23,12 @@ class _SplashPageState extends State<SplashPage> {
   Future<void> _init() async {
     await Future.delayed(const Duration(seconds: 2));
     if (!mounted) return;
-    context.read<AuthCubit>().getUser();
+    context.read<AuthBloc>().add(GetUserEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocListener<AuthCubit, AuthState>(
+    return BlocListener<AuthBloc, AuthState>(
       listener: (context, state) {
         if (state.status == AuthStatus.authAuthenticated) {
           context.goToHome();

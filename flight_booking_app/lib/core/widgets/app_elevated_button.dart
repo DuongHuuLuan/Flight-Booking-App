@@ -32,7 +32,7 @@ class AppElevatedButton extends StatelessWidget {
         onPressed: isLoading ? null : onPressed,
         style: ElevatedButton.styleFrom(
           backgroundColor: backgroundColor ?? AppColor.primary,
-          foregroundColor: foregroundColor ?? AppColor.primary,
+          foregroundColor: foregroundColor ?? AppColor.white,
           disabledBackgroundColor:
               disabledBackgroundColor ?? AppColor.greyLight,
           disabledForegroundColor:

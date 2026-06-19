@@ -5,8 +5,9 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/app_password_text_form_field.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,7 +20,7 @@ class ResetPasswordScreen extends StatefulWidget {
 }
 
 class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
-  late final AuthCubit _authCubit;
+  late final AuthBloc _authBloc;
 
   final _passwordController = TextEditingController();
   final _confirmPasswordController = TextEditingController();
@@ -27,7 +28,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   @override
   void initState() {
     super.initState();
-    _authCubit = context.read<AuthCubit>();
+    _authBloc = context.read<AuthBloc>();
   }
 
   @override
@@ -50,9 +51,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       );
       return;
     }
-    _authCubit.resetPassword(
-      newPassword: _passwordController.text,
-      phone: "(808) 555-0111",
+    _authBloc.add(
+      ResetPasswordEvent(
+        newPassword: _passwordController.text,
+        phone: "(808) 555-0111",
+      ),
     );
   }
 
@@ -67,18 +70,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           icon: Icon(Icons.arrow_back),
         ),
       ),
-      body: BlocConsumer<AuthCubit, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
-          if (state.status == AuthStatus.resetPasswordLoading) {
-            context.showLoading("");
-          }
-          if (state.status == AuthStatus.resetPasswordSuccess ||
-              state.status == AuthStatus.resetPasswordFailure) {
+          if (state.successMessage != null || state.errorMessage != null) {
             context.hideLoading();
           }
-          if (state.status == AuthStatus.resetPasswordFailure &&
-              state.errorMessage != null) {
+          if (state.errorMessage != null) {
             ScaffoldMessenger.of(context).showSnackBar(
               SnackBar(
                 content: Text(state.errorMessage!),
@@ -88,7 +86,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
           }
         },
         builder: (context, state) {
-          if (state.status == AuthStatus.resetPasswordSuccess) {
+          if (state.successMessage != null) {
             return Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
@@ -161,7 +159,13 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                   hintText: "Confirm password",
                 ),
                 const SizedBox(height: 40),
-                AppElevatedButton(label: "Save", onPressed: _save),
+                AppElevatedButton(
+                  label: "Save",
+                  onPressed: () {
+                    context.showLoading("Updating password...");
+                    _save();
+                  },
+                ),
                 const SizedBox(height: 20),
               ],
             ),

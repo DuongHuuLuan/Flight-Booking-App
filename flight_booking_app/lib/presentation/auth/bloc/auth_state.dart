@@ -1,25 +1,7 @@
 import 'package:equatable/equatable.dart';
 import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
-enum AuthStatus {
-  initial,
-  loading,
-  authAuthenticated,
-  authUnauthenticated,
-  failed,
-
-  forgotPasswordLoading,
-  forgotPasswordSuccess,
-  forgotPasswordFailure,
-
-  verifyOtpLoading,
-  verifyOtpSuccess,
-  verifyOtpFailure,
-
-  resetPasswordLoading,
-  resetPasswordSuccess,
-  resetPasswordFailure,
-}
+enum AuthStatus { initial, authAuthenticated, authUnauthenticated }
 
 class AuthState extends Equatable {
   final AuthStatus status;
@@ -45,11 +27,17 @@ class AuthState extends Equatable {
   }) => AuthState(
     status: status ?? this.status,
     user: user ?? this.user,
-    errorMessage: errorMessage ?? this.errorMessage,
-    successMessage: successMessage ?? this.successMessage,
+    errorMessage: errorMessage,
+    successMessage: successMessage,
     nextStep: nextStep ?? this.nextStep,
   );
 
   @override
-  List<Object?> get props => [status, user, errorMessage, successMessage, nextStep];
+  List<Object?> get props => [
+    status,
+    user,
+    errorMessage,
+    successMessage,
+    nextStep,
+  ];
 }
