@@ -1,6 +1,8 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
+import 'package:flight_booking_app/core/utils/widget_pop_scope.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
@@ -12,15 +14,15 @@ import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_b
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class LoginPage extends StatefulWidget {
+class LoginScreen extends StatefulWidget {
   static String get routerName => '/login';
-  const LoginPage({super.key});
+  const LoginScreen({super.key});
 
   @override
-  State<LoginPage> createState() => _LoginPageState();
+  State<LoginScreen> createState() => _LoginScreenState();
 }
 
-class _LoginPageState extends State<LoginPage> {
+class _LoginScreenState extends State<LoginScreen> {
   late final AuthCubit _authCubit;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
@@ -42,20 +44,13 @@ class _LoginPageState extends State<LoginPage> {
   void _login() {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Please enter both email and password")),
-      );
-      return;
-    }
-
     _authCubit.login(email, password);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: BlocConsumer<AuthCubit, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
@@ -94,43 +89,35 @@ class _LoginPageState extends State<LoginPage> {
                     ),
                     const SizedBox(height: 20),
 
-                    Text(
-                      "Let's get you Login!",
-                      style: Theme.of(context).textTheme.headlineLarge
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-
+                    Text("Let's get you Login!", style: AppTextStyles.heading1),
                     const SizedBox(height: 8),
                     Text(
                       "Enter your information below",
-                      style: Theme.of(
-                        context,
-                      ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
+                      style: AppTextStyles.bodyMedium.copyWith(
+                        color: AppColor.grey,
+                      ),
                     ),
                     const SizedBox(height: 25),
-
                     const SocialLoginButtons(),
                     const SizedBox(height: 35),
-
                     Row(
                       children: [
                         Expanded(child: Divider(color: AppColor.greyLight)),
                         Text(
                           "Or login with",
-                          style: Theme.of(context).textTheme.bodySmall
-                              ?.copyWith(color: AppColor.greyDark),
+                          style: AppTextStyles.bodySmall.copyWith(
+                            color: AppColor.greyDark,
+                          ),
                         ).paddingHorizontal(15),
                         Expanded(child: Divider(color: AppColor.greyLight)),
                       ],
                     ),
                     const SizedBox(height: 35),
-
                     AuthForm(
                       formKey: _formKey,
                       emailController: emailController,
                       passwordController: passwordController,
                     ),
-
                     Align(
                       alignment: Alignment.centerRight,
                       child: TextButton(
@@ -139,16 +126,14 @@ class _LoginPageState extends State<LoginPage> {
                         },
                         child: Text(
                           "Forgot Password?",
-                          style: Theme.of(context).textTheme.bodyMedium
-                              ?.copyWith(
-                                color: AppColor.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: AppTextStyles.bodyMedium.copyWith(
+                            color: AppColor.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(height: 20),
-
                     SubmitButton(
                       controllers: [emailController, passwordController],
                       onPressed: () {
@@ -156,24 +141,24 @@ class _LoginPageState extends State<LoginPage> {
                       },
                       label: "Login",
                     ),
-
                     const SizedBox(height: 40),
-
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Text("Don't have an account?"),
+                        Text(
+                          "Don't have an account?",
+                          style: AppTextStyles.bodyMedium,
+                        ),
                         TextButton(
                           onPressed: () {
                             context.goToRegister();
                           },
                           child: Text(
                             "Register Now",
-                            style: Theme.of(context).textTheme.bodyLarge
-                                ?.copyWith(
-                                  color: AppColor.primary,
-                                  fontWeight: FontWeight.bold,
-                                ),
+                            style: AppTextStyles.bodyLarge.copyWith(
+                              color: AppColor.primary,
+                              fontWeight: FontWeight.bold,
+                            ),
                           ),
                         ),
                       ],
@@ -185,6 +170,6 @@ class _LoginPageState extends State<LoginPage> {
           );
         },
       ),
-    );
+    ).canPop(false);
   }
 }
