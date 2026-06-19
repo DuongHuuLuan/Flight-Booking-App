@@ -107,18 +107,19 @@ class _RegisterPageState extends State<RegisterPage> {
 
           BlocListener<LocationCubit, LocationState>(
             listener: (context, state) {
-              if (state is LocationLoading) {
+              if (state.status == LocationStatus.loading) {
                 context.showLoading("Loading locations...");
               }
 
-              if (state is LocationDataLoaded || state is LocationFailed) {
+              if (state.status == LocationStatus.dataLoaded ||
+                  state.status == LocationStatus.failure) {
                 context.hideLoading();
               }
 
-              if (state is LocationFailed) {
-                ScaffoldMessenger.of(
-                  context,
-                ).showSnackBar(SnackBar(content: Text(state.message)));
+              if (state.status == LocationStatus.failure) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(content: Text(state.errorMessage ?? "")),
+                );
               }
             },
           ),
@@ -161,10 +162,11 @@ class _RegisterPageState extends State<RegisterPage> {
 
                   BlocBuilder<LocationCubit, LocationState>(
                     builder: (context, state) {
-                      final countries = state is LocationDataLoaded
+                      final countries =
+                          state.status == LocationStatus.dataLoaded
                           ? state.countries
                           : <String>[];
-                      final cities = state is LocationDataLoaded
+                      final cities = state.status == LocationStatus.dataLoaded
                           ? state.cities
                           : <String>[];
                       return AuthForm(
