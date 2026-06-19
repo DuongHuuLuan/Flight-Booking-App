@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -77,6 +78,7 @@ class _RegisterPageState extends State<RegisterPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       body: MultiBlocListener(
         listeners: [
           BlocListener<AuthCubit, AuthState>(
@@ -144,19 +146,14 @@ class _RegisterPageState extends State<RegisterPage> {
                   ),
                   const SizedBox(height: 20),
 
-                  Text(
-                    "Let's get you Login!",
-                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
+                  Text("Let's get you Login!", style: AppTextStyles.heading1),
                   const SizedBox(height: 8),
 
                   Text(
                     "Enter your information below",
-                    style: Theme.of(
-                      context,
-                    ).textTheme.bodyMedium?.copyWith(color: AppColor.grey),
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      color: AppColor.grey,
+                    ),
                   ),
                   const SizedBox(height: 25),
 
@@ -215,18 +212,20 @@ class _RegisterPageState extends State<RegisterPage> {
                   Row(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: [
-                      Text("Already a member?"),
+                      Text(
+                        "Already a member?",
+                        style: AppTextStyles.bodyMedium,
+                      ),
                       TextButton(
                         onPressed: () {
                           context.goToLogin();
                         },
                         child: Text(
                           "Login",
-                          style: Theme.of(context).textTheme.bodyLarge
-                              ?.copyWith(
-                                color: AppColor.primary,
-                                fontWeight: FontWeight.bold,
-                              ),
+                          style: AppTextStyles.bodyLarge.copyWith(
+                            color: AppColor.primary,
+                            fontWeight: FontWeight.bold,
+                          ),
                         ),
                       ),
                     ],
