@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flutter/material.dart';
 
 class ContentSection extends StatelessWidget {
@@ -20,10 +21,8 @@ class ContentSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorTheme = Theme.of(context).colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 28, vertical: 20),
       decoration: const BoxDecoration(
         color: AppColor.primary,
         borderRadius: BorderRadius.all(Radius.circular(40)),
@@ -46,17 +45,16 @@ class ContentSection extends StatelessWidget {
               Text(
                 title,
                 textAlign: TextAlign.center,
-                style: textTheme.headlineLarge?.copyWith(
-                  color: Colors.white,
-                  fontWeight: FontWeight.bold,
-                ),
+                style: AppTextStyles.heading2.copyWith(color: AppColor.white),
               ),
               const SizedBox(height: 20),
 
               Text(
                 description,
                 textAlign: TextAlign.center,
-                style: textTheme.bodyMedium?.copyWith(color: Colors.white70),
+                style: AppTextStyles.bodyMedium.copyWith(
+                  color: AppColor.greyLight,
+                ),
               ),
             ],
           ),
@@ -64,8 +62,8 @@ class ContentSection extends StatelessWidget {
           const SizedBox(height: 25),
           ElevatedButton(
             style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.white,
-              foregroundColor: colorTheme.primary,
+              backgroundColor: AppColor.white,
+              foregroundColor: AppColor.primary,
               minimumSize: const Size(double.infinity, 55),
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(16),
@@ -85,7 +83,9 @@ class ContentSection extends StatelessWidget {
       width: isActive ? 24 : 8,
       height: 8,
       decoration: BoxDecoration(
-        color: isActive ? Colors.white : Colors.white.withValues(alpha: 0.5),
+        color: isActive
+            ? AppColor.white
+            : AppColor.white.withValues(alpha: 0.5),
         borderRadius: BorderRadius.circular(4),
       ),
     );
