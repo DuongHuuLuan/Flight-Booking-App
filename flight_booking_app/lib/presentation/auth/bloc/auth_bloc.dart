@@ -67,24 +67,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLogin(LoginEvent event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
     final result = await loginUsecase(event.email, event.password);
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
         emit(
           state.copyWith(
+            isLoading: false,
             status: AuthStatus.authUnauthenticated,
             errorMessage: _parseError(e),
           ),
         );
       },
       (user) async {
-        await localStorage.saveToken(user.accessToken!);
-        await localStorage.saveRefreshToken(user.refresh_token!);
-        await localStorage.saveUser(user);
-        if (emit.isDone) return;
+        if (user.accessToken == null || user.refresh_token == null) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authUnauthenticated,
+              errorMessage: 'Invalid credentials from server.',
+            ),
+          );
+          return;
+        }
+        try {
+          await localStorage.saveUser(user);
+          await localStorage.saveToken(user.accessToken!);
+          await localStorage.saveRefreshToken(user.refresh_token!);
+        } catch (e) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authUnauthenticated,
+              errorMessage: 'Failed to save session.',
+            ),
+          );
+          return;
+        }
         emit(
           state.copyWith(
+            isLoading: false,
             status: AuthStatus.authAuthenticated,
             user: user,
             errorMessage: null,
@@ -95,24 +117,46 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
     final result = await registerUsecase(event.user);
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
         emit(
           state.copyWith(
+            isLoading: false,
             status: AuthStatus.authUnauthenticated,
             errorMessage: _parseError(e),
           ),
         );
       },
       (user) async {
-        await localStorage.saveToken(user.accessToken!);
-        await localStorage.saveRefreshToken(user.refresh_token!);
-        await localStorage.saveUser(user);
-        if (emit.isDone) return;
+        if (user.accessToken == null || user.refresh_token == null) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authUnauthenticated,
+              errorMessage: 'Invalid credentials from server.',
+            ),
+          );
+          return;
+        }
+        try {
+          await localStorage.saveToken(user.accessToken!);
+          await localStorage.saveRefreshToken(user.refresh_token!);
+          await localStorage.saveUser(user);
+        } catch (e) {
+          emit(
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authUnauthenticated,
+              errorMessage: 'Failed to save session.',
+            ),
+          );
+          return;
+        }
         emit(
           state.copyWith(
+            isLoading: false,
             status: AuthStatus.authAuthenticated,
             user: user,
             errorMessage: null,
@@ -123,26 +167,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onGetUser(GetUserEvent event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
     final result = await getCurrentUserUsecase();
-
     await result.fold(
       (_) async {
-        if (emit.isDone) return;
-
         emit(
-          state.copyWith(status: AuthStatus.authUnauthenticated, user: null),
+          state.copyWith(
+            isLoading: false,
+            status: AuthStatus.authUnauthenticated,
+            user: null,
+          ),
         );
       },
       (user) async {
-        if (emit.isDone) return;
-
         if (user == null) {
           emit(
-            state.copyWith(status: AuthStatus.authUnauthenticated, user: null),
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authUnauthenticated,
+              user: null,
+            ),
           );
         } else {
           emit(
-            state.copyWith(status: AuthStatus.authAuthenticated, user: user),
+            state.copyWith(
+              isLoading: false,
+              status: AuthStatus.authAuthenticated,
+              user: user,
+            ),
           );
         }
       },
@@ -150,19 +202,17 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }
 
   Future<void> _onLogout(LogoutEvent event, Emitter<AuthState> emit) async {
+    emit(state.copyWith(isLoading: true));
     final result = await logoutUsecase();
 
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: _parseError(e)));
+        emit(state.copyWith(isLoading: false, errorMessage: _parseError(e)));
       },
       (_) async {
-        if (emit.isDone) return;
-
         emit(
           state.copyWith(
+            isLoading: false,
             status: AuthStatus.authUnauthenticated,
             user: null,
             errorMessage: null,
@@ -176,19 +226,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ForgotPasswordSMSEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(isLoading: true));
     final result = await forgotPasswordWithSmsUsecase(event.phone);
-
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: e.toString()));
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
       },
       (r) async {
-        if (emit.isDone) return;
-
         emit(
           state.copyWith(
+            isLoading: false,
             errorMessage: null,
             successMessage: r.message,
             nextStep: r.nextStep,
@@ -202,19 +249,16 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ForgotPasswordEmailEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(isLoading: true));
     final result = await forgotPasswordWithEmailUsecase(event.email);
-
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: e.toString()));
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
       },
       (r) async {
-        if (emit.isDone) return;
-
         emit(
           state.copyWith(
+            isLoading: false,
             errorMessage: null,
             successMessage: r.message,
             nextStep: r.nextStep,
@@ -228,22 +272,24 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     VerifyOtpEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(isLoading: true));
     final result = await verifyOtpUsecase(
       email: event.email,
       phone: event.phone,
       otp: event.otp,
     );
-
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: e.toString()));
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
       },
       (r) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: null, successMessage: r.message));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: null,
+            successMessage: r.message,
+          ),
+        );
       },
     );
   }
@@ -252,20 +298,22 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ResetPasswordEvent event,
     Emitter<AuthState> emit,
   ) async {
+    emit(state.copyWith(isLoading: true));
     final result = event.email != null
         ? await resetPasswordByEmailUsecase(event.email!, event.newPassword)
         : await resetPasswordBySmsUsecase(event.phone!, event.newPassword);
-
     await result.fold(
       (e) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: e.toString()));
+        emit(state.copyWith(isLoading: false, errorMessage: e.toString()));
       },
       (r) async {
-        if (emit.isDone) return;
-
-        emit(state.copyWith(errorMessage: null, successMessage: r.message));
+        emit(
+          state.copyWith(
+            isLoading: false,
+            errorMessage: null,
+            successMessage: r.message,
+          ),
+        );
       },
     );
   }

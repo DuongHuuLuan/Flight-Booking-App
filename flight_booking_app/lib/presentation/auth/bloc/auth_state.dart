@@ -4,6 +4,7 @@ import 'package:flight_booking_app/domain/entities/user_entity.dart';
 enum AuthStatus { initial, authAuthenticated, authUnauthenticated }
 
 class AuthState extends Equatable {
+  final bool isLoading;
   final AuthStatus status;
   final UserEntity? user;
   final String? errorMessage;
@@ -12,6 +13,7 @@ class AuthState extends Equatable {
 
   const AuthState({
     this.status = AuthStatus.initial,
+    this.isLoading = false,
     this.user,
     this.errorMessage,
     this.nextStep,
@@ -20,12 +22,14 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     AuthStatus? status,
+    bool? isLoading,
     UserEntity? user,
     String? errorMessage,
     String? successMessage,
     String? nextStep,
   }) => AuthState(
     status: status ?? this.status,
+    isLoading: isLoading ?? this.isLoading,
     user: user ?? this.user,
     errorMessage: errorMessage,
     successMessage: successMessage,
@@ -35,6 +39,7 @@ class AuthState extends Equatable {
   @override
   List<Object?> get props => [
     status,
+    isLoading,
     user,
     errorMessage,
     successMessage,

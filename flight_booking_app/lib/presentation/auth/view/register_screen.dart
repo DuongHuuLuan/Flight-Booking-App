@@ -87,7 +87,11 @@ class _RegisterScreenState extends State<RegisterScreen> {
               return previous.status != current.status ||
                   previous.errorMessage != current.errorMessage;
             },
+
             listener: (context, state) {
+              if (state.isLoading) {
+                context.showLoading("Registering...");
+              }
               if (state.status == AuthStatus.authAuthenticated ||
                   state.errorMessage != null) {
                 context.hideLoading();
@@ -199,8 +203,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
                       passwordController,
                       confirmPasswordController,
                     ],
-                    onPressed: (){
-                      context.showLoading("Registering...");
+                    onPressed: () {
                       _register();
                     },
                     label: "Register",

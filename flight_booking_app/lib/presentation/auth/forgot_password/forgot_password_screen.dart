@@ -66,6 +66,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
+          if (state.isLoading) {
+            context.showLoading("Sending OTP...");
+          }
           if (state.successMessage != null || state.errorMessage != null) {
             context.hideLoading();
           }
@@ -122,7 +125,6 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   label: "Continue",
 
                   onPressed: () {
-                    context.showLoading("Sending OTP...");
                     _continue();
                   },
                   height: MediaQuery.of(context).size.height * 0.06,

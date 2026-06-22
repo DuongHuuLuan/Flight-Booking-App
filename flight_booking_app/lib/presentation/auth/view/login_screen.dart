@@ -55,6 +55,9 @@ class _LoginScreenState extends State<LoginScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
+          if (state.isLoading) {
+            context.showLoading("Signing in...");
+          }
           if (state.status == AuthStatus.authAuthenticated ||
               state.errorMessage != null) {
             context.hideLoading();
@@ -133,7 +136,6 @@ class _LoginScreenState extends State<LoginScreen> {
                       controllers: [emailController, passwordController],
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          context.showLoading("Signing in...");
                           _login();
                         }
                       },

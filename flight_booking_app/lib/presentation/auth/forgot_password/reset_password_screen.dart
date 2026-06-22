@@ -73,6 +73,9 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
       body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
+          if (state.isLoading) {
+            context.showLoading("Updating password...");
+          }
           if (state.successMessage != null || state.errorMessage != null) {
             context.hideLoading();
           }
@@ -162,7 +165,6 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
                 AppElevatedButton(
                   label: "Save",
                   onPressed: () {
-                    context.showLoading("Updating password...");
                     _save();
                   },
                 ),
