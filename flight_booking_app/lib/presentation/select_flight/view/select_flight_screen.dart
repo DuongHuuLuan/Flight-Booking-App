@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
+import 'package:flight_booking_app/presentation/flight/flight_detail/view/flight_detail_screen.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/date_selector_bar.dart';
@@ -9,6 +10,7 @@ import 'package:flight_booking_app/presentation/select_flight/view/widgets/fligh
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/widgets_router_info/router_info_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SelectFlightScreen extends StatelessWidget {
   static String get routerName => '/select-flight';
@@ -97,9 +99,10 @@ class SelectFlightScreen extends StatelessWidget {
                             final flight = state.filteredFlights[i];
                             return FlightTicketCard(
                               flight: flight,
-                              onTap: () => context
-                                  .read<SelectFlightCubit>()
-                                  .selectFlight(flight),
+                              onTap: () => context.push(
+                                FlightDetailScreen.routerName,
+                                extra: flight.id,
+                              ),
                             );
                           },
                         ),

@@ -1,3 +1,5 @@
+import 'package:flight_booking_app/data/models/booking_model.dart';
+import 'package:flight_booking_app/data/models/flight_detail_model.dart';
 import 'package:flight_booking_app/data/models/flight_model.dart';
 import 'package:flight_booking_app/data/models/flight_search_response.dart';
 import 'package:flight_booking_app/data/models/forgot_password_response.dart';
@@ -47,6 +49,8 @@ class BaseResponse<T> {
     if (T == FlightSearchResponse) {
       return FlightSearchResponse.fromJson(map) as T;
     }
+    if (T == FlightDetailModel) return FlightDetailModel.fromJson(map) as T;
+    if (T == BookingModel) return BookingModel.fromJson(map) as T;
     return map as T?;
   }
 
