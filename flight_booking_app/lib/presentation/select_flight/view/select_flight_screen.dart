@@ -4,7 +4,7 @@ import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/date_selector_bar.dart';
-import 'package:flight_booking_app/presentation/select_flight/view/widgets/filter_bottom_sheet.dart';
+import 'package:flight_booking_app/presentation/select_flight/view/widgets/filter_bottom_sheet/filter_bottom_sheet.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/flight_ticket_card.dart';
 import 'package:flight_booking_app/presentation/select_flight/view/widgets/widgets_router_info/router_info_bar.dart';
 import 'package:flutter/material.dart';
@@ -30,9 +30,11 @@ class SelectFlightScreen extends StatelessWidget {
                     RouteInfoBar(
                       origin: state.originAirport,
                       destination: state.destinationAirport,
-                      duration: state.filteredFlights.isNotEmpty
-                          ? state.filteredFlights.first.duration
-                          : null,
+                      duration:
+                          state.selectedFlight?.duration ??
+                          (state.filteredFlights.isNotEmpty
+                              ? state.filteredFlights.first.duration
+                              : null),
                     ),
 
                     Positioned(
@@ -91,9 +93,15 @@ class SelectFlightScreen extends StatelessWidget {
                       : ListView.builder(
                           padding: const EdgeInsets.only(top: 8, bottom: 20),
                           itemCount: state.filteredFlights.length,
-                          itemBuilder: (_, i) => FlightTicketCard(
-                            flight: state.filteredFlights[i],
-                          ),
+                          itemBuilder: (_, i) {
+                            final flight = state.filteredFlights[i];
+                            return FlightTicketCard(
+                              flight: flight,
+                              onTap: () => context
+                                  .read<SelectFlightCubit>()
+                                  .selectFlight(flight),
+                            );
+                          },
                         ),
                 ),
               ],

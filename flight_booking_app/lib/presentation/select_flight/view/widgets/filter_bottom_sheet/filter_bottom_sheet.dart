@@ -3,13 +3,16 @@ import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
 import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
+import 'package:flight_booking_app/presentation/select_flight/view/widgets/filter_bottom_sheet/horizontal_chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FilterBottomSheet extends StatelessWidget {
   const FilterBottomSheet({super.key});
+
   static void show(BuildContext context) {
     showModalBottomSheet(
+      backgroundColor: AppColor.white,
       context: context,
       isScrollControlled: true,
       shape: const RoundedRectangleBorder(
@@ -27,15 +30,20 @@ class FilterBottomSheet extends StatelessWidget {
     return BlocBuilder<SelectFlightCubit, SelectFlightState>(
       builder: (context, state) {
         final cubit = context.read<SelectFlightCubit>();
+
+        final timeFilters = TimeFilter.values
+            .where((t) => t != TimeFilter.any)
+            .toList();
+
         return Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text("Stops", style: AppTextStyles.heading3),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: [
+
+            HorizontalChipList(
+              chips: [
                 _buildChip(
                   "Non Stop",
                   state.stops == StopsFilter.nonStop,
@@ -44,6 +52,7 @@ class FilterBottomSheet extends StatelessWidget {
                     departureTime: state.departureTime,
                     arrivalTime: state.arrivalTime,
                     priceRange: state.priceRange,
+                    selectedDate: state.selectedDate,
                   ),
                 ),
                 _buildChip(
@@ -54,6 +63,7 @@ class FilterBottomSheet extends StatelessWidget {
                     departureTime: state.departureTime,
                     arrivalTime: state.arrivalTime,
                     priceRange: state.priceRange,
+                    selectedDate: state.selectedDate,
                   ),
                 ),
                 _buildChip(
@@ -64,52 +74,77 @@ class FilterBottomSheet extends StatelessWidget {
                     departureTime: state.departureTime,
                     arrivalTime: state.arrivalTime,
                     priceRange: state.priceRange,
+                    selectedDate: state.selectedDate,
                   ),
                 ),
               ],
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 10),
+            Divider(
+              thickness: 1,
+              color: AppColor.greyLight.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 10),
+
             Text("Departure Time", style: AppTextStyles.heading3),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: TimeFilter.values.where((t) => t != TimeFilter.any).map(
-                (t) {
-                  return _buildChip(
-                    _timeLabel(t),
-                    state.departureTime == t,
-                    () {
-                      cubit.applyFilters(
+
+            HorizontalChipList(
+              chips: timeFilters
+                  .map(
+                    (t) => _buildChip(
+                      _timeLabel(t),
+                      state.departureTime == t,
+                      () => cubit.applyFilters(
                         stops: state.stops,
                         departureTime: t,
                         arrivalTime: state.arrivalTime,
                         priceRange: state.priceRange,
-                      );
-                    },
-                  );
-                },
-              ).toList(),
+                        selectedDate: state.selectedDate,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 10),
+            Divider(
+              thickness: 1,
+              color: AppColor.greyLight.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 10),
+
             Text("Arrival Time", style: AppTextStyles.heading3),
             const SizedBox(height: 8),
-            Wrap(
-              spacing: 8,
-              children: TimeFilter.values.where((t) => t != TimeFilter.any).map(
-                (t) {
-                  return _buildChip(_timeLabel(t), state.arrivalTime == t, () {
-                    cubit.applyFilters(
-                      stops: state.stops,
-                      departureTime: state.departureTime,
-                      arrivalTime: t,
-                      priceRange: state.priceRange,
-                    );
-                  });
-                },
-              ).toList(),
+
+            HorizontalChipList(
+              chips: timeFilters
+                  .map(
+                    (t) => _buildChip(
+                      _timeLabel(t),
+                      state.arrivalTime == t,
+                      () => cubit.applyFilters(
+                        stops: state.stops,
+                        departureTime: state.departureTime,
+                        arrivalTime: t,
+                        priceRange: state.priceRange,
+                        selectedDate: state.selectedDate,
+                      ),
+                    ),
+                  )
+                  .toList(),
             ),
-            const SizedBox(height: 20),
+
+            const SizedBox(height: 10),
+            Divider(
+              thickness: 1,
+              color: AppColor.greyLight.withValues(alpha: 0.5),
+            ),
+            const SizedBox(height: 10),
+
             Text("Price", style: AppTextStyles.heading3),
+
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -117,6 +152,7 @@ class FilterBottomSheet extends StatelessWidget {
                 Text("\$${state.priceRange.end.round()}"),
               ],
             ),
+
             RangeSlider(
               values: state.priceRange,
               min: state.minPrice,
@@ -133,20 +169,21 @@ class FilterBottomSheet extends StatelessWidget {
                   departureTime: state.departureTime,
                   arrivalTime: state.arrivalTime,
                   priceRange: values,
+                  selectedDate: state.selectedDate,
                 );
               },
             ),
+
             const SizedBox(height: 20),
+
             Row(
               children: [
                 Expanded(
                   child: OutlinedButton(
-                    onPressed: () {
-                      cubit.clearFilters();
-                    },
+                    onPressed: cubit.clearFilters,
                     style: OutlinedButton.styleFrom(
-                      foregroundColor: AppColor.primary,
-                      side: const BorderSide(color: AppColor.primary),
+                      foregroundColor: AppColor.black,
+                      side: const BorderSide(color: AppColor.greyLight),
                       padding: const EdgeInsets.symmetric(vertical: 14),
                       shape: RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(12),
@@ -188,6 +225,8 @@ class FilterBottomSheet extends StatelessWidget {
       label: Text(label),
       selected: selected,
       selectedColor: AppColor.primary,
+      backgroundColor: AppColor.white,
+      side: BorderSide(color: selected ? AppColor.primary : AppColor.greyLight),
       labelStyle: AppTextStyles.bodyMedium.copyWith(
         color: selected ? AppColor.white : AppColor.black87,
         fontWeight: selected ? FontWeight.w600 : FontWeight.normal,
@@ -206,8 +245,8 @@ class FilterBottomSheet extends StatelessWidget {
         return "Evening";
       case TimeFilter.night:
         return "Night";
-      default:
-        return "";
+      case TimeFilter.any:
+        return "Any";
     }
   }
 }

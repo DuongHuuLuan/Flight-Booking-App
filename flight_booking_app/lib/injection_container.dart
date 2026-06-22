@@ -60,9 +60,9 @@ Future<void> init() async {
       LogInterceptor(
         request: true,
         requestHeader: true,
-        requestBody: true, // ← show body gửi đi
+        requestBody: true,
         responseHeader: false,
-        responseBody: true, // ← show response nhận về
+        responseBody: true,
         error: true,
       ),
     );

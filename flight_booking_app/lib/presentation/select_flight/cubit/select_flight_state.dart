@@ -11,6 +11,7 @@ class SelectFlightState extends Equatable {
   final bool isLoading;
   final List<FlightEntity> allFlights;
   final List<FlightEntity> filteredFlights;
+  final FlightEntity? selectedFlight;
   final DateTime selectedDate;
   final StopsFilter stops;
   final TimeFilter departureTime;
@@ -25,6 +26,7 @@ class SelectFlightState extends Equatable {
     this.isLoading = true,
     this.allFlights = const [],
     this.filteredFlights = const [],
+    this.selectedFlight,
     DateTime? selectedDate,
     this.stops = StopsFilter.all,
     this.departureTime = TimeFilter.any,
@@ -40,6 +42,7 @@ class SelectFlightState extends Equatable {
     bool? isLoading,
     List<FlightEntity>? allFlights,
     List<FlightEntity>? filteredFlights,
+    FlightEntity? selectedFlight,
     DateTime? selectedDate,
     StopsFilter? stops,
     TimeFilter? departureTime,
@@ -54,6 +57,7 @@ class SelectFlightState extends Equatable {
       isLoading: isLoading ?? this.isLoading,
       allFlights: allFlights ?? this.allFlights,
       filteredFlights: filteredFlights ?? this.filteredFlights,
+      selectedFlight: selectedFlight ?? this.selectedFlight,
       selectedDate: selectedDate ?? this.selectedDate,
       stops: stops ?? this.stops,
       departureTime: departureTime ?? this.departureTime,
@@ -71,6 +75,7 @@ class SelectFlightState extends Equatable {
     isLoading,
     allFlights,
     filteredFlights,
+    selectedFlight,
     selectedDate,
     stops,
     departureTime,
