@@ -1,7 +1,6 @@
-import 'dart:math' as math;
-
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/responsive.dart';
 import 'package:flight_booking_app/domain/entities/flight_detail_entity.dart';
 import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:flutter/material.dart';
@@ -45,12 +44,11 @@ class CabinClassSelector extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final screenWidth = constraints.maxWidth;
-
-        final cardWidth = math.min(screenWidth * 0.68, 280.0);
+        final cardWidth = (screenWidth * 0.68).clamp(180.0, 280.0);
         final cardHeight = cardWidth * 0.9;
 
         return Padding(
-          padding: EdgeInsets.symmetric(horizontal: screenWidth * 0.04),
+          padding: EdgeInsets.symmetric(horizontal: Responsive.padding(screenWidth)),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
@@ -63,7 +61,7 @@ class CabinClassSelector extends StatelessWidget {
                   scrollDirection: Axis.horizontal,
                   itemCount: cabinClasses.length,
                   separatorBuilder: (_, _) =>
-                      SizedBox(width: screenWidth * 0.03),
+                      SizedBox(width: Responsive.spacing(screenWidth)),
                   itemBuilder: (_, i) {
                     final c = cabinClasses[i];
                     final isSelected = selected?.cabinClass == c.cabinClass;
@@ -74,7 +72,7 @@ class CabinClassSelector extends StatelessWidget {
                         width: cardWidth,
                         padding: EdgeInsets.all(cardWidth * 0.08),
                         decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(16),
+                          borderRadius: BorderRadius.circular(Responsive.radius(screenWidth)),
                           border: Border.all(
                             color: isSelected
                                 ? AppColor.primary

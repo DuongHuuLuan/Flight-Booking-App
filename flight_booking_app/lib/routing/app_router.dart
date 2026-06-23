@@ -7,7 +7,7 @@ import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verific
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_screen.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/flight_detail_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/flight_detail_screen.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';

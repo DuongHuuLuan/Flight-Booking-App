@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/responsive.dart';
 import 'package:flutter/material.dart';
 
 class BottomPaymentBar extends StatelessWidget {
@@ -52,7 +53,7 @@ class BottomPaymentBar extends StatelessWidget {
               ),
             ),
             SizedBox(
-              width: MediaQuery.of(context).size.width * 0.43,
+              width: Responsive.size(context.screenWidth, factor: 0.43, min: 150, max: 240),
               child: ElevatedButton(
                 onPressed: isLoading ? null : onSelectSeat,
                 style: ElevatedButton.styleFrom(

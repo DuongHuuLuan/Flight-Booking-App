@@ -44,7 +44,7 @@ import 'package:flight_booking_app/domain/usecase/home/get_popular_flights_useca
 import 'package:flight_booking_app/domain/usecase/home/search_flights_usecsase.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/flight_detail_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';

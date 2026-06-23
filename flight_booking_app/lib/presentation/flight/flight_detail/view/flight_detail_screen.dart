@@ -1,7 +1,8 @@
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/flight_detail_cubit.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/flight_detail_state.dart';
+import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_state.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/cabin_class_selector.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/flight_summary_card.dart';
@@ -16,6 +17,7 @@ class FlightDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<FlightDetailCubit>();
     return Scaffold(
       appBar: AppBar(
         title: Text("Flight Details", style: AppTextStyles.heading3),
@@ -44,14 +46,12 @@ class FlightDetailScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      FlightSummaryCard(detail: detail),
+                      FlightSummaryCard(detail: detail).paddingAll(16),
                       const SizedBox(height: 20),
                       CabinClassSelector(
                         cabinClasses: detail.cabinClass,
                         selected: state.selectedCabinClass,
-                        onSelected: (c) => context
-                            .read<FlightDetailCubit>()
-                            .selectCabinClass(c),
+                        onSelected: (c) => cubit.selectCabinClass(c),
                       ),
                       const SizedBox(height: 100),
                     ],
@@ -61,7 +61,6 @@ class FlightDetailScreen extends StatelessWidget {
               BottomPaymentBar(
                 totalPrice: state.selectedCabinClass?.price ?? 0,
                 onSelectSeat: () async {
-                  final cubit = context.read<FlightDetailCubit>();
                   final success = await cubit.createBooking();
                   if (success && context.mounted) {
                     ScaffoldMessenger.of(context).showSnackBar(
