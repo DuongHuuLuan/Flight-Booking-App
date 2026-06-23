@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -66,7 +67,7 @@ class FlightDetailScreen extends StatelessWidget {
                     ScaffoldMessenger.of(context).showSnackBar(
                       const SnackBar(
                         content: Text('Booking confirmed!'),
-                        backgroundColor: Colors.green,
+                        backgroundColor: AppColor.success,
                       ),
                     );
                     Navigator.pop(context);

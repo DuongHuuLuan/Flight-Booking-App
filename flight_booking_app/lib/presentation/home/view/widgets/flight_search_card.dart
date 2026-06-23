@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_dropdown_button_form_field.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
@@ -67,7 +68,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
   Widget build(BuildContext context) {
     return Container(
       margin: const EdgeInsets.all(14),
-      padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
         color: AppColor.white,
         borderRadius: BorderRadius.circular(20),
@@ -148,7 +148,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                             toController.text = temp;
                           },
                           child: Container(
-                            padding: const EdgeInsets.all(12),
                             width: MediaQuery.of(context).size.width * 0.15,
                             height: MediaQuery.of(context).size.height * 0.06,
                             decoration: BoxDecoration(
@@ -163,7 +162,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                               ],
                             ),
                             child: Container(
-                              padding: const EdgeInsets.all(2),
                               decoration: BoxDecoration(
                                 color: AppColor.white,
                                 shape: BoxShape.circle,
@@ -172,8 +170,8 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                                 Icons.swap_vert,
                                 color: AppColor.primary,
                                 size: 22,
-                              ),
-                            ),
+                              ).paddingAll(2),
+                            ).paddingAll(12),
                           ),
                         ),
                       ),
@@ -275,7 +273,7 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
             ],
           ),
         ],
-      ),
+      ).paddingAll(16),
     );
   }
 }

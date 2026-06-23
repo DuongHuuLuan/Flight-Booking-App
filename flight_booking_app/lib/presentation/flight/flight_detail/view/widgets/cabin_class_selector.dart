@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/responsive.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/flight_detail_entity.dart';
 import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:flutter/material.dart';
@@ -47,9 +48,7 @@ class CabinClassSelector extends StatelessWidget {
         final cardWidth = (screenWidth * 0.68).clamp(180.0, 280.0);
         final cardHeight = cardWidth * 0.9;
 
-        return Padding(
-          padding: EdgeInsets.symmetric(horizontal: Responsive.padding(screenWidth)),
-          child: Column(
+        return Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text("Select Your Class", style: AppTextStyles.heading3),
@@ -70,7 +69,6 @@ class CabinClassSelector extends StatelessWidget {
                       onTap: () => onSelected(c),
                       child: Container(
                         width: cardWidth,
-                        padding: EdgeInsets.all(cardWidth * 0.08),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(Responsive.radius(screenWidth)),
                           border: Border.all(
@@ -125,44 +123,38 @@ class CabinClassSelector extends StatelessWidget {
                                 physics: const NeverScrollableScrollPhysics(),
                                 padding: EdgeInsets.zero,
                                 children: c.amenities.take(3).map((a) {
-                                  return Padding(
-                                    padding: EdgeInsets.only(
-                                      bottom: cardHeight * 0.015,
-                                    ),
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.check,
-                                          size: cardWidth * 0.06,
-                                          color: AppColor.greyDark,
+                                  return Row(
+                                    children: [
+                                      Icon(
+                                        Icons.check,
+                                        size: cardWidth * 0.06,
+                                        color: AppColor.greyDark,
+                                      ),
+                                      SizedBox(width: cardWidth * 0.025),
+                                      Expanded(
+                                        child: Text(
+                                          a,
+                                          style: AppTextStyles.caption
+                                              .copyWith(
+                                                color: AppColor.greyDark,
+                                              ),
+                                          overflow: TextOverflow.ellipsis,
                                         ),
-                                        SizedBox(width: cardWidth * 0.025),
-                                        Expanded(
-                                          child: Text(
-                                            a,
-                                            style: AppTextStyles.caption
-                                                .copyWith(
-                                                  color: AppColor.greyDark,
-                                                ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  );
+                                      ),
+                                    ],
+                                  ).paddingOnly(bottom: cardHeight * 0.015);
                                 }).toList(),
                               ),
                             ),
                           ],
-                        ),
+                        ).paddingAll(cardWidth * 0.08),
                       ),
                     );
                   },
                 ),
               ),
             ],
-          ),
-        );
+          ).paddingHorizontal(Responsive.padding(screenWidth));
       },
     );
   }

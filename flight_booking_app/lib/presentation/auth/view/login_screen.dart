@@ -67,11 +67,17 @@ class _LoginScreenState extends State<LoginScreen> {
           }
         },
         builder: (context, state) {
+          final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
           return Stack(
             children: [
               AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
               SingleChildScrollView(
-                padding: const EdgeInsets.all(25),
+                padding: EdgeInsets.only(
+                  left: 25,
+                  right: 25,
+                  top: 25,
+                  bottom: 25 + keyboardHeight,
+                ),
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.start,

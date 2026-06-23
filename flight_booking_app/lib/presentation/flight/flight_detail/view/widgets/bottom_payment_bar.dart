@@ -73,9 +73,11 @@ class BottomPaymentBar extends StatelessWidget {
                           color: AppColor.white,
                         ),
                       )
-                    : const Text(
+                    : Text(
                         "Select Seat",
-                        style: TextStyle(fontWeight: FontWeight.w600),
+                        style: AppTextStyles.button.copyWith(
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
               ),
             ),

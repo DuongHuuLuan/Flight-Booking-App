@@ -37,10 +37,8 @@ class FlightSummaryCard extends StatelessWidget {
             ],
           ),
           child: Column(
-            mainAxisSize: MainAxisSize
-                .min, // Giúp card co giãn vừa vặn theo nội dung chiều dọc
+            mainAxisSize: MainAxisSize.min,
             children: [
-              // --- Header: Airline info ---
               Row(
                 children: [
                   Container(
