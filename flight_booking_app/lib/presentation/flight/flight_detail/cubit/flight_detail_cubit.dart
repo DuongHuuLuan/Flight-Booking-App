@@ -5,25 +5,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 class FlightDetailCubit extends Cubit<FlightDetailState> {
   final GetFlightDetailUsecase getFlightDetail;
-  FlightDetailCubit({
-    required this.getFlightDetail,
-  }) : super(FlightDetailState());
+  FlightDetailCubit({required this.getFlightDetail})
+    : super(FlightDetailState());
 
   Future<void> loadFlightDetail(String id) async {
     emit(state.copyWith(isLoading: true));
 
     final result = await getFlightDetail(id);
-    result.fold((failure) => emit(state.copyWith(isLoading: false)), (detail) {
-      emit(
-        FlightDetailState(
-          isLoading: false,
-          flightDetail: detail,
-          selectedCabinClass: detail.cabinClass.isNotEmpty
-              ? detail.cabinClass.first
-              : null,
-        ),
-      );
-    });
+    result.fold(
+      (failure) =>
+          emit(state.copyWith(isLoading: false, error: failure.toString())),
+      (detail) {
+        emit(
+          FlightDetailState(
+            isLoading: false,
+            flightDetail: detail,
+            selectedCabinClass: detail.cabinClass.isNotEmpty
+                ? detail.cabinClass.first
+                : null,
+          ),
+        );
+      },
+    );
   }
 
   void selectCabinClass(CabinClassOption option) {

@@ -6,6 +6,7 @@ class FlightDetailState {
   final CabinClassOption? selectedCabinClass;
   final bool isBooking;
   final String? bookingId;
+  final String? error;
 
   FlightDetailState({
     this.isLoading = false,
@@ -13,6 +14,7 @@ class FlightDetailState {
     this.selectedCabinClass,
     this.isBooking = false,
     this.bookingId,
+    this.error,
   });
 
   FlightDetailState copyWith({
@@ -21,6 +23,7 @@ class FlightDetailState {
     CabinClassOption? selectedCabinClass,
     bool? isBooking,
     String? bookingId,
+    String? error,
   }) {
     return FlightDetailState(
       isLoading: isLoading ?? this.isLoading,
@@ -28,6 +31,7 @@ class FlightDetailState {
       selectedCabinClass: selectedCabinClass ?? this.selectedCabinClass,
       isBooking: isBooking ?? this.isBooking,
       bookingId: bookingId ?? this.bookingId,
+      error: error,
     );
   }
 }

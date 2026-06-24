@@ -2,6 +2,9 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/date_time_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
+import 'package:flight_booking_app/core/widgets/airline_logo_circle.dart';
+import 'package:flight_booking_app/core/widgets/app_card.dart';
+import 'package:flight_booking_app/core/widgets/flight_route_row.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flutter/material.dart';
 
@@ -9,131 +12,64 @@ class FlightTicketCard extends StatelessWidget {
   final FlightEntity flight;
   final VoidCallback? onTap;
   const FlightTicketCard({super.key, required this.flight, this.onTap});
+
   @override
   Widget build(BuildContext context) {
-    return GestureDetector(
+    return AppCard(
       onTap: onTap,
-      child: Container(
-        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        decoration: BoxDecoration(
-          color: AppColor.white,
-          borderRadius: BorderRadius.circular(16),
-          boxShadow: [
-            BoxShadow(
-              color: AppColor.black.withValues(alpha: 0.05),
-              blurRadius: 8,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Column(
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Row(
-                  children: [
-                    Container(
-                      width: MediaQuery.of(context).size.width * 0.1,
-                      height: MediaQuery.of(context).size.height * 0.04,
-                      decoration: const BoxDecoration(
-                        color: AppColor.primary,
-                        shape: BoxShape.circle,
-                      ),
-                      child: const Icon(
-                        Icons.flight,
-                        color: AppColor.white,
-                        size: 18,
-                      ),
+      child: Column(
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Row(
+                children: [
+                  const AirlineLogoCircle(),
+                  const SizedBox(width: 8),
+                  Text(
+                    flight.airline.name,
+                    style: AppTextStyles.bodyMedium.copyWith(
+                      fontWeight: FontWeight.w600,
                     ),
-                    const SizedBox(width: 8),
-                    Text(
-                      flight.airline.name,
-                      style: AppTextStyles.bodyMedium.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
-                    ),
-                  ],
+                  ),
+                ],
+              ),
+              Text(
+                "\$${flight.price.toStringAsFixed(0)}",
+                style: AppTextStyles.heading3.copyWith(
+                  color: AppColor.primary,
                 ),
+              ),
+            ],
+          ).paddingAll(10),
+          FlightRouteRow(
+            departureTime: flight.departureTime.hhmm,
+            departureCode: flight.departureAirport.code,
+            departureLocation: flight.departureAirport.city,
+            arrivalTime: flight.arrivalTime.hhmm,
+            arrivalCode: flight.arrivalAirport.code,
+            arrivalLocation: flight.arrivalAirport.city,
+            centerWidget: Column(
+              children: [
                 Text(
-                  "\$${flight.price.toStringAsFixed(0)}",
-                  style: AppTextStyles.heading3.copyWith(
-                    color: AppColor.primary,
+                  flight.duration.durationText,
+                  style: AppTextStyles.caption,
+                ),
+                const SizedBox(height: 4),
+                Container(width: 80, height: 1, color: AppColor.greyLight),
+                const SizedBox(height: 4),
+                Text(
+                  flight.stops == 0
+                      ? "Non Stop"
+                      : "${flight.stops} Stop${flight.stops > 1 ? 's' : ''}",
+                  style: AppTextStyles.caption.copyWith(
+                    color: AppColor.greyDark,
                   ),
                 ),
               ],
-            ).paddingAll(10),
-            Row(
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        flight.departureTime.hhmm,
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        flight.departureAirport.code,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColor.greyDark,
-                        ),
-                      ),
-                      Text(
-                        flight.departureAirport.city,
-                        style: AppTextStyles.caption,
-                      ),
-                    ],
-                  ),
-                ),
-                Column(
-                  children: [
-                    Text(
-                      flight.duration.durationText,
-                      style: AppTextStyles.caption,
-                    ),
-                    const SizedBox(height: 4),
-                    Container(width: 80, height: 1, color: AppColor.greyLight),
-                    const SizedBox(height: 4),
-                    Text(
-                      flight.stops == 0
-                          ? "Non Stop"
-                          : "${flight.stops} Stop${flight.stops > 1 ? 's' : ''}",
-                      style: AppTextStyles.caption.copyWith(
-                        color: AppColor.greyDark,
-                      ),
-                    ),
-                  ],
-                ),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(
-                        flight.arrivalTime.hhmm,
-                        style: AppTextStyles.bodyLarge.copyWith(
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                      Text(
-                        flight.arrivalAirport.code,
-                        style: AppTextStyles.bodySmall.copyWith(
-                          color: AppColor.greyDark,
-                        ),
-                      ),
-                      Text(
-                        flight.arrivalAirport.city,
-                        style: AppTextStyles.caption,
-                      ),
-                    ],
-                  ),
-                ),
-              ],
-            ).paddingAll(16),
-          ],
-        ),
+            ),
+          ).paddingAll(16),
+        ],
       ),
     );
   }
