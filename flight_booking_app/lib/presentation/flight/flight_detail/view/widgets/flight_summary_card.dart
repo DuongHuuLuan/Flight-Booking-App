@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/date_time_utils.dart';
 import 'package:flight_booking_app/core/utils/responsive.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/flight_detail_entity.dart';
@@ -8,12 +9,6 @@ import 'package:flutter/material.dart';
 class FlightSummaryCard extends StatelessWidget {
   final FlightDetailEntity detail;
   const FlightSummaryCard({super.key, required this.detail});
-
-  String _formatTime(DateTime t) =>
-      '${t.hour.toString().padLeft(2, '0')}:${t.minute.toString().padLeft(2, '0')}';
-
-  String _durationText(int min) =>
-      '${min ~/ 60}h ${(min % 60).toString().padLeft(2, '0')}m';
 
   @override
   Widget build(BuildContext context) {
@@ -85,7 +80,7 @@ class FlightSummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          _formatTime(detail.departureTime),
+                          detail.departureTime.hhmm,
                           style: AppTextStyles.bodyLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
@@ -112,7 +107,7 @@ class FlightSummaryCard extends StatelessWidget {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          _durationText(detail.duration),
+                          detail.duration.durationText,
                           style: AppTextStyles.caption,
                         ),
                         const SizedBox(height: 4),
@@ -140,7 +135,7 @@ class FlightSummaryCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         Text(
-                          _formatTime(detail.arrivalTime),
+                          detail.arrivalTime.hhmm,
                           style: AppTextStyles.bodyLarge.copyWith(
                             fontWeight: FontWeight.bold,
                           ),
