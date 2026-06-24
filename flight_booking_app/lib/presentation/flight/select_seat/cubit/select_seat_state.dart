@@ -3,16 +3,18 @@ import 'package:flight_booking_app/domain/entities/seat_entity.dart';
 class SelectSeatState {
   final bool isLoading;
   final List<SeatEntity> seats;
-  final String? selectedSeat;
+  final List<String> selectedSeats;
   final bool isBooking;
   final String? bookingId;
   final double basePrice;
   final String? error;
 
+  double get totalPrice => basePrice * selectedSeats.length;
+
   SelectSeatState({
     this.isLoading = false,
     this.seats = const [],
-    this.selectedSeat,
+    this.selectedSeats = const [],
     this.isBooking = false,
     this.bookingId,
     this.basePrice = 0,
@@ -22,7 +24,7 @@ class SelectSeatState {
   SelectSeatState copyWith({
     bool? isLoading,
     List<SeatEntity>? seats,
-    String? selectedSeat,
+    List<String>? selectedSeats,
     bool? isBooking,
     String? bookingId,
     double? basePrice,
@@ -31,7 +33,7 @@ class SelectSeatState {
     return SelectSeatState(
       isLoading: isLoading ?? this.isLoading,
       seats: seats ?? this.seats,
-      selectedSeat: selectedSeat ?? this.selectedSeat,
+      selectedSeats: selectedSeats ?? this.selectedSeats,
       isBooking: isBooking ?? this.isBooking,
       bookingId: bookingId ?? this.bookingId,
       basePrice: basePrice ?? this.basePrice,

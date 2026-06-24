@@ -280,7 +280,6 @@ Future<void> init() async {
   getIt.registerFactory(
     () => FlightDetailCubit(
       getFlightDetail: getIt<GetFlightDetailUsecase>(),
-      createBookingUseCase: getIt<CreateBookingUsecase>(),
     ),
   );
 }

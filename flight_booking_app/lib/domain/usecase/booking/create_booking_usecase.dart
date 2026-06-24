@@ -10,12 +10,12 @@ class CreateBookingUsecase {
   Future<Either<Exception, BookingEntity>> call({
     required String flightId,
     required String cabinClass,
-    String? seatLabel,
+    required List<String> seatLabels,
   }) {
     return repository.createBooking(
       flightId: flightId,
       cabinClass: cabinClass,
-      seatLabel: seatLabel,
+      seatLabels: seatLabels,
     );
   }
 }

@@ -21,7 +21,7 @@ class SeatGrid extends StatelessWidget {
         return Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: seatsInRow.map((seat) {
-            final isSelected = seat.seatLabel == state.selectedSeat;
+            final isSelected = state.selectedSeats.contains(seat.seatLabel);
             final isReserved = seat.status == 'reserved';
 
             return SeatBox(

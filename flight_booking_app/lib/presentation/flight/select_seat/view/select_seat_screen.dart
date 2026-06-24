@@ -61,13 +61,15 @@ class SelectSeatScreen extends StatelessWidget {
                 ),
 
                 BottomPaymentBar(
-                  label: state.selectedSeat ?? "No seat selected",
+                  label: state.selectedSeats.isEmpty
+                      ? "No seat selected"
+                      : "${state.selectedSeats.length} seat${state.selectedSeats.length > 1 ? 's' : ''} selected",
                   buttonText: "Continue",
-                  price: state.basePrice,
+                  price: state.totalPrice,
                   priceStyle: AppTextStyles.heading3.copyWith(
                     color: AppColor.black,
                   ),
-                  onPressed: state.selectedSeat == null
+                  onPressed: state.selectedSeats.isEmpty
                       ? null
                       : () async {
                           final bookingId = await cubit.confirmSeat();

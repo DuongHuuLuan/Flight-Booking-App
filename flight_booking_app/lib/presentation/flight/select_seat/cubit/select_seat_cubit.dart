@@ -30,21 +30,23 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   }
 
   void toggleSeat(String seatLabel) {
-    if (state.selectedSeat == seatLabel) {
-      emit(state.copyWith(selectedSeat: null));
+    final updated = List<String>.from(state.selectedSeats);
+    if (updated.contains(seatLabel)) {
+      updated.remove(seatLabel);
     } else {
-      emit(state.copyWith(selectedSeat: seatLabel));
+      updated.add(seatLabel);
     }
+    emit(state.copyWith(selectedSeats: updated));
   }
 
   Future<String?> confirmSeat() async {
-    if (state.selectedSeat == null) return null;
+    if (state.selectedSeats.isEmpty) return null;
     emit(state.copyWith(isBooking: true));
 
     final result = await createBooking(
       flightId: _flightId,
       cabinClass: _cabinClass,
-      seatLabel: state.selectedSeat,
+      seatLabels: state.selectedSeats,
     );
 
     return result.fold(

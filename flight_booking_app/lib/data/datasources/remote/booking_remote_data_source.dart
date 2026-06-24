@@ -10,14 +10,14 @@ class BookingRemoteDataSource {
   Future<BookingEntity> createBooking({
     required String flightId,
     required String cabinClass,
-    String? seatLabel,
+    required List<String> seatLabels,
   }) async {
     try {
       final body = <String, dynamic>{
         'flight_id': flightId,
         'cabin_class': cabinClass,
+        'seat_labels': seatLabels,
       };
-      if (seatLabel != null) body['seat_label'] = seatLabel;
       final response = await _bookingService.createBooking(body);
       final model = response.data.data!;
       return BookingMapper.fromModel(model);
