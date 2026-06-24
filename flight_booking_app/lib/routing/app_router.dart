@@ -1,4 +1,6 @@
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/seat/get_seat_layout_usecase.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
@@ -9,14 +11,16 @@ import 'package:flight_booking_app/presentation/auth/view/login_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_screen.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/flight_detail_screen.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/cubit/select_flight_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/view/select_flight_screen.dart';
+import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/select_seat/view/select_seat_screen.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
-import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
-import 'package:flight_booking_app/presentation/select_flight/view/select_flight_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -127,6 +131,23 @@ class AppRouter {
                 ..loadFlightDetail(state.extra as String),
           child: FlightDetailScreen(flightId: state.extra as String),
         ),
+      ),
+
+      GoRoute(
+        path: SelectSeatScreen.routerName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, String>;
+          return BlocProvider(
+            create: (context) => SelectSeatCubit(
+              getSeatLayout: getIt<GetSeatLayoutUsecase>(),
+              createBooking: getIt<CreateBookingUsecase>(),
+              flightId: args['flightId']!,
+              cabinClass: args['cabinClass']!,
+              basePrice: double.parse(args['basePrice']!),
+            )..loadSeats(),
+            child: const SelectSeatScreen(),
+          );
+        },
       ),
     ],
   );

@@ -16,4 +16,9 @@ abstract class BookingService {
   Future<HttpResponse<BaseResponse<BookingModel>>> createBooking(
     @Body() Map<String, dynamic> body,
   );
+
+  @GET("/bookings/{id}")
+  Future<HttpResponse<BaseResponse<BookingModel>>> getBooking(
+    @Path("id") String id,
+  );
 }

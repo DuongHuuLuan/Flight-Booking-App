@@ -1,10 +1,10 @@
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
+import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_state.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/cabin_class_selector.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/flight_summary_card.dart';
 import 'package:flutter/material.dart';
@@ -60,17 +60,16 @@ class FlightDetailScreen extends StatelessWidget {
                 ),
               ),
               BottomPaymentBar(
-                totalPrice: state.selectedCabinClass?.price ?? 0,
-                onSelectSeat: () async {
-                  final success = await cubit.createBooking();
-                  if (success && context.mounted) {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(
-                        content: Text('Booking confirmed!'),
-                        backgroundColor: AppColor.success,
-                      ),
+                price: state.selectedCabinClass?.price ?? 0,
+                onPressed: () async {
+                  final flightId = state.flightDetail!.id;
+                  final cabin = state.selectedCabinClass;
+                  if (cabin != null && context.mounted) {
+                    context.goToSelectSeat(
+                      flightId: flightId,
+                      cabinClass: cabin.cabinClass.name,
+                      basePrice: cabin.price,
                     );
-                    Navigator.pop(context);
                   }
                 },
               ),

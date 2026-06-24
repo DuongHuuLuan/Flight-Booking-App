@@ -5,5 +5,8 @@ abstract class BookingRepository {
   Future<Either<Exception, BookingEntity>> createBooking({
     required String flightId,
     required String cabinClass,
+    String? seatLabel,
   });
+
+  Future<Either<Exception, BookingEntity>> getBooking(String id);
 }

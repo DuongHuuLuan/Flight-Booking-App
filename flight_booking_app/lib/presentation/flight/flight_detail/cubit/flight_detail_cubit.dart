@@ -33,10 +33,10 @@ class FlightDetailCubit extends Cubit<FlightDetailState> {
     emit(state.copyWith(selectedCabinClass: option));
   }
 
-  Future<bool> createBooking() async {
+  Future<String?> createBooking() async {
     final flight = state.flightDetail;
     final cabin = state.selectedCabinClass;
-    if (flight == null || cabin == null) return false;
+    if (flight == null || cabin == null) return null;
 
     emit(state.copyWith(isBooking: true));
     final result = await createBookingUseCase(
@@ -46,11 +46,11 @@ class FlightDetailCubit extends Cubit<FlightDetailState> {
     return result.fold(
       (error) {
         emit(state.copyWith(isBooking: false));
-        return false;
+        return null;
       },
-      (_) {
-        emit(state.copyWith(isBooking: false));
-        return true;
+      (booking) {
+        emit(state.copyWith(isBooking: false, bookingId: booking.id));
+        return booking.id;
       },
     );
   }

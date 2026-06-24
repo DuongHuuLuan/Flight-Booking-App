@@ -1,8 +1,8 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/domain/entities/airport.dart';
-import 'package:flight_booking_app/presentation/select_flight/view/widgets/widgets_router_info/airport_info.dart';
-import 'package:flight_booking_app/presentation/select_flight/view/widgets/widgets_router_info/flight_header_painter.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/view/widgets/widgets_router_info/airport_info.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/view/widgets/widgets_router_info/flight_header_painter.dart';
 import 'package:flutter/material.dart';
 
 class RouteInfoBar extends StatelessWidget {

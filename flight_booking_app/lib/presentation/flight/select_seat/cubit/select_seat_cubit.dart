@@ -1,0 +1,61 @@
+import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/seat/get_seat_layout_usecase.dart';
+import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class SelectSeatCubit extends Cubit<SelectSeatState> {
+  final GetSeatLayoutUsecase getSeatLayout;
+  final CreateBookingUsecase createBooking;
+  final String _flightId;
+  final String _cabinClass;
+
+  SelectSeatCubit({
+    required this.getSeatLayout,
+    required this.createBooking,
+    required String flightId,
+    required String cabinClass,
+    required double basePrice,
+  }) : _flightId = flightId,
+       _cabinClass = cabinClass,
+       super(SelectSeatState(basePrice: basePrice));
+
+  Future<void> loadSeats() async {
+    emit(state.copyWith(isLoading: true));
+    final result = await getSeatLayout(_flightId);
+    result.fold(
+      (error) =>
+          emit(state.copyWith(isLoading: false, error: error.toString())),
+      (seats) => emit(state.copyWith(isLoading: false, seats: seats)),
+    );
+  }
+
+  void toggleSeat(String seatLabel) {
+    if (state.selectedSeat == seatLabel) {
+      emit(state.copyWith(selectedSeat: null));
+    } else {
+      emit(state.copyWith(selectedSeat: seatLabel));
+    }
+  }
+
+  Future<String?> confirmSeat() async {
+    if (state.selectedSeat == null) return null;
+    emit(state.copyWith(isBooking: true));
+
+    final result = await createBooking(
+      flightId: _flightId,
+      cabinClass: _cabinClass,
+      seatLabel: state.selectedSeat,
+    );
+
+    return result.fold(
+      (error) {
+        emit(state.copyWith(isBooking: false, error: error.toString()));
+        return null;
+      },
+      (booking) {
+        emit(state.copyWith(isBooking: false, bookingId: booking.id));
+        return booking.id;
+      },
+    );
+  }
+}

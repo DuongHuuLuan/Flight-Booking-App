@@ -51,14 +51,11 @@ class FlightSummaryCard extends StatelessWidget {
                     child: Icon(
                       Icons.flight,
                       color: AppColor.white,
-                      size:
-                          logoSize *
-                          0.5, // Size icon tự động ăn theo size vòng tròn
+                      size: logoSize * 0.5,
                     ),
                   ),
                   const SizedBox(width: 8),
                   Expanded(
-                    // Đảm bảo tên hãng bay dài không bị tràn màn hình (Overflow)
                     child: Text(
                       detail.airline.name,
                       style: AppTextStyles.bodyMedium.copyWith(
@@ -80,10 +77,8 @@ class FlightSummaryCard extends StatelessWidget {
 
               const Divider(height: 1, color: AppColor.greyLight),
 
-              // --- Body: Flight Timeline ---
               Row(
                 children: [
-                  // Khởi hành
                   Expanded(
                     flex: 3,
                     child: Column(
@@ -111,7 +106,6 @@ class FlightSummaryCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Thời gian bay (Trọng tâm ở giữa)
                   Expanded(
                     flex: 4,
                     child: Column(
@@ -122,7 +116,6 @@ class FlightSummaryCard extends StatelessWidget {
                           style: AppTextStyles.caption,
                         ),
                         const SizedBox(height: 4),
-                        // Thanh Line tự co giãn theo tỉ lệ màn hình đã tính toán
                         Container(
                           width: lineDurationWidth,
                           height: 1,
@@ -141,7 +134,6 @@ class FlightSummaryCard extends StatelessWidget {
                     ),
                   ),
 
-                  // Điểm đến
                   Expanded(
                     flex: 3,
                     child: Column(
@@ -171,7 +163,6 @@ class FlightSummaryCard extends StatelessWidget {
                 ],
               ).paddingAll(dynamicPadding),
 
-              // --- Footer: View Details Action ---
               GestureDetector(
                 onTap: () {},
                 child: Row(
