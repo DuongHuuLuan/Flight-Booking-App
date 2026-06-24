@@ -22,6 +22,7 @@ import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubi
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
+import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -110,7 +111,7 @@ class AppRouter {
       GoRoute(
         path: SearchScreen.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<HomeCubit>(),
+          create: (context) => getIt<SearchCubit>(),
           child: const SearchScreen(),
         ),
       ),

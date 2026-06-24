@@ -1,13 +1,11 @@
-import 'dart:async';
-
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
-import 'package:flight_booking_app/domain/entities/flight.dart';
-import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
-import 'package:flight_booking_app/injection_container.dart';
+import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
+import 'package:flight_booking_app/presentation/search/cubit/search_state.dart';
 import 'package:flight_booking_app/presentation/search/widgets/search_body.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SearchScreen extends StatefulWidget {
   static String get routerName => '/search';
@@ -17,65 +15,24 @@ class SearchScreen extends StatefulWidget {
 }
 
 class _SearchScreenState extends State<SearchScreen> {
-  final TextEditingController _searchController = TextEditingController();
-  final FocusNode _focusNode = FocusNode();
-  List<FlightEntity> _allFlights = [];
-  List<FlightEntity> _filteredFlights = [];
-  bool _isLoading = true;
-  Timer? _debounce;
+  late final TextEditingController _searchController;
+  late final FocusNode _focusNode;
+
   @override
   void initState() {
     super.initState();
-    _loadFlights();
-    _focusNode.requestFocus();
-  }
-
-  Future<void> _loadFlights() async {
-    final result = await getIt<GetAllFlightsUsecase>().call();
-    result.fold(
-      (exception) {
-        if (mounted) setState(() => _isLoading = false);
-      },
-      (flights) {
-        if (mounted) {
-          setState(() {
-            _allFlights = flights;
-            _filteredFlights = flights;
-            _isLoading = false;
-          });
-        }
-      },
-    );
-  }
-
-  void _onSearchChanged(String query) {
-    _debounce?.cancel();
-    _debounce = Timer(const Duration(milliseconds: 300), () {
-      if (query.isEmpty) {
-        setState(() => _filteredFlights = _allFlights);
-        return;
-      }
-      final lowerQuery = query.toLowerCase();
-      setState(() {
-        _filteredFlights = _allFlights.where((flight) {
-          return flight.departureAirport.code.toLowerCase().contains(
-                lowerQuery,
-              ) ||
-              flight.departureAirport.city.toLowerCase().contains(lowerQuery) ||
-              flight.arrivalAirport.code.toLowerCase().contains(lowerQuery) ||
-              flight.arrivalAirport.city.toLowerCase().contains(lowerQuery) ||
-              flight.airline.name.toLowerCase().contains(lowerQuery) ||
-              flight.flightNumber.toLowerCase().contains(lowerQuery);
-        }).toList();
-      });
+    _searchController = TextEditingController();
+    _focusNode = FocusNode();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      context.read<SearchCubit>().loadFlights();
     });
+    _focusNode.requestFocus();
   }
 
   @override
   void dispose() {
     _searchController.dispose();
     _focusNode.dispose();
-    _debounce?.cancel();
     super.dispose();
   }
 
@@ -98,7 +55,7 @@ class _SearchScreenState extends State<SearchScreen> {
             color: AppColor.grey,
             fontWeight: FontWeight.w400,
           ),
-          onChanged: _onSearchChanged,
+          onChanged: (query) => context.read<SearchCubit>().search(query),
         ),
         leading: IconButton(
           icon: Icon(Icons.arrow_back, color: AppColor.black87),
@@ -110,17 +67,21 @@ class _SearchScreenState extends State<SearchScreen> {
               icon: Icon(Icons.clear, color: AppColor.grey),
               onPressed: () {
                 _searchController.clear();
-                _onSearchChanged("");
+                context.read<SearchCubit>().search("");
               },
             ),
         ],
       ),
-      body: SearchBody(
-        isLoading: _isLoading,
-        filteredFlights: _filteredFlights,
-        searchQuery: _searchController.text,
+      body: BlocBuilder<SearchCubit, SearchState>(
+        builder: (context, state) {
+          return SearchBody(
+            isLoading: state.isLoading,
+            filteredFlights: state.filteredFlights,
+            searchQuery: _searchController.text,
+            onRetry: () => context.read<SearchCubit>().loadFlights(),
+          );
+        },
       ),
-
       floatingActionButtonLocation: FloatingActionButtonLocation.centerDocked,
       floatingActionButton: Container(
         width: MediaQuery.of(context).size.width * 0.15,
@@ -151,14 +112,12 @@ class _SearchScreenState extends State<SearchScreen> {
                 },
                 icon: Icon(Icons.home, color: AppColor.black87),
               ),
-
               IconButton(
                 onPressed: () {
                   context.goToSearch();
                 },
                 icon: Icon(Icons.search, color: AppColor.primary),
               ),
-
               IconButton(
                 onPressed: () {},
                 icon: Icon(Icons.wallet, color: AppColor.black87),

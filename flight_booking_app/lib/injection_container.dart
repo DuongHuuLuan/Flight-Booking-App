@@ -65,6 +65,7 @@ import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
+import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -300,14 +301,8 @@ Future<void> init() async {
     ),
   );
   getIt.registerFactory(() => AppLoadingCubit());
-
   getIt.registerFactory(
-    () => FlightDetailCubit(getFlightDetail: getIt<GetFlightDetailUsecase>()),
-  );
-  getIt.registerFactory(
-    () => PassengerCubit(
-      createPassengersUseCase: getIt<CreatePassengersUseCase>(),
-    ),
+    () => SearchCubit(getAllFlights: getIt<GetAllFlightsUsecase>()),
   );
   getIt.registerFactory(
     () => SelectSeatCubit(
@@ -316,6 +311,15 @@ Future<void> init() async {
       flightId: '',
       cabinClass: '',
       basePrice: 0,
+    ),
+  );
+
+  getIt.registerFactory(
+    () => FlightDetailCubit(getFlightDetail: getIt<GetFlightDetailUsecase>()),
+  );
+  getIt.registerFactory(
+    () => PassengerCubit(
+      createPassengersUseCase: getIt<CreatePassengersUseCase>(),
     ),
   );
   getIt.registerFactory(

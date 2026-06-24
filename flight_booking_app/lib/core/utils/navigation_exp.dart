@@ -21,10 +21,13 @@ extension AppNavigation on BuildContext {
   void goToOtpVerification() => push(OtpVerificationScreen.routerName);
   void goToResetPassword() => push(ResetPasswordScreen.routerName);
   void goToSearch() => push(SearchScreen.routerName);
+
   void goToSelectFlight([Object? extra]) =>
       push(SelectFlightScreen.routerName, extra: extra);
+
   void goToFlightDetail(String flightId) =>
       push(FlightDetailScreen.routerName, extra: flightId);
+
   void goToSelectSeat({
     required String flightId,
     required String cabinClass,
@@ -34,7 +37,7 @@ extension AppNavigation on BuildContext {
     extra: {
       'flightId': flightId,
       'cabinClass': cabinClass,
-      'basePrice': basePrice.toString(),
+      'basePrice': basePrice,
     },
   );
 }

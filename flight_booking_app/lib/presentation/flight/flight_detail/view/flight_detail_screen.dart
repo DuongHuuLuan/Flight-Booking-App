@@ -1,6 +1,5 @@
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
-import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
@@ -47,7 +46,7 @@ class FlightDetailScreen extends StatelessWidget {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      FlightSummaryCard(detail: detail).paddingAll(16),
+                      FlightSummaryCard(detail: detail),
                       const SizedBox(height: 20),
                       CabinClassSelector(
                         cabinClasses: detail.cabinClass,

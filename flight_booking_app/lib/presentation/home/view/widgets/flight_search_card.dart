@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_dropdown_button_form_field.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
@@ -266,6 +267,7 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                       );
 
                       context.read<HomeCubit>().searchFlights(params);
+                      context.goToSelectFlight(params);
                     },
                   ),
                 ],

@@ -76,7 +76,9 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   cabinClass: detail.cabinClass,
                 ),
                 PaymentBreakdownCard(
-                  basePrice: detail.totalPrice,
+                  basePrice: detail.passengers.isEmpty
+                      ? 0
+                      : detail.totalPrice / detail.passengers.length,
                   passengerCount: detail.passengers.length,
                   totalPrice: detail.totalPrice,
                 ),
