@@ -8,8 +8,9 @@ import 'package:flight_booking_app/presentation/flight/select_flight/view/select
 import 'package:flight_booking_app/presentation/flight/select_seat/view/select_seat_screen.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
+import 'package:flight_booking_app/presentation/payment_method/view/payment_method_screen.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 extension AppNavigation on BuildContext {
@@ -40,4 +41,5 @@ extension AppNavigation on BuildContext {
       'basePrice': basePrice,
     },
   );
+  void goToPaymentMethod() => push(PaymentMethodScreen.routerName);
 }

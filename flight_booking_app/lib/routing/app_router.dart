@@ -22,6 +22,9 @@ import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubi
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
+import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
+import 'package:flight_booking_app/presentation/payment_method/view/add_card_screen.dart';
+import 'package:flight_booking_app/presentation/payment_method/view/payment_method_screen.dart';
 import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
@@ -181,6 +184,29 @@ class AppRouter {
             ),
           );
         },
+      ),
+
+      GoRoute(
+        path: PaymentMethodScreen.routerName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>?;
+          return BlocProvider(
+            create: (context) {
+              final cubit = getIt<PaymentMethodCubit>();
+              if (args != null) {
+                cubit.setTotalPrice((args['totalPrice'] as num).toDouble());
+              }
+              cubit.loadCards();
+              return cubit;
+            },
+            child: const PaymentMethodScreen(),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: AddCardScreen.routerName,
+        builder: (context, state) => const AddCardScreen(),
       ),
     ],
   );

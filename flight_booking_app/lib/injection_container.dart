@@ -65,6 +65,7 @@ import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
+import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -326,5 +327,8 @@ Future<void> init() async {
     () => BookingDetailCubit(
       getBookingDetailUsecase: getIt<GetBookingDetailUsecase>(),
     ),
+  );
+  getIt.registerFactory(
+    () => PaymentMethodCubit(totalPrice: 0),
   );
 }
