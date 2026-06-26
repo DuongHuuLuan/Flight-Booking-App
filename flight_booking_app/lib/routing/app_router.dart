@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
@@ -7,6 +8,7 @@ import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verific
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_screen.dart';
+import 'package:flight_booking_app/presentation/boarding_pass/view/boarding_pass_screen.dart';
 import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/booking_detail_screen.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
@@ -207,6 +209,12 @@ class AppRouter {
       GoRoute(
         path: AddCardScreen.routerName,
         builder: (context, state) => const AddCardScreen(),
+      ),
+
+      GoRoute(
+        path: BoardingPassScreen.routerName,
+        builder: (context, state) =>
+            BoardingPassScreen(booking: state.extra as BookingDetailEntity),
       ),
     ],
   );

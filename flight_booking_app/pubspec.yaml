@@ -22,6 +22,8 @@ dependencies:
   flutter_dotenv: ^6.0.1
   json_annotation: ^4.11.0
   flutter_svg: ^2.0.10
+  barcode: ^2.2.9
+  barcode_widget: ^2.0.4
 
 dev_dependencies:
   flutter_test:

@@ -1,8 +1,10 @@
+import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verification_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/login_screen.dart';
 import 'package:flight_booking_app/presentation/auth/view/register_screen.dart';
+import 'package:flight_booking_app/presentation/boarding_pass/view/boarding_pass_screen.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/flight_detail_screen.dart';
 import 'package:flight_booking_app/presentation/flight/select_flight/view/select_flight_screen.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/select_seat_screen.dart';
@@ -41,5 +43,12 @@ extension AppNavigation on BuildContext {
       'basePrice': basePrice,
     },
   );
-  void goToPaymentMethod() => push(PaymentMethodScreen.routerName);
+  void goToPaymentMethod({double? totalPrice, BookingDetailEntity? booking}) =>
+      push(
+        PaymentMethodScreen.routerName,
+        extra: {'totalPrice': totalPrice, 'booking': booking},
+      );
+
+  void goToBoardingPass(BookingDetailEntity booking) =>
+      push(BoardingPassScreen.routerName, extra: booking);
 }

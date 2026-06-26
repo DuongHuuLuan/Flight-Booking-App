@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class AppElevatedButton extends StatelessWidget {
   final String label;
+  final TextStyle? labelStyle;
   final VoidCallback? onPressed;
   final bool isLoading;
   final double? height;
@@ -14,6 +15,7 @@ class AppElevatedButton extends StatelessWidget {
   const AppElevatedButton({
     super.key,
     required this.label,
+    this.labelStyle,
     this.onPressed,
     this.isLoading = false,
     this.height,

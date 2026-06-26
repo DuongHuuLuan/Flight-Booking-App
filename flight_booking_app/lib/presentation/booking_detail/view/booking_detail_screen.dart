@@ -98,7 +98,11 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             price: detail.totalPrice,
             buttonText: "Pay Now",
             onPressed: () {
-              context.goToPaymentMethod();
+              final detail = state.bookingDetail!;
+              context.goToPaymentMethod(
+                totalPrice: detail.totalPrice,
+                booking: detail,
+              );
             },
           );
         },
