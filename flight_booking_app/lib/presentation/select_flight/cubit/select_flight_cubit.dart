@@ -45,11 +45,21 @@ class SelectFlightCubit extends Cubit<SelectFlightState> {
                 (value, element) => value > element ? value : element,
               );
 
+        final selectedDate = params.departureDate;
+        final dateFiltered = filtered
+            .where(
+              (element) =>
+                  element.departureTime.year == selectedDate.year &&
+                  element.departureTime.month == selectedDate.month &&
+                  element.departureTime.day == selectedDate.day,
+            )
+            .toList();
         emit(
           state.copyWith(
             isLoading: false,
             allFlights: filtered,
-            filteredFlights: filtered,
+            filteredFlights: dateFiltered,
+            selectedDate: params.departureDate,
             originAirport: filtered.isNotEmpty
                 ? filtered.first.departureAirport
                 : null,
@@ -65,8 +75,18 @@ class SelectFlightCubit extends Cubit<SelectFlightState> {
     );
   }
 
+  void selectFlight(FlightEntity flight) {
+    emit(state.copyWith(selectedFlight: flight));
+  }
+
   void selectDate(DateTime date) {
-    emit(state.copyWith(selectedDate: date));
+    applyFilters(
+      stops: state.stops,
+      departureTime: state.departureTime,
+      arrivalTime: state.arrivalTime,
+      priceRange: state.priceRange,
+      selectedDate: date,
+    );
   }
 
   void applyFilters({
@@ -74,8 +94,20 @@ class SelectFlightCubit extends Cubit<SelectFlightState> {
     required TimeFilter departureTime,
     required TimeFilter arrivalTime,
     required RangeValues priceRange,
+    DateTime? selectedDate,
   }) {
     var list = List<FlightEntity>.from(state.allFlights);
+
+    final date = selectedDate ?? state.selectedDate;
+    list = list
+        .where(
+          (element) =>
+              element.departureTime.year == date.year &&
+              element.departureTime.month == date.month &&
+              element.departureTime.day == date.day,
+        )
+        .toList();
+
     if (stops == StopsFilter.nonStop) {
       list = list.where((f) => f.stops == 0).toList();
     } else if (stops == StopsFilter.oneStop) {
@@ -101,14 +133,24 @@ class SelectFlightCubit extends Cubit<SelectFlightState> {
         departureTime: departureTime,
         arrivalTime: arrivalTime,
         priceRange: priceRange,
+        selectedDate: date,
       ),
     );
   }
 
   void clearFilters() {
+    var list = state.allFlights
+        .where(
+          (f) =>
+              f.departureTime.year == state.selectedDate.year &&
+              f.departureTime.month == state.selectedDate.month &&
+              f.departureTime.day == state.selectedDate.day,
+        )
+        .toList();
+
     emit(
       state.copyWith(
-        filteredFlights: state.allFlights,
+        filteredFlights: list,
         stops: StopsFilter.all,
         departureTime: TimeFilter.any,
         arrivalTime: TimeFilter.any,
