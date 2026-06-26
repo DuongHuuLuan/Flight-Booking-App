@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_detail_cubit.dart';
@@ -76,7 +77,9 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   cabinClass: detail.cabinClass,
                 ),
                 PaymentBreakdownCard(
-                  basePrice: detail.totalPrice,
+                  basePrice: detail.passengers.isEmpty
+                      ? 0
+                      : detail.totalPrice / detail.passengers.length,
                   passengerCount: detail.passengers.length,
                   totalPrice: detail.totalPrice,
                 ),
@@ -95,9 +98,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
             price: detail.totalPrice,
             buttonText: "Pay Now",
             onPressed: () {
-              ScaffoldMessenger.of(
-                context,
-              ).showSnackBar(const SnackBar(content: Text("Coming soon")));
+              context.goToPaymentMethod();
             },
           );
         },

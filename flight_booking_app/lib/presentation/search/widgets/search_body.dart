@@ -32,11 +32,9 @@ class SearchBody extends StatelessWidget {
         separatorBuilder: (_, _) => const SizedBox(height: 12),
         itemBuilder: (context, index) {
           final flight = filteredFlights[index];
-          PopularFlightCard(
+          return PopularFlightCard(
             flight: flight,
-            onTap: () {
-              context.goToFlightDetail(flight.id);
-            },
+            onTap: () => context.goToFlightDetail(flight.id),
           );
         },
       );

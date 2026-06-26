@@ -8,8 +8,9 @@ import 'package:flight_booking_app/presentation/flight/select_flight/view/select
 import 'package:flight_booking_app/presentation/flight/select_seat/view/select_seat_screen.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
+import 'package:flight_booking_app/presentation/payment_method/view/payment_method_screen.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 extension AppNavigation on BuildContext {
@@ -21,10 +22,13 @@ extension AppNavigation on BuildContext {
   void goToOtpVerification() => push(OtpVerificationScreen.routerName);
   void goToResetPassword() => push(ResetPasswordScreen.routerName);
   void goToSearch() => push(SearchScreen.routerName);
+
   void goToSelectFlight([Object? extra]) =>
       push(SelectFlightScreen.routerName, extra: extra);
+
   void goToFlightDetail(String flightId) =>
       push(FlightDetailScreen.routerName, extra: flightId);
+
   void goToSelectSeat({
     required String flightId,
     required String cabinClass,
@@ -34,7 +38,8 @@ extension AppNavigation on BuildContext {
     extra: {
       'flightId': flightId,
       'cabinClass': cabinClass,
-      'basePrice': basePrice.toString(),
+      'basePrice': basePrice,
     },
   );
+  void goToPaymentMethod() => push(PaymentMethodScreen.routerName);
 }
