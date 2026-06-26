@@ -1,4 +1,5 @@
 import 'package:dartz/dartz.dart';
+import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
 import 'package:flight_booking_app/domain/entities/booking_entity.dart';
 
 abstract class BookingRepository {
@@ -9,4 +10,6 @@ abstract class BookingRepository {
   });
 
   Future<Either<Exception, BookingEntity>> getBooking(String id);
+
+  Future<Either<Exception, BookingDetailEntity>> getBookingDetail(String id);
 }

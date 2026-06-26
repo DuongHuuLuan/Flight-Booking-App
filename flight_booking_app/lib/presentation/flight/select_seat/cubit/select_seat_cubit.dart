@@ -6,8 +6,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class SelectSeatCubit extends Cubit<SelectSeatState> {
   final GetSeatLayoutUsecase getSeatLayout;
   final CreateBookingUsecase createBooking;
-  final String _flightId;
-  final String _cabinClass;
+  String _flightId;
+  String _cabinClass;
+  set flightId(String v) => _flightId = v;
+  set cabinClass(String v) => _cabinClass = v;
+  void setBasePrice(double v) => emit(state.copyWith(basePrice: v));
 
   SelectSeatCubit({
     required this.getSeatLayout,

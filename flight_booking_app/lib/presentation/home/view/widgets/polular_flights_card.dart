@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/date_time_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flutter/material.dart';
@@ -29,9 +30,7 @@ class PopularFlightCard extends StatelessWidget {
                 ),
                 Text(
                   flight.flightNumber,
-                  style: AppTextStyles.bodySmall.copyWith(
-                    color: AppColor.grey,
-                  ),
+                  style: AppTextStyles.bodySmall.copyWith(color: AppColor.grey),
                 ),
               ],
             ),
@@ -43,7 +42,7 @@ class PopularFlightCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _formatTime(flight.departureTime),
+                        flight.departureTime.hhmm,
                         style: AppTextStyles.bodySmall.copyWith(
                           fontWeight: FontWeight.w500,
                           color: AppColor.grey,
@@ -104,7 +103,7 @@ class PopularFlightCard extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.end,
                     children: [
                       Text(
-                        _formatTime(flight.arrivalTime),
+                        flight.arrivalTime.hhmm,
                         style: AppTextStyles.bodySmall.copyWith(
                           fontWeight: FontWeight.w500,
                           color: AppColor.grey,
@@ -130,9 +129,5 @@ class PopularFlightCard extends StatelessWidget {
         ).paddingAll(20),
       ),
     );
-  }
-
-  String _formatTime(DateTime time) {
-    return "${time.hour.toString().padLeft(2, '0')}:${time.minute.toString().padLeft(2, '0')}";
   }
 }

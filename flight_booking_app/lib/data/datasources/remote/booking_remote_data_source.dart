@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/data/mappers/booking/booking_mapper.dart';
+import 'package:flight_booking_app/data/models/booking_detail_model.dart';
 import 'package:flight_booking_app/data/services/booking_service.dart';
 import 'package:flight_booking_app/domain/entities/booking_entity.dart';
 
@@ -31,6 +32,15 @@ class BookingRemoteDataSource {
       final response = await _bookingService.getBooking(id);
       final model = response.data.data!;
       return BookingMapper.fromModel(model);
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
+  Future<BookingDetailModel> getBookingDetail(String id) async {
+    try {
+      final response = await _bookingService.getBookingDetail(id);
+      return response.data.data!;
     } catch (e) {
       throw Exception(e.toString());
     }

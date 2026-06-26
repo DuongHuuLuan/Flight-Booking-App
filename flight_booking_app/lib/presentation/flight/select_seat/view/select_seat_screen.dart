@@ -7,8 +7,10 @@ import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_map_view.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_status_legend.dart';
+import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SelectSeatScreen extends StatelessWidget {
   static String get routerName => '/select-seat';
@@ -74,13 +76,14 @@ class SelectSeatScreen extends StatelessWidget {
                       : () async {
                           final bookingId = await cubit.confirmSeat();
                           if (bookingId != null && context.mounted) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              const SnackBar(
-                                content: Text('Seat confirmed!'),
-                                backgroundColor: AppColor.success,
-                              ),
+                            context.push(
+                              PassengerDetailScreen.routerName,
+                              extra: {
+                                'bookingId': bookingId,
+                                'seatCount': state.selectedSeats.length,
+                                'basePrice': state.basePrice,
+                              },
                             );
-                            Navigator.pop(context);
                           }
                         },
                 ),

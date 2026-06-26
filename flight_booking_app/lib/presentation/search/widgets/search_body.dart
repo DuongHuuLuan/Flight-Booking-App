@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/polular_flights_card.dart';
 import 'package:flutter/material.dart';
@@ -29,26 +30,33 @@ class SearchBody extends StatelessWidget {
         padding: const EdgeInsets.all(16),
         itemCount: filteredFlights.length,
         separatorBuilder: (_, _) => const SizedBox(height: 12),
-        itemBuilder: (context, index) =>
-            PopularFlightCard(flight: filteredFlights[index]),
+        itemBuilder: (context, index) {
+          final flight = filteredFlights[index];
+          PopularFlightCard(
+            flight: flight,
+            onTap: () {
+              context.goToFlightDetail(flight.id);
+            },
+          );
+        },
       );
     }
 
     return Column(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          Icon(Icons.flight, size: 64, color: AppColor.greyLight),
-          const SizedBox(height: 16),
-          Text(
-            searchQuery.isEmpty
-                ? "Tìm kiếm chuyến bay"
-                : "Không tìm thấy chuyến bay nào",
-            style: AppTextStyles.bodyLarge.copyWith(
-              color: AppColor.grey,
-              fontWeight: FontWeight.w400,
-            ),
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        Icon(Icons.flight, size: 64, color: AppColor.greyLight),
+        const SizedBox(height: 16),
+        Text(
+          searchQuery.isEmpty
+              ? "Tìm kiếm chuyến bay"
+              : "Không tìm thấy chuyến bay nào",
+          style: AppTextStyles.bodyLarge.copyWith(
+            color: AppColor.grey,
+            fontWeight: FontWeight.w400,
           ),
-        ],
+        ),
+      ],
     );
   }
 }
