@@ -1,7 +1,8 @@
-import 'package:flutter/material.dart';
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
+import 'package:flutter/material.dart';
 
 class FlightTicketCard extends StatelessWidget {
   final FlightEntity flight;
@@ -13,7 +14,6 @@ class FlightTicketCard extends StatelessWidget {
       onTap: onTap,
       child: Container(
         margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
-        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
           color: AppColor.white,
           borderRadius: BorderRadius.circular(16),
@@ -33,8 +33,8 @@ class FlightTicketCard extends StatelessWidget {
                 Row(
                   children: [
                     Container(
-                      width: 36,
-                      height: 36,
+                      width: MediaQuery.of(context).size.width * 0.1,
+                      height: MediaQuery.of(context).size.height * 0.04,
                       decoration: const BoxDecoration(
                         color: AppColor.primary,
                         shape: BoxShape.circle,
@@ -61,8 +61,7 @@ class FlightTicketCard extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
-            const SizedBox(height: 16),
+            ).paddingAll(10),
             Row(
               children: [
                 Expanded(
@@ -131,7 +130,7 @@ class FlightTicketCard extends StatelessWidget {
                   ),
                 ),
               ],
-            ),
+            ).paddingAll(16),
           ],
         ),
       ),

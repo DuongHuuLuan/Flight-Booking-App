@@ -152,15 +152,12 @@ class _FlightBookingState extends State<HomePage> {
                           const SizedBox(height: 10),
 
                           if (homeState.status == HomeStatus.failure)
-                            Padding(
-                              padding: const EdgeInsets.all(20),
-                              child: Text(
-                                homeState.errorMessage ?? "Failed to load home",
-                                style: AppTextStyles.bodyMedium.copyWith(
-                                  color: AppColor.error,
-                                ),
+                            Text(
+                              homeState.errorMessage ?? "Failed to load home",
+                              style: AppTextStyles.bodyMedium.copyWith(
+                                color: AppColor.error,
                               ),
-                            )
+                            ).paddingAll(20)
                           else
                             const PopularFlightsSection(),
 

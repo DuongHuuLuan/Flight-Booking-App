@@ -1,10 +1,11 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class FlightHeaderPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final mapPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.07)
+      ..color = AppColor.white.withValues(alpha: 0.07)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1;
 
@@ -25,7 +26,7 @@ class FlightHeaderPainter extends CustomPainter {
       );
 
     final dashPaint = Paint()
-      ..color = Colors.white.withValues(alpha: 0.8)
+      ..color = AppColor.white.withValues(alpha: 0.8)
       ..style = PaintingStyle.stroke
       ..strokeWidth = 1.4;
 

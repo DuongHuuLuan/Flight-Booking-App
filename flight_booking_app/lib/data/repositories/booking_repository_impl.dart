@@ -12,12 +12,24 @@ class BookingRepositoryImpl implements BookingRepository {
   Future<Either<Exception, BookingEntity>> createBooking({
     required String flightId,
     required String cabinClass,
+    required List<String> seatLabels,
   }) async {
     try {
       final result = await _dataSource.createBooking(
         flightId: flightId,
         cabinClass: cabinClass,
+        seatLabels: seatLabels,
       );
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, BookingEntity>> getBooking(String id) async {
+    try {
+      final result = await _dataSource.getBooking(id);
       return Right(result);
     } on Exception catch (e) {
       return Left(e);

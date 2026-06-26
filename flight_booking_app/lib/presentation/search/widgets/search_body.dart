@@ -37,7 +37,7 @@ class SearchBody extends StatelessWidget {
     return Column(
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Icon(Icons.flight, size: 64, color: Colors.grey[300]),
+          Icon(Icons.flight, size: 64, color: AppColor.greyLight),
           const SizedBox(height: 16),
           Text(
             searchQuery.isEmpty

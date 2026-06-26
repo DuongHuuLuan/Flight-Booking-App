@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flutter/material.dart';
 
 class AppBackgroundImage extends StatelessWidget {
@@ -8,7 +9,7 @@ class AppBackgroundImage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      color: Colors.white,
+      color: AppColor.white,
       child: imageUrl != null
           ? Image.asset(imageUrl!, fit: BoxFit.contain)
           : Center(child: Text("No Image Available")),

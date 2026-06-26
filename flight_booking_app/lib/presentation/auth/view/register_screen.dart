@@ -78,6 +78,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final keyboardHeight = MediaQuery.of(context).viewInsets.bottom;
     return Scaffold(
       resizeToAvoidBottomInset: false,
       body: MultiBlocListener(
@@ -130,7 +131,12 @@ class _RegisterScreenState extends State<RegisterScreen> {
           children: [
             AppBackgroundImage(imageUrl: "assets/images/splash_screen.png"),
             SingleChildScrollView(
-              padding: const EdgeInsets.all(25),
+              padding: EdgeInsets.only(
+                left: 25,
+                right: 25,
+                top: 25,
+                bottom: 25 + keyboardHeight,
+              ),
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.start,
                 crossAxisAlignment: CrossAxisAlignment.start,

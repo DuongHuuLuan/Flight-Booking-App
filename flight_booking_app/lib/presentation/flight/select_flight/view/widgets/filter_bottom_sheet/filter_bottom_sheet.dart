@@ -1,9 +1,9 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
-import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_cubit.dart';
-import 'package:flight_booking_app/presentation/select_flight/cubit/select_flight_state.dart';
-import 'package:flight_booking_app/presentation/select_flight/view/widgets/filter_bottom_sheet/horizontal_chip_list.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/cubit/select_flight_cubit.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/cubit/select_flight_state.dart';
+import 'package:flight_booking_app/presentation/flight/select_flight/view/widgets/filter_bottom_sheet/horizontal_chip_list.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
