@@ -6,8 +6,9 @@ import 'package:flight_booking_app/core/utils/widget_pop_scope.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/auth_form.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/social_login_button.dart';
@@ -23,7 +24,7 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late final AuthCubit _authCubit;
+  late final AuthBloc _authBloc;
   final _formKey = GlobalKey<FormState>();
   final emailController = TextEditingController();
   final passwordController = TextEditingController();
@@ -31,7 +32,7 @@ class _LoginScreenState extends State<LoginScreen> {
   @override
   void initState() {
     super.initState();
-    _authCubit = context.read<AuthCubit>();
+    _authBloc = context.read<AuthBloc>();
   }
 
   @override
@@ -44,25 +45,22 @@ class _LoginScreenState extends State<LoginScreen> {
   void _login() {
     final email = emailController.text.trim();
     final password = passwordController.text.trim();
-    _authCubit.login(email, password);
+    _authBloc.add(LoginEvent(email, password));
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
-      body: BlocConsumer<AuthCubit, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
-          if (state.status == AuthStatus.loading) {
+          if (state.isLoading) {
             context.showLoading("Signing in...");
-          } else {
-            context.hideLoading();
           }
-          if (state.status == AuthStatus.failed && state.errorMessage != null) {
-            ScaffoldMessenger.of(
-              context,
-            ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
+          if (state.status == AuthStatus.authAuthenticated ||
+              state.errorMessage != null) {
+            context.hideLoading();
           }
           if (state.status == AuthStatus.authAuthenticated) {
             context.goToHome();
@@ -137,7 +135,9 @@ class _LoginScreenState extends State<LoginScreen> {
                     SubmitButton(
                       controllers: [emailController, passwordController],
                       onPressed: () {
-                        if (_formKey.currentState!.validate()) _login();
+                        if (_formKey.currentState!.validate()) {
+                          _login();
+                        }
                       },
                       label: "Login",
                     ),

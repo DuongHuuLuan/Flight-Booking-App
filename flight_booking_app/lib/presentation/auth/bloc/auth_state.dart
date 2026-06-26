@@ -1,27 +1,10 @@
 import 'package:equatable/equatable.dart';
 import 'package:flight_booking_app/domain/entities/user_entity.dart';
 
-enum AuthStatus {
-  initial,
-  loading,
-  authAuthenticated,
-  authUnauthenticated,
-  failed,
-
-  forgotPasswordLoading,
-  forgotPasswordSuccess,
-  forgotPasswordFailure,
-
-  verifyOtpLoading,
-  verifyOtpSuccess,
-  verifyOtpFailure,
-
-  resetPasswordLoading,
-  resetPasswordSuccess,
-  resetPasswordFailure,
-}
+enum AuthStatus { initial, authAuthenticated, authUnauthenticated }
 
 class AuthState extends Equatable {
+  final bool isLoading;
   final AuthStatus status;
   final UserEntity? user;
   final String? errorMessage;
@@ -30,6 +13,7 @@ class AuthState extends Equatable {
 
   const AuthState({
     this.status = AuthStatus.initial,
+    this.isLoading = false,
     this.user,
     this.errorMessage,
     this.nextStep,
@@ -38,18 +22,27 @@ class AuthState extends Equatable {
 
   AuthState copyWith({
     AuthStatus? status,
+    bool? isLoading,
     UserEntity? user,
     String? errorMessage,
     String? successMessage,
     String? nextStep,
   }) => AuthState(
     status: status ?? this.status,
+    isLoading: isLoading ?? this.isLoading,
     user: user ?? this.user,
-    errorMessage: errorMessage ?? this.errorMessage,
-    successMessage: successMessage ?? this.successMessage,
+    errorMessage: errorMessage,
+    successMessage: successMessage,
     nextStep: nextStep ?? this.nextStep,
   );
 
   @override
-  List<Object?> get props => [status, user, errorMessage, successMessage, nextStep];
+  List<Object?> get props => [
+    status,
+    isLoading,
+    user,
+    errorMessage,
+    successMessage,
+    nextStep,
+  ];
 }

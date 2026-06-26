@@ -4,8 +4,9 @@ import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_state.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
 import 'package:flight_booking_app/presentation/auth/view/widgets/logo_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -19,14 +20,14 @@ class ForgotPasswordScreen extends StatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
-  late final AuthCubit _authCubit;
+  late final AuthBloc _authBloc;
   final _phoneController = TextEditingController();
   final _emailController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _authCubit = context.read<AuthCubit>();
+    _authBloc = context.read<AuthBloc>();
   }
 
   @override
@@ -41,9 +42,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     final email = _emailController.text.trim();
 
     if (phone.isNotEmpty) {
-      _authCubit.forgotPasswordWithSMS(phone);
+      _authBloc.add(ForgotPasswordEmailEvent(phone));
     } else if (email.isNotEmpty) {
-      _authCubit.forgotPasswordWithEmail(email);
+      _authBloc.add(ForgotPasswordEmailEvent(email));
     } else {
       ScaffoldMessenger.of(
         context,
@@ -62,20 +63,18 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           icon: Icon(Icons.arrow_back),
         ),
       ),
-      body: BlocConsumer<AuthCubit, AuthState>(
+      body: BlocConsumer<AuthBloc, AuthState>(
         listenWhen: (previous, current) => previous.status != current.status,
         listener: (context, state) {
-          if (state.status == AuthStatus.forgotPasswordLoading) {
-            context.showLoading("");
+          if (state.isLoading) {
+            context.showLoading("Sending OTP...");
           }
-          if (state.status == AuthStatus.forgotPasswordFailure ||
-              state.status == AuthStatus.forgotPasswordSuccess) {
+          if (state.successMessage != null || state.errorMessage != null) {
             context.hideLoading();
           }
-          if (state.status == AuthStatus.forgotPasswordSuccess) {
+          if (state.successMessage != null) {
             context.goToOtpVerification();
-          } else if (state.status == AuthStatus.forgotPasswordFailure &&
-              state.errorMessage != null) {
+          } else if (state.errorMessage != null) {
             ScaffoldMessenger.of(
               context,
             ).showSnackBar(SnackBar(content: Text(state.errorMessage!)));
@@ -124,7 +123,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                 const SizedBox(height: 40),
                 AppElevatedButton(
                   label: "Continue",
-                  onPressed: _continue,
+
+                  onPressed: () {
+                    _continue();
+                  },
                   height: MediaQuery.of(context).size.height * 0.06,
                 ),
                 const SizedBox(height: 20),

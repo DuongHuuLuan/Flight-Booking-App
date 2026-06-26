@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/injection_container.dart';
-import 'package:flight_booking_app/presentation/auth/cubit/auth_cubit.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
+import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verification_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';
@@ -27,7 +28,7 @@ class AppRouter {
       GoRoute(
         path: SplashPage.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => getIt<AuthBloc>(),
           child: const SplashPage(),
         ),
       ),
@@ -43,7 +44,7 @@ class AppRouter {
       GoRoute(
         path: LoginScreen.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => getIt<AuthBloc>(),
           child: const LoginScreen(),
         ),
       ),
@@ -52,7 +53,7 @@ class AppRouter {
         path: RegisterScreen.routerName,
         builder: (context, state) => MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => getIt<AuthCubit>()),
+            BlocProvider(create: (context) => getIt<AuthBloc>()),
             BlocProvider(
               create: (context) => getIt<LocationCubit>()..loadCountries(),
             ),
@@ -65,7 +66,9 @@ class AppRouter {
         path: HomePage.routerName,
         builder: (context, state) => MultiBlocProvider(
           providers: [
-            BlocProvider(create: (context) => getIt<AuthCubit>()..getUser()),
+            BlocProvider(
+              create: (context) => getIt<AuthBloc>()..add(GetUserEvent()),
+            ),
             BlocProvider(
               create: (context) => getIt<HomeCubit>()..loadHomeData(),
             ),
@@ -77,21 +80,21 @@ class AppRouter {
       GoRoute(
         path: ForgotPasswordScreen.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => getIt<AuthBloc>(),
           child: const ForgotPasswordScreen(),
         ),
       ),
       GoRoute(
         path: OtpVerificationScreen.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => getIt<AuthBloc>(),
           child: const OtpVerificationScreen(),
         ),
       ),
       GoRoute(
         path: ResetPasswordScreen.routerName,
         builder: (context, state) => BlocProvider(
-          create: (context) => getIt<AuthCubit>(),
+          create: (context) => getIt<AuthBloc>(),
           child: const ResetPasswordScreen(),
         ),
       ),
