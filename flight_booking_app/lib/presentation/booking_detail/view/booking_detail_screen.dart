@@ -7,8 +7,9 @@ import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_det
 import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_detail_state.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/flight_info_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/passenger_info_card.dart';
-import 'package:flight_booking_app/presentation/booking_detail/view/widgets/payment_breakdown_card.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/widgets/payment_breakdown_card_v2.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/ticket_info_card.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/widgets/service_list_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -31,6 +32,12 @@ class BookingDetailScreen extends StatefulWidget {
 }
 
 class _BookingDetailScreenState extends State<BookingDetailScreen> {
+  @override
+  void initState() {
+    super.initState();
+    context.read<BookingDetailCubit>().loadPriceBreakdown(widget.bookingId);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -76,12 +83,11 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                   selectedSeats: detail.selectedSeats,
                   cabinClass: detail.cabinClass,
                 ),
-                PaymentBreakdownCard(
-                  basePrice: detail.passengers.isEmpty
-                      ? 0
-                      : detail.totalPrice / detail.passengers.length,
-                  passengerCount: detail.passengers.length,
-                  totalPrice: detail.totalPrice,
+                if (detail.services != null && detail.services!.isNotEmpty)
+                  ServiceListCard(services: detail.services!),
+                PriceBreakdownCardV2(
+                  bookingDetail: detail,
+                  priceBreakdown: state.priceBreakdown,
                 ),
                 const SizedBox(height: 100),
               ],

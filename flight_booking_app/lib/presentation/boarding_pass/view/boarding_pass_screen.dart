@@ -4,6 +4,7 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/boarding_pass/view/widgets/boarding_pass_card.dart';
+import 'package:flight_booking_app/presentation/boarding_pass/view/widgets/zone_service_info.dart';
 import 'package:flutter/material.dart';
 
 class BoardingPassScreen extends StatelessWidget {
@@ -24,6 +25,8 @@ class BoardingPassScreen extends StatelessWidget {
         padding: const EdgeInsets.fromLTRB(20, 20, 20, 100),
         children: [
           BoardingPassCard(booking: booking),
+          const SizedBox(height: 20),
+          ZoneServiceInfo(booking: booking),
           const SizedBox(height: 20),
           Text(
             'Please arrive at the airport at least 2 hours before departure',

@@ -1,11 +1,11 @@
+import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
-import 'package:flight_booking_app/domain/entities/passenger_entity.dart';
-import 'package:flight_booking_app/presentation/booking_detail/view/booking_detail_screen.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_state.dart';
-import 'package:flight_booking_app/presentation/passenger/view/widgets/passenger_form_card.dart';
+import 'package:flight_booking_app/presentation/passenger/view/widgets/v2_passenger_form_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -29,45 +29,40 @@ class PassengerDetailScreen extends StatefulWidget {
 }
 
 class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
-  late final List<PassengerFormData> _formDataList;
+  bool _allValid = false;
 
-  @override
-  void initState() {
-    super.initState();
-    _formDataList = List.generate(widget.seatCount, (_) => PassengerFormData());
-  }
-
-  @override
-  void dispose() {
-    for (final fd in _formDataList) {
-      fd.dispose();
-    }
-    super.dispose();
-  }
-
-  void _onSave() {
+  void _validate() {
     final cubit = context.read<PassengerCubit>();
-    final passengers = _formDataList.map((fd) {
-      final parts = fd.dobController.text.split('/');
-      final dob = parts.length == 3
-          ? DateTime(
-              int.parse(parts[2]),
-              int.parse(parts[1]),
-              int.parse(parts[0]),
-            )
-          : DateTime.now();
-      return PassengerEntity(
-        id: '',
-        bookingId: widget.bookingId,
-        name: fd.nameController.text,
-        mobilePhone: fd.mobilePhoneController.text,
-        dateOfBirth: dob,
-        passportNumber: fd.passportController.text,
-        nationality: fd.nationalityController.text,
-      );
-    }).toList();
+    final forms = cubit.state.forms;
+    setState(() {
+      _allValid = forms.every((f) => f.name.isNotEmpty && f.mobilePhone.isNotEmpty);
+    });
+  }
 
-    cubit.savePassengers(bookingId: widget.bookingId, passengers: passengers);
+  Future<void> _onSave() async {
+    final cubit = context.read<PassengerCubit>();
+    final success = await cubit.savePassengers(bookingId: widget.bookingId);
+    if (success && mounted) {
+      final passengers = cubit.state.forms.map((f) => {
+        'seatLabel': f.seatLabel,
+        'ageGroup': f.ageGroup.name,
+        'name': f.name,
+        'mobilePhone': f.mobilePhone,
+        'passportNumber': f.passportNumber,
+        'nationality': f.nationality,
+        'address': f.address,
+        'email': f.email,
+        'idNumber': f.idNumber,
+        'baggageLevel': f.baggageLevel,
+        'dateOfBirth': f.dateOfBirth?.toIso8601String(),
+      }).toList();
+      context.push('/service-selection', extra: {
+        'bookingId': widget.bookingId,
+        'seatCount': widget.seatCount,
+        'basePrice': widget.basePrice,
+        'passengers': passengers,
+      });
+    }
   }
 
   @override
@@ -79,23 +74,12 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
       ),
       body: BlocConsumer<PassengerCubit, PassengerState>(
         listenWhen: (previous, current) =>
-            previous.isLoading != current.isLoading ||
-            previous.isSuccess != current.isSuccess,
+            previous.isLoading != current.isLoading,
         listener: (context, state) {
           if (state.isLoading) {
             context.showLoading();
           } else {
             context.hideLoading();
-          }
-          if (state.isSuccess && context.mounted) {
-            context.push(
-              BookingDetailScreen.routerName,
-              extra: {
-                'bookingId': widget.bookingId,
-                'basePrice': widget.basePrice,
-                'seatCount': widget.seatCount,
-              },
-            );
           }
         },
         builder: (context, state) {
@@ -105,10 +89,13 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
                 child: SingleChildScrollView(
                   child: Column(
                     children: [
-                      for (int i = 0; i < widget.seatCount; i++)
-                        PassengerFormCard(
-                          formData: _formDataList[i],
+                      for (int i = 0; i < state.forms.length; i++)
+                        V2PassengerFormCard(
+                          formData: state.forms[i],
                           index: i + 1,
+                          onChanged: _validate,
+                          onUpdateField: (field, value) =>
+                              context.read<PassengerCubit>().updateField(i, field, value),
                         ),
                       const SizedBox(height: 100),
                     ],
@@ -117,7 +104,7 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
               ),
               BottomPaymentBar(
                 price: widget.basePrice * widget.seatCount,
-                buttonText: 'Save',
+                buttonText: 'Continue to Services',
                 onPressed: state.isLoading ? null : _onSave,
               ),
             ],

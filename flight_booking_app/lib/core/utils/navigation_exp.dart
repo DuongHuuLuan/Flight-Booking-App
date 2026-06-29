@@ -10,8 +10,11 @@ import 'package:flight_booking_app/presentation/flight/select_flight/view/select
 import 'package:flight_booking_app/presentation/flight/select_seat/view/select_seat_screen.dart';
 import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
+import 'package:flight_booking_app/presentation/passenger/view/passenger_count_screen.dart';
+import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/payment_method_screen.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
+import 'package:flight_booking_app/presentation/services/view/service_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,18 +34,28 @@ extension AppNavigation on BuildContext {
   void goToFlightDetail(String flightId) =>
       push(FlightDetailScreen.routerName, extra: flightId);
 
-  void goToSelectSeat({
+  void goToPassengerCount({
     required String flightId,
     required String cabinClass,
     required double basePrice,
   }) => push(
-    SelectSeatScreen.routerName,
+    PassengerCountScreen.routerName,
     extra: {
       'flightId': flightId,
       'cabinClass': cabinClass,
       'basePrice': basePrice,
     },
   );
+
+  void goToSelectSeat(Map<String, dynamic> args) =>
+      push(SelectSeatScreen.routerName, extra: args);
+
+  void goToPassengerDetail(Map<String, dynamic> args) =>
+      push(PassengerDetailScreen.routerName, extra: args);
+
+  void goToServiceSelection(Map<String, dynamic> args) =>
+      push(ServiceSelectionScreen.routerName, extra: args);
+
   void goToPaymentMethod({double? totalPrice, BookingDetailEntity? booking}) =>
       push(
         PaymentMethodScreen.routerName,

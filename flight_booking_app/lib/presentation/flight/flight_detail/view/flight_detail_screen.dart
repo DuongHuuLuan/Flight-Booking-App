@@ -64,7 +64,7 @@ class FlightDetailScreen extends StatelessWidget {
                   final flightId = state.flightDetail!.id;
                   final cabin = state.selectedCabinClass;
                   if (cabin != null && context.mounted) {
-                    context.goToSelectSeat(
+                    context.goToPassengerCount(
                       flightId: flightId,
                       cabinClass: cabin.cabinClass.name,
                       basePrice: cabin.price,

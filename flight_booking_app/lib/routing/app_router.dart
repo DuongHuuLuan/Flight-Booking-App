@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
@@ -22,13 +23,17 @@ import 'package:flight_booking_app/presentation/home/view/home_screen.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/view/onboarding_screen.dart';
+import 'package:flight_booking_app/presentation/passenger/cubit/passenger_count_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
+import 'package:flight_booking_app/presentation/passenger/view/passenger_count_screen.dart';
 import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/add_card_screen.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/payment_method_screen.dart';
 import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
+import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
+import 'package:flight_booking_app/presentation/services/view/service_selection_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -142,6 +147,21 @@ class AppRouter {
       ),
 
       GoRoute(
+        path: PassengerCountScreen.routerName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          return BlocProvider(
+            create: (context) => getIt<PassengerCountCubit>(),
+            child: PassengerCountScreen(
+              flightId: args['flightId'] as String,
+              cabinClass: args['cabinClass'] as String,
+              basePrice: (args['basePrice'] as num).toDouble(),
+            ),
+          );
+        },
+      ),
+
+      GoRoute(
         path: SelectSeatScreen.routerName,
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
@@ -151,7 +171,11 @@ class AppRouter {
               ..cabinClass = args['cabinClass'] as String
               ..setBasePrice((args['basePrice'] as num).toDouble())
               ..loadSeats(),
-            child: const SelectSeatScreen(),
+            child: SelectSeatScreen(
+              adults: args['adults'] as int,
+              children: args['children'] as int,
+              seniors: args['seniors'] as int,
+            ),
           );
         },
       ),
@@ -160,12 +184,41 @@ class AppRouter {
         path: PassengerDetailScreen.routerName,
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
+          final ageGroupStrings = args['ageGroups'] as List<String>;
+          final ageGroups = ageGroupStrings
+              .map((s) => AgeGroup.values.firstWhere((ag) => ag.name == s))
+              .toList();
+          final seatLabels =
+              (args['seatLabels'] as List<dynamic>?)?.cast<String>() ?? [];
           return BlocProvider(
-            create: (context) => getIt<PassengerCubit>(),
+            create: (context) => getIt<PassengerCubit>()
+              ..initForms(
+                args['seatCount'] as int,
+                ageGroups,
+                seatLabels,
+              ),
             child: PassengerDetailScreen(
               bookingId: args['bookingId'] as String,
               seatCount: args['seatCount'] as int,
               basePrice: (args['basePrice'] as num).toDouble(),
+            ),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: ServiceSelectionScreen.routerName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          final passengers =
+              (args['passengers'] as List<dynamic>).cast<Map<String, dynamic>>();
+          return BlocProvider(
+            create: (context) => getIt<ServiceSelectionCubit>(),
+            child: ServiceSelectionScreen(
+              bookingId: args['bookingId'] as String,
+              basePrice: (args['basePrice'] as num).toDouble(),
+              seatCount: args['seatCount'] as int,
+              passengers: passengers,
             ),
           );
         },
