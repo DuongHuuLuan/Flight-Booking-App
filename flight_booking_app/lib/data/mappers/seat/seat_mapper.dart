@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/data/models/seat_model.dart';
-import 'package:flight_booking_app/domain/entities/seat_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 
 class SeatMapper {
   static SeatEntity fromModel(SeatModel model) {

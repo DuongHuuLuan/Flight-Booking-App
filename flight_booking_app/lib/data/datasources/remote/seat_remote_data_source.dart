@@ -1,6 +1,6 @@
 import 'package:flight_booking_app/data/mappers/seat/seat_mapper.dart';
 import 'package:flight_booking_app/data/services/seat_service.dart';
-import 'package:flight_booking_app/domain/entities/seat_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 
 class SeatRemoteDataSource {
   final SeatService _seatService;

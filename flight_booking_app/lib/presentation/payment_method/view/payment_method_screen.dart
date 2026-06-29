@@ -5,7 +5,7 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_alert_dialog.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_state.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/widgets/credit_card_section.dart';

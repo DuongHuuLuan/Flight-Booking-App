@@ -5,7 +5,7 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/airline_logo_circle.dart';
 import 'package:flight_booking_app/core/widgets/app_card.dart';
 import 'package:flight_booking_app/core/widgets/flight_route_row.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flutter/material.dart';
 
 class FlightInfoCard extends StatelessWidget {
