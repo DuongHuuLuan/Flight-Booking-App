@@ -6,18 +6,26 @@ part 'create_passengers_request_model.g.dart';
 class PassengerDataModel {
   @JsonKey(name: 'name')
   final String name;
-
   @JsonKey(name: 'mobile_phone')
   final String mobilePhone;
-
   @JsonKey(name: 'date_of_birth')
   final DateTime dateOfBirth;
-
   @JsonKey(name: 'passport_number')
   final String passportNumber;
-
   @JsonKey(name: 'nationality')
   final String nationality;
+  @JsonKey(name: 'seat_label')
+  final String? seatLabel;
+  @JsonKey(name: 'age_group')
+  final String? ageGroup;
+  @JsonKey(name: 'address')
+  final String? address;
+  @JsonKey(name: 'email')
+  final String? email;
+  @JsonKey(name: 'id_number')
+  final String? idNumber;
+  @JsonKey(name: 'baggage_level')
+  final String? baggageLevel;
 
   const PassengerDataModel({
     required this.name,
@@ -25,6 +33,12 @@ class PassengerDataModel {
     required this.dateOfBirth,
     required this.passportNumber,
     required this.nationality,
+    this.seatLabel,
+    this.ageGroup,
+    this.address,
+    this.email,
+    this.idNumber,
+    this.baggageLevel,
   });
 
   factory PassengerDataModel.fromJson(Map<String, dynamic> json) =>

@@ -1,6 +1,6 @@
 import 'package:flight_booking_app/data/mappers/airline_mapper.dart';
 import 'package:flight_booking_app/data/mappers/airport_mapper.dart';
-import 'package:flight_booking_app/data/models/flight_model.dart';
+import 'package:flight_booking_app/data/models/flight/flight_model.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 
 class FlightMapper {

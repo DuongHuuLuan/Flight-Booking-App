@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/data/models/flight_model.dart';
+import 'package:flight_booking_app/data/models/flight/flight_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'flight_search_response.g.dart';

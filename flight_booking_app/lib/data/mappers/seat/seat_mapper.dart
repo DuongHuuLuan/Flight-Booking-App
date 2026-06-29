@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/data/models/seat_model.dart';
+import 'package:flight_booking_app/data/models/seat/seat_model.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 
 class SeatMapper {
@@ -9,6 +9,9 @@ class SeatMapper {
       rowNumber: model.rowNumber,
       position: model.position,
       status: model.status,
+      zoneId: model.zoneId,
+      zoneName: model.zoneName,
+      zonePrice: model.zonePrice,
     );
   }
 }

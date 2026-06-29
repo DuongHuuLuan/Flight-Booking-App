@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/data/models/booking_model.dart';
+import 'package:flight_booking_app/data/models/booking/booking_model.dart';
 import 'package:flight_booking_app/domain/entities/booking/booking_entity.dart';
 
 class BookingMapper {
@@ -10,6 +10,9 @@ class BookingMapper {
       totalPrice: model.totalPrice,
       status: model.status,
       createdAt: model.createdAt,
+      zonePriceTotal: model.zonePriceTotal,
+      serviceTotal: model.serviceTotal,
+      baggageTotal: model.baggageTotal,
     );
   }
 }

@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/data/models/airline_model.dart';
-import 'package:flight_booking_app/data/models/airport_model.dart';
+import 'package:flight_booking_app/data/models/flight/airline_model.dart';
+import 'package:flight_booking_app/data/models/flight/airport_model.dart';
 import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 

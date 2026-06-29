@@ -1,7 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:flight_booking_app/data/models/base_response.dart';
-import 'package:flight_booking_app/data/models/flight_model.dart';
-import 'package:flight_booking_app/data/models/flight_search_response.dart';
+import 'package:flight_booking_app/data/models/flight/flight_model.dart';
+import 'package:flight_booking_app/data/models/flight/flight_search_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
 

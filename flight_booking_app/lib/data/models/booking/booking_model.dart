@@ -10,6 +10,9 @@ class BookingModel {
   final double totalPrice;
   final String status;
   final DateTime createdAt;
+  final double? zonePriceTotal;
+  final double? serviceTotal;
+  final double? baggageTotal;
 
   BookingModel({
     required this.id,
@@ -18,6 +21,9 @@ class BookingModel {
     required this.totalPrice,
     required this.status,
     required this.createdAt,
+    this.zonePriceTotal,
+    this.serviceTotal,
+    this.baggageTotal,
   });
 
   factory BookingModel.fromJson(Map<String, dynamic> json) =>

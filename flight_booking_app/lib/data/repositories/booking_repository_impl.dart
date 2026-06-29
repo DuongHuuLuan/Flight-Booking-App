@@ -50,4 +50,28 @@ class BookingRepositoryImpl implements BookingRepository {
       return Left(e as Exception);
     }
   }
+
+  @override
+  Future<Either<Exception, Map<String, dynamic>>> getPriceBreakdown(
+    String bookingId,
+  ) async {
+    try {
+      final result = await _dataSource.getPriceBreakdown(bookingId);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Map<String, dynamic>>> mockPayment(
+    String bookingId,
+  ) async {
+    try {
+      final result = await _dataSource.mockPayment(bookingId);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
 }
