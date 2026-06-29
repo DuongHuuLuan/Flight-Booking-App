@@ -1,7 +1,8 @@
 import 'package:flight_booking_app/data/mappers/booking/booking_mapper.dart';
 import 'package:flight_booking_app/data/models/booking_detail_model.dart';
 import 'package:flight_booking_app/data/services/booking_service.dart';
-import 'package:flight_booking_app/domain/entities/booking_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 
 class BookingRemoteDataSource {
   final BookingService _bookingService;
@@ -11,13 +12,13 @@ class BookingRemoteDataSource {
   Future<BookingEntity> createBooking({
     required String flightId,
     required String cabinClass,
-    required List<String> seatLabels,
+    required List<SeatInput> seats,
   }) async {
     try {
       final body = <String, dynamic>{
         'flight_id': flightId,
         'cabin_class': cabinClass,
-        'seat_labels': seatLabels,
+        'seat_labels': seats,
       };
       final response = await _bookingService.createBooking(body);
       final model = response.data.data!;

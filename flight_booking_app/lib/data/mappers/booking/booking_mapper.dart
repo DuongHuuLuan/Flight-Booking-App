@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/data/models/booking_model.dart';
-import 'package:flight_booking_app/domain/entities/booking_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_entity.dart';
 
 class BookingMapper {
   static BookingEntity fromModel(BookingModel model) {

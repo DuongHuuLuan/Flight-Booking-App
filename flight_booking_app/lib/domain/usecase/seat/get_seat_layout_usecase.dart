@@ -1,5 +1,5 @@
 import 'package:dartz/dartz.dart';
-import 'package:flight_booking_app/domain/entities/seat_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/repositories/seat_repository.dart';
 
 class GetSeatLayoutUsecase {

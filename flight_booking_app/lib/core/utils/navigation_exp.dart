@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/forgot_password_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/otp_verification_screen.dart';
 import 'package:flight_booking_app/presentation/auth/forgot_password/reset_password_screen.dart';

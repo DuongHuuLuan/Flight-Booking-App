@@ -2,10 +2,12 @@ import 'package:flight_booking_app/data/mappers/airline_mapper.dart';
 import 'package:flight_booking_app/data/mappers/airport_mapper.dart';
 import 'package:flight_booking_app/data/mappers/passenger_mapper.dart';
 import 'package:flight_booking_app/data/models/booking_detail_model.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 
 class BookingDetailMapper {
-  static BookingDetailFlightEntity flightFromModel(BookingDetailFlightModel model) {
+  static BookingDetailFlightEntity flightFromModel(
+    BookingDetailFlightModel model,
+  ) {
     return BookingDetailFlightEntity(
       id: model.id,
       airline: AirlineMapper.fromModel(model.airline),

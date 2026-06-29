@@ -2,7 +2,7 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/utils/date_time_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/ticket_barcode.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/boarding_pass/view/widgets/airline_header.dart';
 import 'package:flight_booking_app/presentation/boarding_pass/view/widgets/flight_route_section.dart';
 import 'package:flight_booking_app/presentation/boarding_pass/view/widgets/info_grid.dart';

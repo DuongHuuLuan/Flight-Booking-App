@@ -1,5 +1,5 @@
 import 'package:flight_booking_app/core/widgets/app_card.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/ticket_item.dart';
 import 'package:flutter/material.dart';
 

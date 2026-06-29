@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 
 class BookingDetailState {
   final bool isLoading;
