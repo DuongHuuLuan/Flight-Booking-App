@@ -1,9 +1,12 @@
 import 'package:flight_booking_app/domain/entities/payment_method_entity.dart';
+import 'package:flight_booking_app/domain/usecase/booking/mock_payment_usecase.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PaymentMethodCubit extends Cubit<PaymentMethodState> {
-  PaymentMethodCubit({required double totalPrice})
+  final MockPaymentUsecase? mockPaymentUsecase;
+
+  PaymentMethodCubit({required double totalPrice, this.mockPaymentUsecase})
     : super(PaymentMethodState(totalPrice: totalPrice));
 
   void setTotalPrice(double price) {
@@ -46,10 +49,26 @@ class PaymentMethodCubit extends Cubit<PaymentMethodState> {
     emit(state.copyWith(selectedMethod: type, error: null));
   }
 
-  Future<bool> processPayment() async {
+  Future<bool> processPayment(String bookingId) async {
     emit(state.copyWith(isProcessing: true, error: null));
+
+    if (mockPaymentUsecase != null) {
+      final result = await mockPaymentUsecase!(bookingId);
+      return result.fold(
+        (error) {
+          emit(state.copyWith(isProcessing: false, error: error.toString()));
+          return false;
+        },
+        (data) {
+          final success = data['success'] == true;
+          emit(state.copyWith(isProcessing: false, paymentSuccess: success));
+          return success;
+        },
+      );
+    }
+
     await Future.delayed(const Duration(milliseconds: 1500));
-    emit(state.copyWith(isProcessing: false));
+    emit(state.copyWith(isProcessing: false, paymentSuccess: true));
     return true;
   }
 

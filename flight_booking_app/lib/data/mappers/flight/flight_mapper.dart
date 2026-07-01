@@ -1,6 +1,6 @@
 import 'package:flight_booking_app/data/mappers/airline_mapper.dart';
 import 'package:flight_booking_app/data/mappers/airport_mapper.dart';
-import 'package:flight_booking_app/data/models/flight_model.dart';
+import 'package:flight_booking_app/data/models/flight/flight_model.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 
 class FlightMapper {
@@ -16,7 +16,6 @@ class FlightMapper {
       duration: model.duration,
       price: model.price,
       stops: model.stops,
-      cabinClass: model.cabinClass,
     );
   }
 
@@ -32,7 +31,6 @@ class FlightMapper {
       duration: entity.duration,
       price: entity.price,
       stops: entity.stops,
-      cabinClass: entity.cabinClass,
     );
   }
 }

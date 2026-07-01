@@ -11,6 +11,7 @@ import 'package:flight_booking_app/data/datasources/remote/home_remote_data_sour
 import 'package:flight_booking_app/data/datasources/remote/location_remote_data_source.dart';
 import 'package:flight_booking_app/data/datasources/remote/passenger_remote_data_source.dart';
 import 'package:flight_booking_app/data/datasources/remote/seat_remote_data_source.dart';
+import 'package:flight_booking_app/data/datasources/remote/service_remote_data_source.dart';
 import 'package:flight_booking_app/data/repositories/auth_repository_impl.dart';
 import 'package:flight_booking_app/data/repositories/booking_repository_impl.dart';
 import 'package:flight_booking_app/data/repositories/flight_repository_impl.dart';
@@ -19,6 +20,7 @@ import 'package:flight_booking_app/data/repositories/location_repository_impl.da
 import 'package:flight_booking_app/data/repositories/onboarding_repository_impl.dart';
 import 'package:flight_booking_app/data/repositories/passenger_repository_impl.dart';
 import 'package:flight_booking_app/data/repositories/seat_repository_impl.dart';
+import 'package:flight_booking_app/data/repositories/service_repository_impl.dart';
 import 'package:flight_booking_app/data/services/auth_service.dart';
 import 'package:flight_booking_app/data/services/booking_service.dart';
 import 'package:flight_booking_app/data/services/flight_service.dart';
@@ -26,6 +28,7 @@ import 'package:flight_booking_app/data/services/home_service.dart';
 import 'package:flight_booking_app/data/services/location_service.dart';
 import 'package:flight_booking_app/data/services/passenger_service.dart';
 import 'package:flight_booking_app/data/services/seat_service.dart';
+import 'package:flight_booking_app/data/services/service_service.dart';
 import 'package:flight_booking_app/domain/repositories/auth_repository.dart';
 import 'package:flight_booking_app/domain/repositories/booking_repository.dart';
 import 'package:flight_booking_app/domain/repositories/flight_repository.dart';
@@ -34,6 +37,7 @@ import 'package:flight_booking_app/domain/repositories/location_repository.dart'
 import 'package:flight_booking_app/domain/repositories/onboarding_repository.dart';
 import 'package:flight_booking_app/domain/repositories/passenger_repository.dart';
 import 'package:flight_booking_app/domain/repositories/seat_repository.dart';
+import 'package:flight_booking_app/domain/repositories/service_repository.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_email_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_sms_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/get_city_usecase.dart';
@@ -49,13 +53,19 @@ import 'package:flight_booking_app/domain/usecase/auth/verify_otp_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/booking/get_booking_detail_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/booking/get_booking_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/booking/get_price_breakdown_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/booking/mock_payment_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/flight/get_flight_detail_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/home/get_popular_flights_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/home/search_flights_usecsase.dart';
 import 'package:flight_booking_app/domain/usecase/passenger/create_passengers_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/passenger/update_passenger_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/get_seat_layout_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/seat/get_seat_zones_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/select_seat_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/service/assign_services_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/service/get_eligible_services_usecase.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
@@ -64,9 +74,11 @@ import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/location/cubit/location_cubit.dart';
 import 'package:flight_booking_app/presentation/onboarding/cubit/onboarding_cubit.dart';
+import 'package:flight_booking_app/presentation/passenger/cubit/passenger_count_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
+import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
 import 'package:get_it/get_it.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -112,6 +124,9 @@ Future<void> init() async {
   getIt.registerLazySingleton<PassengerService>(
     () => PassengerService(getIt<Dio>()),
   );
+  getIt.registerLazySingleton<ServiceService>(
+    () => ServiceService(getIt<Dio>()),
+  );
 
   // Data Source
   getIt.registerLazySingleton<OnboardingMockDataSource>(
@@ -145,6 +160,9 @@ Future<void> init() async {
   getIt.registerLazySingleton<PassengerRemoteDataSource>(
     () => PassengerRemoteDataSource(getIt<PassengerService>()),
   );
+  getIt.registerLazySingleton<ServiceRemoteDataSource>(
+    () => ServiceRemoteDataSource(getIt<ServiceService>()),
+  );
 
   // Repositories
   getIt.registerLazySingleton<OnboardingRepository>(
@@ -177,6 +195,10 @@ Future<void> init() async {
   );
   getIt.registerLazySingleton<AbstractPassengerRepository>(
     () => PassengerRepositoryImpl(getIt<PassengerRemoteDataSource>()),
+  );
+
+  getIt.registerLazySingleton<ServiceRepository>(
+    () => ServiceRepositoryImpl(getIt<ServiceRemoteDataSource>()),
   );
 
   //use case
@@ -250,22 +272,28 @@ Future<void> init() async {
     () => CreatePassengersUseCase(getIt<AbstractPassengerRepository>()),
   );
 
+  getIt.registerLazySingleton<GetSeatZonesUsecase>(
+    () => GetSeatZonesUsecase(getIt<SeatRepository>()),
+  );
+  getIt.registerLazySingleton<GetEligibleServicesUsecase>(
+    () => GetEligibleServicesUsecase(getIt<ServiceRepository>()),
+  );
+  getIt.registerLazySingleton<AssignServicesUsecase>(
+    () => AssignServicesUsecase(getIt<ServiceRepository>()),
+  );
+  getIt.registerLazySingleton<GetPriceBreakdownUsecase>(
+    () => GetPriceBreakdownUsecase(getIt<BookingRepository>()),
+  );
+  getIt.registerLazySingleton<MockPaymentUsecase>(
+    () => MockPaymentUsecase(getIt<BookingRepository>()),
+  );
+  getIt.registerLazySingleton<UpdatePassengerUsecase>(
+    () => UpdatePassengerUsecase(getIt<AbstractPassengerRepository>()),
+  );
+
   //cubit
   getIt.registerFactory(() => OnboardingCubit(getIt()));
-  // getIt.registerFactory(
-  //   () => AuthCubit(
-  //     loginUsecase: getIt<LoginUsecase>(),
-  //     registerUsecase: getIt<RegisterUsecase>(),
-  //     logoutUsecase: getIt<LogoutUsecase>(),
-  //     getCurrentUserUsecase: getIt<GetCurrentUserUsecase>(),
-  //     localStorage: getIt<AuthLocalDataSource>(),
-  //     forgotPasswordWithEmailUsecase: getIt<ForgotPasswordWithEmailUsecase>(),
-  //     forgotPasswordWithSmsUsecase: getIt<ForgotPasswordWithSmsUsecase>(),
-  //     resetPasswordByEmailUsecase: getIt<ResetPasswordByEmailUsecase>(),
-  //     resetPasswordBySmsUsecase: getIt<ResetPasswordBySmsUsecase>(),
-  //     verifyOtpUsecase: getIt<VerifyOtpUsecase>(),
-  //   ),
-  // );
+
   getIt.registerFactory(
     () => AuthBloc(
       loginUsecase: getIt<LoginUsecase>(),
@@ -308,9 +336,9 @@ Future<void> init() async {
   getIt.registerFactory(
     () => SelectSeatCubit(
       getSeatLayout: getIt<GetSeatLayoutUsecase>(),
+      getSeatZones: getIt<GetSeatZonesUsecase>(),
       createBooking: getIt<CreateBookingUsecase>(),
       flightId: '',
-      cabinClass: '',
       basePrice: 0,
     ),
   );
@@ -321,14 +349,28 @@ Future<void> init() async {
   getIt.registerFactory(
     () => PassengerCubit(
       createPassengersUseCase: getIt<CreatePassengersUseCase>(),
+      updatePassengerUsecase: getIt<UpdatePassengerUsecase>(),
+      getEligibleServicesUsecase: getIt<GetEligibleServicesUsecase>(),
     ),
   );
   getIt.registerFactory(
     () => BookingDetailCubit(
       getBookingDetailUsecase: getIt<GetBookingDetailUsecase>(),
+      getPriceBreakdownUsecase: getIt<GetPriceBreakdownUsecase>(),
     ),
   );
   getIt.registerFactory(
-    () => PaymentMethodCubit(totalPrice: 0),
+    () => PaymentMethodCubit(
+      totalPrice: 0,
+      mockPaymentUsecase: getIt<MockPaymentUsecase>(),
+    ),
+  );
+
+  getIt.registerFactory(() => PassengerCountCubit());
+  getIt.registerFactory(
+    () => ServiceSelectionCubit(
+      getEligibleServices: getIt<GetEligibleServicesUsecase>(),
+      assignServices: getIt<AssignServicesUsecase>(),
+    ),
   );
 }

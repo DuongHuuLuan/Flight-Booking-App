@@ -1,4 +1,3 @@
-import 'package:flight_booking_app/domain/entities/flight_detail_entity.dart';
 import 'package:flight_booking_app/domain/usecase/flight/get_flight_detail_usecase.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,20 +15,8 @@ class FlightDetailCubit extends Cubit<FlightDetailState> {
       (failure) =>
           emit(state.copyWith(isLoading: false, error: failure.toString())),
       (detail) {
-        emit(
-          FlightDetailState(
-            isLoading: false,
-            flightDetail: detail,
-            selectedCabinClass: detail.cabinClass.isNotEmpty
-                ? detail.cabinClass.first
-                : null,
-          ),
-        );
+        emit(FlightDetailState(isLoading: false, flightDetail: detail));
       },
     );
-  }
-
-  void selectCabinClass(CabinClassOption option) {
-    emit(state.copyWith(selectedCabinClass: option));
   }
 }

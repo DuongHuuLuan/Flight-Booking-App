@@ -5,18 +5,16 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/airline_logo_circle.dart';
 import 'package:flight_booking_app/core/widgets/app_card.dart';
 import 'package:flight_booking_app/core/widgets/flight_route_row.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flutter/material.dart';
 
 class FlightInfoCard extends StatelessWidget {
   final BookingDetailFlightEntity flight;
-  final String cabinClass;
   final double price;
 
   const FlightInfoCard({
     super.key,
     required this.flight,
-    required this.cabinClass,
     required this.price,
   });
 
@@ -35,8 +33,7 @@ class FlightInfoCard extends StatelessWidget {
                           flight.airline.logoUrl,
                           width: MediaQuery.of(context).size.width * 0.1,
                           height: MediaQuery.of(context).size.height * 0.04,
-                          errorBuilder: (_, __, ___) =>
-                              const AirlineLogoCircle(),
+                          errorBuilder: (_, _, _) => const AirlineLogoCircle(),
                         )
                       : const AirlineLogoCircle(),
                   const SizedBox(width: 8),

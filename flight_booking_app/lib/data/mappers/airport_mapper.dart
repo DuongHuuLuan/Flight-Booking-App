@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/data/models/airport_model.dart';
+import 'package:flight_booking_app/data/models/flight/airport_model.dart';
 import 'package:flight_booking_app/domain/entities/airport.dart';
 
 class AirportMapper {

@@ -1,8 +1,9 @@
 import 'package:dartz/dartz.dart';
 import 'package:flight_booking_app/data/datasources/remote/booking_remote_data_source.dart';
 import 'package:flight_booking_app/data/mappers/booking/booking_detail_mapper.dart';
-import 'package:flight_booking_app/domain/entities/booking_detail_entity.dart';
-import 'package:flight_booking_app/domain/entities/booking_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 import 'package:flight_booking_app/domain/repositories/booking_repository.dart';
 
 class BookingRepositoryImpl implements BookingRepository {
@@ -13,14 +14,12 @@ class BookingRepositoryImpl implements BookingRepository {
   @override
   Future<Either<Exception, BookingEntity>> createBooking({
     required String flightId,
-    required String cabinClass,
-    required List<String> seatLabels,
+    required List<SeatInput> seats,
   }) async {
     try {
       final result = await _dataSource.createBooking(
         flightId: flightId,
-        cabinClass: cabinClass,
-        seatLabels: seatLabels,
+        seats: seats,
       );
       return Right(result);
     } on Exception catch (e) {
@@ -39,12 +38,38 @@ class BookingRepositoryImpl implements BookingRepository {
   }
 
   @override
-  Future<Either<Exception, BookingDetailEntity>> getBookingDetail(String id) async {
+  Future<Either<Exception, BookingDetailEntity>> getBookingDetail(
+    String id,
+  ) async {
     try {
       final model = await _dataSource.getBookingDetail(id);
       return Right(BookingDetailMapper.fromModel(model));
     } catch (e) {
       return Left(e as Exception);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Map<String, dynamic>>> getPriceBreakdown(
+    String bookingId,
+  ) async {
+    try {
+      final result = await _dataSource.getPriceBreakdown(bookingId);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, Map<String, dynamic>>> mockPayment(
+    String bookingId,
+  ) async {
+    try {
+      final result = await _dataSource.mockPayment(bookingId);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
     }
   }
 }

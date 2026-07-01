@@ -3,6 +3,7 @@ import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
+import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_map_view.dart';
@@ -14,7 +15,23 @@ import 'package:go_router/go_router.dart';
 
 class SelectSeatScreen extends StatelessWidget {
   static String get routerName => '/select-seat';
-  const SelectSeatScreen({super.key});
+
+  final int adults;
+  final int children;
+  final int seniors;
+
+  const SelectSeatScreen({
+    super.key,
+    this.adults = 1,
+    this.children = 0,
+    this.seniors = 0,
+  });
+
+  List<AgeGroup> get _ageGroups => [
+    for (int i = 0; i < adults; i++) AgeGroup.adult,
+    for (int i = 0; i < children; i++) AgeGroup.child,
+    for (int i = 0; i < seniors; i++) AgeGroup.senior,
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -55,11 +72,70 @@ class SelectSeatScreen extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                const SeatStatusLegend(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: state.zones.map((zone) {
+                      final isActive = zone.zoneId == state.selectedZoneId;
+                      final color = parseZoneColor(zone.colorHex);
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () => cubit.selectZone(zone.zoneId),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? color.withValues(alpha: 0.15)
+                                  : AppColor.grey100,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isActive ? color : AppColor.grey300,
+                                width: isActive ? 2 : 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  zone.zoneName,
+                                  style: AppTextStyles.caption.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: isActive ? color : AppColor.greyDark,
+                                  ),
+                                ),
+                                Text(
+                                  '${zone.pricePerSeat.toStringAsFixed(0)}₫',
+                                  style: AppTextStyles.caption.copyWith(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
+                ),
 
-                const SizedBox(height: 32),
                 Expanded(
-                  child: SeatMapView(state: state, onSeatTap: cubit.toggleSeat),
+                  child: SeatMapView(
+                    state: state,
+                    onSeatTap: (seatLabel) =>
+                        cubit.toggleSeat(seatLabel, state.selectedZoneId ?? ""),
+                  ),
                 ),
 
                 BottomPaymentBar(
@@ -76,12 +152,26 @@ class SelectSeatScreen extends StatelessWidget {
                       : () async {
                           final bookingId = await cubit.confirmSeat();
                           if (bookingId != null && context.mounted) {
+                            final ageGroups = _ageGroups;
+                            final seatLabels = state.selectedSeats
+                                .map((s) => s.seatLabel)
+                                .toList();
+                            final seatZoneIds = state.selectedSeats
+                                .map((e) => e.zoneId)
+                                .toList();
                             context.push(
                               PassengerDetailScreen.routerName,
                               extra: {
                                 'bookingId': bookingId,
                                 'seatCount': state.selectedSeats.length,
                                 'basePrice': state.basePrice,
+                                'totalPrice': state.totalPrice,
+                                'ageGroups': ageGroups
+                                    .map((ag) => ag.name)
+                                    .toList(),
+                                'seatLabels': seatLabels,
+                                'seatZoneIds': seatZoneIds,
+                                'flightId': cubit.flightId,
                               },
                             );
                           }

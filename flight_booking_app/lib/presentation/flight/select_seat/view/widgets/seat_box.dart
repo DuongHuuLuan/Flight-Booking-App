@@ -6,6 +6,7 @@ class SeatBox extends StatelessWidget {
   final String? label;
   final bool isSelected;
   final bool isReserved;
+  final Color? zoneColor;
   final VoidCallback? onTap;
 
   const SeatBox({
@@ -13,6 +14,7 @@ class SeatBox extends StatelessWidget {
     this.label,
     this.isSelected = false,
     this.isReserved = false,
+    this.zoneColor,
     this.onTap,
   });
 
@@ -30,6 +32,15 @@ class SeatBox extends StatelessWidget {
       );
     }
 
+    Color bgColor;
+    if (isSelected) {
+      bgColor = AppColor.primary;
+    } else if (zoneColor != null) {
+      bgColor = zoneColor!.withValues(alpha: 0.2);
+    } else {
+      bgColor = AppColor.white;
+    }
+
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -38,9 +49,11 @@ class SeatBox extends StatelessWidget {
         margin: const EdgeInsets.symmetric(horizontal: 8),
         alignment: Alignment.center,
         decoration: BoxDecoration(
-          color: isSelected ? AppColor.primary : AppColor.white,
+          color: bgColor,
           borderRadius: BorderRadius.circular(8),
-          border: isSelected ? null : Border.all(color: AppColor.grey300),
+          border: isSelected || zoneColor != null
+              ? Border.all(color: (zoneColor ?? AppColor.grey300).withValues(alpha: 0.5))
+              : Border.all(color: AppColor.grey300),
         ),
         child: Text(
           label ?? "",

@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
@@ -7,7 +7,8 @@ import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_det
 import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_detail_state.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/flight_info_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/passenger_info_card.dart';
-import 'package:flight_booking_app/presentation/booking_detail/view/widgets/payment_breakdown_card.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/widgets/payment_breakdown_card_v2.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/widgets/service_list_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/ticket_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -31,6 +32,8 @@ class BookingDetailScreen extends StatefulWidget {
 }
 
 class _BookingDetailScreenState extends State<BookingDetailScreen> {
+  bool _priceBreakdownFetched = false;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -41,21 +44,23 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       body: BlocConsumer<BookingDetailCubit, BookingDetailState>(
         listenWhen: (previous, current) =>
             previous.isLoading != current.isLoading ||
-            previous.error != current.error,
+            previous.error != current.error ||
+            previous.bookingDetail != current.bookingDetail,
         listener: (context, state) {
           if (state.isLoading) {
             context.showLoading();
           } else {
             context.hideLoading();
           }
+          if (state.bookingDetail != null && !_priceBreakdownFetched) {
+            _priceBreakdownFetched = true;
+            context.read<BookingDetailCubit>().loadPriceBreakdown(
+              widget.bookingId,
+            );
+          }
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error!),
-                  backgroundColor: AppColor.error,
-                ),
-              );
+              context.showError(state.error!);
             });
           }
         },
@@ -65,23 +70,17 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                FlightInfoCard(
-                  flight: detail.flight,
-                  cabinClass: detail.cabinClass,
-                  price: detail.totalPrice,
-                ),
+                FlightInfoCard(flight: detail.flight, price: detail.totalPrice),
                 PassengerInfoCard(passengers: detail.passengers),
                 TicketInfoCard(
                   flight: detail.flight,
                   selectedSeats: detail.selectedSeats,
-                  cabinClass: detail.cabinClass,
                 ),
-                PaymentBreakdownCard(
-                  basePrice: detail.passengers.isEmpty
-                      ? 0
-                      : detail.totalPrice / detail.passengers.length,
-                  passengerCount: detail.passengers.length,
-                  totalPrice: detail.totalPrice,
+                if (detail.services != null && detail.services!.isNotEmpty)
+                  ServiceListCard(services: detail.services!),
+                PriceBreakdownCardV2(
+                  bookingDetail: detail,
+                  priceBreakdown: state.priceBreakdown,
                 ),
                 const SizedBox(height: 100),
               ],
@@ -95,10 +94,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           if (detail == null) return const SizedBox.shrink();
           return BottomPaymentBar(
             label: "Total Price",
-            price: detail.totalPrice,
+            price:
+                (state.priceBreakdown?['grandTotal'] as num? ??
+                        detail.totalPrice)
+                    .toDouble(),
             buttonText: "Pay Now",
             onPressed: () {
-              context.goToPaymentMethod();
+              final grandTotal =
+                  (state.priceBreakdown?['grandTotal'] as num? ??
+                          detail.totalPrice)
+                      .toDouble();
+
+              context.goToPaymentMethod(
+                totalPrice: grandTotal,
+                booking: detail,
+              );
             },
           );
         },

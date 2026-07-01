@@ -5,18 +5,20 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_alert_dialog.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
+import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_state.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/widgets/credit_card_section.dart';
 import 'package:flight_booking_app/presentation/payment_method/view/widgets/paypal_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class PaymentMethodScreen extends StatelessWidget {
   static String get routerName => '/payment-method';
   const PaymentMethodScreen({super.key});
 
-  void _showSuccessDialog(BuildContext context) {
+  void _showSuccessDialog(BuildContext context, BookingDetailEntity booking) {
     showDialog(
       context: context,
       builder: (_) => AppAlertDialog(
@@ -32,9 +34,7 @@ class PaymentMethodScreen extends StatelessWidget {
         ),
         onConfirm: () {
           Navigator.of(context).pop();
-          ScaffoldMessenger.of(
-            context,
-          ).showSnackBar(const SnackBar(content: Text('Coming soon')));
+          context.goToBoardingPass(booking);
         },
         cancelLabel: 'Go to Home',
         cancelLabelStyle: AppTextStyles.bodyMedium.copyWith(
@@ -60,6 +60,10 @@ class PaymentMethodScreen extends StatelessWidget {
       },
       builder: (context, state) {
         final cubit = context.read<PaymentMethodCubit>();
+        final booking =
+            (GoRouterState.of(context).extra
+                    as Map<String, dynamic>?)?['booking']
+                as BookingDetailEntity?;
 
         return Scaffold(
           backgroundColor: AppColor.background,
@@ -85,9 +89,9 @@ class PaymentMethodScreen extends StatelessWidget {
             onPressed: state.selectedCard == null || state.isProcessing
                 ? null
                 : () async {
-                    final success = await cubit.processPayment();
+                    final success = await cubit.processPayment(booking!.id);
                     if (success && context.mounted) {
-                      _showSuccessDialog(context);
+                      _showSuccessDialog(context, booking);
                     }
                   },
           ).paddingOnly(bottom: 30, left: 20, right: 20),

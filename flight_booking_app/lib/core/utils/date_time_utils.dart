@@ -24,6 +24,13 @@ extension DateTimeExtension on DateTime {
         '${day.toString().padLeft(2, '0')} '
         '$year';
   }
+
+  String get format12Hour {
+    final h = hour > 12 ? hour - 12 : (hour == 0 ? 12 : hour);
+    final amPm = hour < 12 ? 'am' : 'pm';
+    return '${h.toString().padLeft(2, '0')}:'
+        '${minute.toString().padLeft(2, '0')} $amPm';
+  }
 }
 
 extension DurationExtension on int {

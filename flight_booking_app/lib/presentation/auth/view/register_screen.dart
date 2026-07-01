@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -120,9 +121,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
               }
 
               if (state.status == LocationStatus.failure) {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(content: Text(state.errorMessage ?? "")),
-                );
+                context.showError(state.errorMessage ?? "");
               }
             },
           ),

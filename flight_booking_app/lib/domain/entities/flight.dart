@@ -1,6 +1,5 @@
 import 'package:flight_booking_app/domain/entities/airline.dart';
 import 'package:flight_booking_app/domain/entities/airport.dart';
-import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 
 class FlightEntity {
   final String id;
@@ -13,7 +12,6 @@ class FlightEntity {
   final int duration;
   final double price;
   final int stops;
-  final CabinClass cabinClass;
 
   FlightEntity({
     required this.id,
@@ -26,7 +24,6 @@ class FlightEntity {
     required this.duration,
     required this.price,
     required this.stops,
-    required this.cabinClass,
   });
 
   FlightEntity copyWith({
@@ -40,7 +37,6 @@ class FlightEntity {
     int? duration,
     double? price,
     int? stops,
-    CabinClass? cabinClass,
   }) {
     return FlightEntity(
       id: id ?? this.id,
@@ -53,7 +49,6 @@ class FlightEntity {
       duration: duration ?? this.duration,
       price: price ?? this.price,
       stops: stops ?? this.stops,
-      cabinClass: cabinClass ?? this.cabinClass,
     );
   }
 }

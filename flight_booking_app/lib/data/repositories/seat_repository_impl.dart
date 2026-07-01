@@ -1,6 +1,7 @@
 import 'package:dartz/dartz.dart';
 import 'package:flight_booking_app/data/datasources/remote/seat_remote_data_source.dart';
-import 'package:flight_booking_app/domain/entities/seat_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
 import 'package:flight_booking_app/domain/repositories/seat_repository.dart';
 
 class SeatRepositoryImpl implements SeatRepository {
@@ -14,6 +15,18 @@ class SeatRepositoryImpl implements SeatRepository {
   ) async {
     try {
       final result = await _dataSource.getSeatLayout(flightId);
+      return Right(result);
+    } on Exception catch (e) {
+      return Left(e);
+    }
+  }
+
+  @override
+  Future<Either<Exception, List<SeatZoneEntity>>> getSeatZones(
+    String flightId,
+  ) async {
+    try {
+      final result = await _dataSource.getSeatZones(flightId);
       return Right(result);
     } on Exception catch (e) {
       return Left(e);

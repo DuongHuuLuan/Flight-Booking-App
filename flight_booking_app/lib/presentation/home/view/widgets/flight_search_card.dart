@@ -5,7 +5,6 @@ import 'package:flight_booking_app/core/widgets/app_dropdown_button_form_field.d
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
-import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/type_button.dart';
@@ -24,7 +23,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
   final TextEditingController toController = TextEditingController();
   final TextEditingController departureDateController = TextEditingController();
   TripType _selectedType = TripType.oneWay;
-  CabinClass _selectedClass = CabinClass.business;
   String _passengerCount = "1";
 
   final List<String> _passengerOptions = List.generate(
@@ -51,17 +49,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
     if (date != null) {
       departureDateController.text =
           "${date.day.toString().padLeft(2, "0")}/${date.month.toString().padLeft(2, "0")}/${date.year}";
-    }
-  }
-
-  String _cabinClassName(CabinClass c) {
-    switch (c) {
-      case CabinClass.economy:
-        return "Economy";
-      case CabinClass.business:
-        return "Business";
-      case CabinClass.first:
-        return "First Class";
     }
   }
 
@@ -228,27 +215,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                         ),
                       ),
                       const SizedBox(width: 10),
-
-                      Expanded(
-                        child: AppDropdownButtonFormField(
-                          isExpanded: true,
-                          value: _selectedClass.name,
-                          labelText: "Class",
-                          items: CabinClass.values
-                              .map(
-                                (e) => DropdownMenuItem(
-                                  value: e.name,
-                                  child: Text(_cabinClassName(e)),
-                                ),
-                              )
-                              .toList(),
-                          onChanged: (c) => setState(() {
-                            _selectedClass = CabinClass.values.firstWhere(
-                              (element) => element.name == c,
-                            );
-                          }),
-                        ),
-                      ),
                     ],
                   ),
                   const SizedBox(height: 20),
@@ -263,7 +229,6 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                         destination: toController.text.trim(),
                         departureDate: DateTime.now(),
                         passengerCount: int.parse(_passengerCount),
-                        cabinClass: _selectedClass,
                       );
 
                       context.read<HomeCubit>().searchFlights(params);

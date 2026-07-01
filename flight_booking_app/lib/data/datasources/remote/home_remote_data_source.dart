@@ -1,7 +1,7 @@
 import 'dart:convert';
 
 import 'package:flight_booking_app/data/mappers/flight/flight_mapper.dart';
-import 'package:flight_booking_app/data/models/flight_model.dart';
+import 'package:flight_booking_app/data/models/flight/flight_model.dart';
 import 'package:flight_booking_app/data/services/home_service.dart';
 import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
@@ -37,7 +37,6 @@ class HomeRemoteDataSource {
     "duration": 120,
     "price": 1500000,
     "stops": 0,
-    "cabinClass": "economy"
   },
   {
     "id": "FL002",
@@ -64,7 +63,6 @@ class HomeRemoteDataSource {
     "duration": 75,
     "price": 800000,
     "stops": 0,
-    "cabinClass": "economy"
   },
   {
     "id": "FL003",
@@ -91,7 +89,6 @@ class HomeRemoteDataSource {
     "duration": 135,
     "price": 1200000,
     "stops": 0,
-    "cabinClass": "business"
   },
   {
     "id": "FL004",
@@ -118,7 +115,6 @@ class HomeRemoteDataSource {
     "duration": 120,
     "price": 2500000,
     "stops": 0,
-    "cabinClass": "business"
   },
   {
     "id": "FL005",
@@ -145,7 +141,6 @@ class HomeRemoteDataSource {
     "duration": 75,
     "price": 700000,
     "stops": 0,
-    "cabinClass": "economy"
   },
   {
     "id": "FL006",
@@ -172,7 +167,6 @@ class HomeRemoteDataSource {
     "duration": 120,
     "price": 5000000,
     "stops": 0,
-    "cabinClass": "first"
   },
   {
     "id": "FL007",
@@ -199,7 +193,6 @@ class HomeRemoteDataSource {
     "duration": 75,
     "price": 1800000,
     "stops": 0,
-    "cabinClass": "economy"
   },
   {
     "id": "FL008",
@@ -226,7 +219,6 @@ class HomeRemoteDataSource {
     "duration": 1340,
     "price": 1400,
     "stops": 1,
-    "cabinClass": "economy"
   },
   {
     "id": "FL009",
@@ -253,7 +245,6 @@ class HomeRemoteDataSource {
     "duration": 1390,
     "price": 1530,
     "stops": 1,
-    "cabinClass": "economy"
   },
   {
     "id": "FL010",
@@ -280,7 +271,6 @@ class HomeRemoteDataSource {
     "duration": 1340,
     "price": 1210,
     "stops": 1,
-    "cabinClass": "economy"
   },
   {
     "id": "FL011",
@@ -307,7 +297,6 @@ class HomeRemoteDataSource {
     "duration": 1270,
     "price": 1160,
     "stops": 1,
-    "cabinClass": "economy"
   },
   {
     "id": "FL012",
@@ -320,7 +309,6 @@ class HomeRemoteDataSource {
     "duration": 930,
     "price": 1890,
     "stops": 0,
-    "cabinClass": "first"
   },
   {
     "id": "FL013",
@@ -333,7 +321,6 @@ class HomeRemoteDataSource {
     "duration": 915,
     "price": 980,
     "stops": 2,
-    "cabinClass": "economy"
   }
 ]
 ''';
@@ -369,8 +356,7 @@ class HomeRemoteDataSource {
           .where(
             (flight) =>
                 flight.departureAirport.code == params.origin &&
-                flight.arrivalAirport.code == params.destination &&
-                flight.cabinClass == params.cabinClass,
+                flight.arrivalAirport.code == params.destination,
           )
           .map((model) => FlightMapper.fromModel(model))
           .toList();
@@ -385,7 +371,6 @@ class HomeRemoteDataSource {
         if (params.returnDate != null)
           "return_date": params.returnDate!.toIso8601String(),
         "passengers": params.passengerCount,
-        "cabin_class": params.cabinClass.name,
       });
       final flightSearchResponse = response.data.data!;
       return flightSearchResponse.flights
