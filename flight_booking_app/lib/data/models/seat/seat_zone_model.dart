@@ -4,10 +4,13 @@ part 'seat_zone_model.g.dart';
 
 @JsonSerializable()
 class SeatZoneModel {
+  @JsonKey(name: "id")
   final String zoneId;
+  @JsonKey(name: "name")
   final String zoneName;
   final double priceModifier;
   final String? colorHex;
+  @JsonKey(name: 'availableSeatCount')
   final int availableSeats;
   final double pricePerSeat;
 

@@ -6,7 +6,6 @@ class BookingMapper {
     return BookingEntity(
       id: model.id,
       flightId: model.flightId,
-      cabinClass: model.cabinClass,
       totalPrice: model.totalPrice,
       status: model.status,
       createdAt: model.createdAt,

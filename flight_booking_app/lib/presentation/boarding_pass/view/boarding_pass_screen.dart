@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
@@ -42,9 +43,7 @@ class BoardingPassScreen extends StatelessWidget {
         label: 'Download Ticket',
 
         onPressed: () {
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Download feature coming soon')),
-          );
+          context.showError('Download feature coming soon');
         },
       ).paddingOnly(bottom: 30, left: 20, right: 20),
     );

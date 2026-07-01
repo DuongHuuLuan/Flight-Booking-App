@@ -16,7 +16,6 @@ class FlightMapper {
       duration: model.duration,
       price: model.price,
       stops: model.stops,
-      cabinClass: model.cabinClass,
     );
   }
 
@@ -32,7 +31,6 @@ class FlightMapper {
       duration: entity.duration,
       price: entity.price,
       stops: entity.stops,
-      cabinClass: entity.cabinClass,
     );
   }
 }

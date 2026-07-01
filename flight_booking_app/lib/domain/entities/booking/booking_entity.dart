@@ -3,7 +3,6 @@ import 'package:equatable/equatable.dart';
 class BookingEntity extends Equatable {
   final String id;
   final String flightId;
-  final String cabinClass;
   final double totalPrice;
   final String status;
   final DateTime createdAt;
@@ -11,10 +10,9 @@ class BookingEntity extends Equatable {
   final double? serviceTotal;
   final double? baggageTotal;
 
-  BookingEntity({
+  const BookingEntity({
     required this.id,
     required this.flightId,
-    required this.cabinClass,
     required this.totalPrice,
     required this.status,
     required this.createdAt,
@@ -27,7 +25,6 @@ class BookingEntity extends Equatable {
   List<Object?> get props => [
     id,
     flightId,
-    cabinClass,
     totalPrice,
     status,
     createdAt,

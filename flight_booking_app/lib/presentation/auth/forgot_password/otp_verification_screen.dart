@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
@@ -72,12 +73,7 @@ class _OtpVerificationScreenState extends State<OtpVerificationScreen> {
           if (state.successMessage != null) {
             context.goToResetPassword();
           } else if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: AppColor.error,
-              ),
-            );
+            context.showError(state.errorMessage!);
           }
         },
         builder: (context, state) {

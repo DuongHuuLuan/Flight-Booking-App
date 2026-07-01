@@ -20,15 +20,10 @@ class SeatInputModel {
 class CreateBookingRequestModel {
   @JsonKey(name: 'flight_id')
   final String flightId;
-
-  @JsonKey(name: 'cabin_class')
-  final String cabinClass;
-
   final List<SeatInputModel> seats;
 
   const CreateBookingRequestModel({
     required this.flightId,
-    required this.cabinClass,
     required this.seats,
   });
 

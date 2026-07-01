@@ -339,7 +339,6 @@ Future<void> init() async {
       getSeatZones: getIt<GetSeatZonesUsecase>(),
       createBooking: getIt<CreateBookingUsecase>(),
       flightId: '',
-      cabinClass: '',
       basePrice: 0,
     ),
   );
@@ -351,6 +350,7 @@ Future<void> init() async {
     () => PassengerCubit(
       createPassengersUseCase: getIt<CreatePassengersUseCase>(),
       updatePassengerUsecase: getIt<UpdatePassengerUsecase>(),
+      getEligibleServicesUsecase: getIt<GetEligibleServicesUsecase>(),
     ),
   );
   getIt.registerFactory(

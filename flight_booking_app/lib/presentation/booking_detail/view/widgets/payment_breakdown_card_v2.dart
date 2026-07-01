@@ -1,9 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
-import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/core/utils/widget_padding.dart';
-import 'package:flight_booking_app/core/widgets/app_card.dart';
+import 'package:flight_booking_app/core/widgets/section_card.dart';
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
-import 'package:flight_booking_app/presentation/booking_detail/view/widgets/price_row.dart';
+import 'package:flight_booking_app/core/widgets/price_row.dart';
 import 'package:flutter/material.dart';
 
 class PriceBreakdownCardV2 extends StatelessWidget {
@@ -27,40 +25,36 @@ class PriceBreakdownCardV2 extends StatelessWidget {
     final total = pb?['total_price'] as num? ?? bookingDetail.totalPrice;
     final passengerCount = bookingDetail.passengers.length;
 
-    return AppCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text("Price Breakdown", style: AppTextStyles.heading3).paddingAll(16),
-          const Divider(height: 1, color: AppColor.border),
+    return SectionCard(
+      title: "Price Breakdown",
+      children: [
+        PriceRow(
+          label: "Base Price (x $passengerCount)",
+          amount: "\$${baseTotal.toStringAsFixed(0)}",
+        ),
+        if (zoneTotal > 0)
           PriceRow(
-            label: "Base Price (x $passengerCount)",
-            amount: "\$${baseTotal.toStringAsFixed(0)}",
+            label: "Zone Surcharge",
+            amount: "\$${(zoneTotal).toStringAsFixed(0)}",
           ),
-          if (zoneTotal > 0)
-            PriceRow(
-              label: "Zone Surcharge",
-              amount: "\$${(zoneTotal).toStringAsFixed(0)}",
-            ),
-          if (serviceTotal > 0)
-            PriceRow(
-              label: "Services (Meals & Drinks)",
-              amount: "\$${(serviceTotal).toStringAsFixed(0)}",
-            ),
-          if (baggageTotal > 0)
-            PriceRow(
-              label: "Baggage",
-              amount: "\$${(baggageTotal).toStringAsFixed(0)}",
-            ),
-          PriceRow(label: "Discount", amount: "\$0"),
-          const Divider(height: 1, color: AppColor.border),
+        if (serviceTotal > 0)
           PriceRow(
-            label: "Total",
-            amount: "\$${total.toStringAsFixed(0)}",
-            isTotal: true,
+            label: "Services (Meals & Drinks)",
+            amount: "\$${(serviceTotal).toStringAsFixed(0)}",
           ),
-        ],
-      ),
+        if (baggageTotal > 0)
+          PriceRow(
+            label: "Baggage",
+            amount: "\$${(baggageTotal).toStringAsFixed(0)}",
+          ),
+        PriceRow(label: "Discount", amount: "\$0"),
+        const Divider(height: 1, color: AppColor.border),
+        PriceRow(
+          label: "Total",
+          amount: "\$${total.toStringAsFixed(0)}",
+          isTotal: true,
+        ),
+      ],
     );
   }
 }

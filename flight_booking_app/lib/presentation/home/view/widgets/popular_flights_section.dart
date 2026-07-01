@@ -84,7 +84,6 @@ class PopularFlightsSection extends StatelessWidget {
                         destination: flight.arrivalAirport.code,
                         departureDate: flight.departureTime,
                         passengerCount: 1,
-                        cabinClass: flight.cabinClass,
                       );
 
                       context.goToSelectFlight(params);

@@ -6,7 +6,6 @@ import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 abstract class BookingRepository {
   Future<Either<Exception, BookingEntity>> createBooking({
     required String flightId,
-    required String cabinClass,
     required List<SeatInput> seats,
   });
   Future<Either<Exception, BookingEntity>> getBooking(String id);

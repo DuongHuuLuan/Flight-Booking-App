@@ -13,6 +13,7 @@ abstract class ServiceService {
 
   @GET("/services/eligible")
   Future<HttpResponse<BaseResponse<dynamic>>> getEligibleServices(
+    @Query("flight_id") String flightId,
     @Query("zone_id") String zoneId,
     @Query("age_group") String ageGroup,
   );

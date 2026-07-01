@@ -47,10 +47,8 @@ class BookingDetailFlightModel {
   final DateTime departureTime;
   @JsonKey(name: 'arrivalTime')
   final DateTime arrivalTime;
-
   @JsonKey(name: 'duration')
   final int duration;
-
   @JsonKey(name: 'stops')
   final int stops;
 
@@ -76,8 +74,6 @@ class BookingDetailModel {
   final String id;
   @JsonKey(name: 'flightId')
   final String flightId;
-  @JsonKey(name: 'cabinClass')
-  final String cabinClass;
   @JsonKey(name: 'totalPrice')
   final double totalPrice;
   @JsonKey(name: 'status')
@@ -102,7 +98,6 @@ class BookingDetailModel {
   const BookingDetailModel({
     required this.id,
     required this.flightId,
-    required this.cabinClass,
     required this.totalPrice,
     required this.status,
     this.selectedSeats,

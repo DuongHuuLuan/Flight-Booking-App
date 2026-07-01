@@ -1,6 +1,5 @@
 import 'package:flight_booking_app/domain/entities/airline.dart';
 import 'package:flight_booking_app/domain/entities/airport.dart';
-import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 
 class FlightDetailEntity {
   final String id;
@@ -12,7 +11,7 @@ class FlightDetailEntity {
   final DateTime arrivalTime;
   final int duration;
   final int stops;
-  final List<CabinClassOption> cabinClass;
+  final double basePrice;
 
   FlightDetailEntity({
     required this.id,
@@ -24,18 +23,6 @@ class FlightDetailEntity {
     required this.arrivalTime,
     required this.stops,
     required this.duration,
-    required this.cabinClass,
-  });
-}
-
-class CabinClassOption {
-  final CabinClass cabinClass;
-  final double price;
-  final List<String> amenities;
-
-  CabinClassOption({
-    required this.cabinClass,
-    required this.price,
-    required this.amenities,
+    required this.basePrice,
   });
 }

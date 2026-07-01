@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
+import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_state.dart';
 import 'package:flutter/material.dart';
@@ -8,15 +9,15 @@ import 'package:flutter/material.dart';
 class V2PassengerFormCard extends StatelessWidget {
   final PassengerFormData formData;
   final int index;
-  final VoidCallback onChanged;
   final void Function(String field, dynamic value) onUpdateField;
+  final List<ServiceEntity> baggageOptions;
 
   const V2PassengerFormCard({
     super.key,
     required this.formData,
     required this.index,
-    required this.onChanged,
     required this.onUpdateField,
+    required this.baggageOptions,
   });
 
   @override
@@ -47,114 +48,136 @@ class V2PassengerFormCard extends StatelessWidget {
               ],
             ),
           ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Full Name *',
-              value: formData.name,
-              icon: Icons.person,
-              onChanged: (v) {
-                onUpdateField('name', v);
-                onChanged();
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Mobile Phone *',
-              value: formData.mobilePhone,
-              icon: Icons.phone,
-              keyboardType: TextInputType.phone,
-              onChanged: (v) {
-                onUpdateField('mobilePhone', v);
-                onChanged();
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildDateField(context),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Passport Number',
-              value: formData.passportNumber,
-              icon: Icons.assignment_ind,
-              onChanged: (v) => onUpdateField('passportNumber', v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Nationality',
-              value: formData.nationality,
-              icon: Icons.flag,
-              onChanged: (v) => onUpdateField('nationality', v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Address',
-              value: formData.address,
-              icon: Icons.home,
-              onChanged: (v) => onUpdateField('address', v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'Email',
-              value: formData.email,
-              icon: Icons.email,
-              keyboardType: TextInputType.emailAddress,
-              onChanged: (v) => onUpdateField('email', v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildField(
-              label: 'ID Number',
-              value: formData.idNumber,
-              icon: Icons.badge,
-              onChanged: (v) => onUpdateField('idNumber', v),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 0, 16, 8),
-            child: _buildBaggageDropdown(),
-          ),
+
+          _FormTextField(
+            label: 'Full Name *',
+            initialValue: formData.name,
+            icon: Icons.person,
+            onChanged: (v) => onUpdateField('name', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'Mobile Phone *',
+            initialValue: formData.mobilePhone,
+            icon: Icons.phone,
+            keyboardType: TextInputType.phone,
+            onChanged: (v) => onUpdateField('mobilePhone', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _DateField(
+            formData: formData,
+            onDatePicked: (d) => onUpdateField('dateOfBirth', d),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'Passport Number',
+            initialValue: formData.passportNumber,
+            icon: Icons.assignment_ind,
+            onChanged: (v) => onUpdateField('passportNumber', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'Nationality',
+            initialValue: formData.nationality,
+            icon: Icons.flag,
+            onChanged: (v) => onUpdateField('nationality', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'Address',
+            initialValue: formData.address,
+            icon: Icons.home,
+            onChanged: (v) => onUpdateField('address', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'Email',
+            initialValue: formData.email,
+            icon: Icons.email,
+            keyboardType: TextInputType.emailAddress,
+            onChanged: (v) => onUpdateField('email', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _FormTextField(
+            label: 'ID Number',
+            initialValue: formData.idNumber,
+            icon: Icons.badge,
+            onChanged: (v) => onUpdateField('idNumber', v),
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+
+          _BaggageDropdown(
+            baggageLevel: formData.baggageLevel,
+            onChanged: (v) => onUpdateField('baggageLevel', v ?? ''),
+            baggageOptions: baggageOptions,
+          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
           const SizedBox(height: 8),
         ],
       ),
     ).paddingAll(16);
   }
+}
 
-  Widget _buildField({
-    required String label,
-    required String value,
-    required IconData icon,
-    TextInputType? keyboardType,
-    required ValueChanged<String> onChanged,
-  }) {
-    return TextField(
-      decoration: InputDecoration(
-        labelText: label,
-        prefixIcon: Icon(icon, size: 20),
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-      ),
-      keyboardType: keyboardType,
-      controller: TextEditingController.fromValue(
-        TextEditingValue(text: value, selection: TextSelection.collapsed(offset: value.length)),
-      ),
-      onChanged: onChanged,
-    );
+class _FormTextField extends StatefulWidget {
+  final String label;
+  final String initialValue;
+  final IconData icon;
+  final TextInputType? keyboardType;
+  final ValueChanged<String> onChanged;
+
+  const _FormTextField({
+    required this.label,
+    required this.initialValue,
+    required this.icon,
+    this.keyboardType,
+    required this.onChanged,
+  });
+
+  @override
+  State<_FormTextField> createState() => _FormTextFieldState();
+}
+
+class _FormTextFieldState extends State<_FormTextField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: widget.initialValue);
   }
 
-  Widget _buildDateField(BuildContext context) {
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return TextField(
+      decoration: InputDecoration(
+        labelText: widget.label,
+        prefixIcon: Icon(widget.icon, size: 20),
+        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
+      ),
+      keyboardType: widget.keyboardType,
+      controller: _controller,
+      onChanged: widget.onChanged,
+    );
+  }
+}
+
+class _DateField extends StatelessWidget {
+  final PassengerFormData formData;
+  final ValueChanged<DateTime> onDatePicked;
+
+  const _DateField({required this.formData, required this.onDatePicked});
+
+  @override
+  Widget build(BuildContext context) {
     final dateStr = formData.dateOfBirth != null
         ? '${formData.dateOfBirth!.day}/${formData.dateOfBirth!.month}/${formData.dateOfBirth!.year}'
         : '';
@@ -163,7 +186,10 @@ class V2PassengerFormCard extends StatelessWidget {
         labelText: 'Date of Birth',
         prefixIcon: const Icon(Icons.calendar_today, size: 20),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
       ),
       controller: TextEditingController(text: dateStr),
       readOnly: true,
@@ -175,35 +201,46 @@ class V2PassengerFormCard extends StatelessWidget {
           lastDate: DateTime.now(),
         );
         if (picked != null) {
-          onUpdateField('dateOfBirth', picked);
-          onChanged();
+          onDatePicked(picked);
         }
       },
     );
   }
+}
 
-  Widget _buildBaggageDropdown() {
-    final levels = ['', 'economy', 'standard', 'premium'];
+class _BaggageDropdown extends StatelessWidget {
+  final String baggageLevel;
+  final ValueChanged<String?> onChanged;
+  final List<ServiceEntity> baggageOptions;
+
+  const _BaggageDropdown({
+    required this.baggageLevel,
+    required this.onChanged,
+    required this.baggageOptions,
+  });
+
+  @override
+  Widget build(BuildContext context) {
     return DropdownButtonFormField<String>(
-      value: formData.baggageLevel.isEmpty ? null : formData.baggageLevel,
+      initialValue: baggageLevel.isEmpty ? null : baggageLevel,
       decoration: InputDecoration(
         labelText: 'Baggage Level',
         prefixIcon: const Icon(Icons.luggage, size: 20),
         border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 12,
+        ),
       ),
       items: [
         const DropdownMenuItem(value: null, child: Text('Select baggage')),
-        for (final l in levels.where((l) => l.isNotEmpty))
+        for (final bag in baggageOptions)
           DropdownMenuItem(
-            value: l,
-            child: Text(l[0].toUpperCase() + l.substring(1)),
+            value: bag.serviceId,
+            child: Text("${bag.name} - ${bag.price.toStringAsFixed(0)}đ"),
           ),
       ],
-      onChanged: (v) {
-        onUpdateField('baggageLevel', v ?? '');
-        onChanged();
-      },
+      onChanged: onChanged,
     );
   }
 }

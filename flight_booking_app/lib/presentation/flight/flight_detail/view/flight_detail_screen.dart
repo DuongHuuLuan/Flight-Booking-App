@@ -4,7 +4,6 @@ import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/cubit/flight_detail_state.dart';
-import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/cabin_class_selector.dart';
 import 'package:flight_booking_app/presentation/flight/flight_detail/view/widgets/flight_summary_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -17,7 +16,6 @@ class FlightDetailScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<FlightDetailCubit>();
     return Scaffold(
       appBar: AppBar(
         title: Text("Flight Details", style: AppTextStyles.heading3),
@@ -25,10 +23,9 @@ class FlightDetailScreen extends StatelessWidget {
       ),
       body: BlocConsumer<FlightDetailCubit, FlightDetailState>(
         listenWhen: (previous, current) =>
-            previous.isLoading != current.isLoading ||
-            previous.isBooking != current.isBooking,
+            previous.isLoading != current.isLoading,
         listener: (context, state) {
-          if (state.isLoading || state.isBooking) {
+          if (state.isLoading) {
             context.showLoading();
           } else {
             context.hideLoading();
@@ -47,27 +44,18 @@ class FlightDetailScreen extends StatelessWidget {
                   child: Column(
                     children: [
                       FlightSummaryCard(detail: detail),
-                      const SizedBox(height: 20),
-                      CabinClassSelector(
-                        cabinClasses: detail.cabinClass,
-                        selected: state.selectedCabinClass,
-                        onSelected: (c) => cubit.selectCabinClass(c),
-                      ),
                       const SizedBox(height: 100),
                     ],
                   ),
                 ),
               ),
               BottomPaymentBar(
-                price: state.selectedCabinClass?.price ?? 0,
-                onPressed: () async {
-                  final flightId = state.flightDetail!.id;
-                  final cabin = state.selectedCabinClass;
-                  if (cabin != null && context.mounted) {
+                price: detail.basePrice,
+                onPressed: () {
+                  if (context.mounted) {
                     context.goToPassengerCount(
-                      flightId: flightId,
-                      cabinClass: cabin.cabinClass.name,
-                      basePrice: cabin.price,
+                      flightId: detail.id,
+                      basePrice: detail.basePrice,
                     );
                   }
                 },

@@ -36,14 +36,16 @@ class ZoneServiceInfo extends StatelessWidget {
         children: [
           Text(
             'Additional Info',
-            style: AppTextStyles.bodyLarge.copyWith(fontWeight: FontWeight.bold),
+            style: AppTextStyles.bodyLarge.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           const SizedBox(height: 12),
           if (hasExtra)
             _InfoTile(
               icon: Icons.event_seat,
               label: 'Zone Surcharge',
-              value: '\$${(zonePrice!).toStringAsFixed(0)}',
+              value: '\$${(zonePrice).toStringAsFixed(0)}',
             ),
           if (hasServices) ...[
             const SizedBox(height: 8),
@@ -114,7 +116,10 @@ class _InfoTile extends StatelessWidget {
         Icon(icon, size: 18, color: AppColor.primary),
         const SizedBox(width: 8),
         Expanded(child: Text(label, style: AppTextStyles.bodySmall)),
-        Text(value, style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold)),
+        Text(
+          value,
+          style: AppTextStyles.bodySmall.copyWith(fontWeight: FontWeight.bold),
+        ),
       ],
     );
   }

@@ -13,7 +13,17 @@ class SelectSeatState {
   final double basePrice;
   final String? error;
 
-  double get totalPrice => basePrice * selectedSeats.length;
+  double get totalPrice {
+    double total = 0;
+    for (final seat in selectedSeats) {
+      final zone = zones.cast<SeatZoneEntity?>().firstWhere(
+        (z) => z?.zoneId == seat.zoneId,
+        orElse: () => null,
+      );
+      total += basePrice * (zone?.priceModifier ?? 1.0);
+    }
+    return total;
+  }
 
   SelectSeatState({
     this.isLoading = false,

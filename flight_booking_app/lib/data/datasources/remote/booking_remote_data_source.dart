@@ -12,13 +12,11 @@ class BookingRemoteDataSource {
 
   Future<BookingEntity> createBooking({
     required String flightId,
-    required String cabinClass,
     required List<SeatInput> seats,
   }) async {
     try {
       final request = CreateBookingRequestModel(
         flightId: flightId,
-        cabinClass: cabinClass,
         seats: seats
             .map(
               (s) => SeatInputModel(seatLabel: s.seatLabel, zoneId: s.zoneId),

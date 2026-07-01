@@ -1,6 +1,5 @@
 import 'package:flight_booking_app/data/models/flight/airline_model.dart';
 import 'package:flight_booking_app/data/models/flight/airport_model.dart';
-import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'flight_model.g.dart';
@@ -17,7 +16,6 @@ class FlightModel {
   final int duration;
   final double price;
   final int stops;
-  final CabinClass cabinClass;
 
   FlightModel({
     required this.id,
@@ -30,7 +28,6 @@ class FlightModel {
     required this.duration,
     required this.price,
     required this.stops,
-    required this.cabinClass,
   });
 
   factory FlightModel.fromJson(Map<String, dynamic> json) =>

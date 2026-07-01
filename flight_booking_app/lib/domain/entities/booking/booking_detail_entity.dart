@@ -77,7 +77,6 @@ class BookingServiceEntity extends Equatable {
 class BookingDetailEntity extends Equatable {
   final String id;
   final String flightId;
-  final String cabinClass;
   final double totalPrice;
   final String status;
   final String? selectedSeats;
@@ -92,7 +91,6 @@ class BookingDetailEntity extends Equatable {
   const BookingDetailEntity({
     required this.id,
     required this.flightId,
-    required this.cabinClass,
     required this.totalPrice,
     required this.status,
     this.selectedSeats,
@@ -108,7 +106,6 @@ class BookingDetailEntity extends Equatable {
   List<Object?> get props => [
     id,
     flightId,
-    cabinClass,
     totalPrice,
     status,
     selectedSeats,

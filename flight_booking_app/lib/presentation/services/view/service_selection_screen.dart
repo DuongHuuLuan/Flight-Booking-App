@@ -1,13 +1,14 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
-import 'package:flight_booking_app/domain/entities/eligible_service_group.dart';
 import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/domain/enums/age_group.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/booking_detail_screen.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_state.dart';
+import 'package:flight_booking_app/presentation/services/view/widgets/passenger_indicator.dart';
+import 'package:flight_booking_app/presentation/services/view/widgets/service_section.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -15,17 +16,21 @@ import 'package:go_router/go_router.dart';
 class ServiceSelectionScreen extends StatefulWidget {
   static String get routerName => '/service-selection';
 
+  final String flightId;
   final String bookingId;
   final double basePrice;
   final int seatCount;
   final List<Map<String, dynamic>> passengers;
+  final String zoneId;
 
   const ServiceSelectionScreen({
     super.key,
+    required this.flightId,
     required this.bookingId,
     required this.basePrice,
     required this.seatCount,
     required this.passengers,
+    this.zoneId = '',
   });
 
   @override
@@ -39,8 +44,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
       widget.passengers[_currentPassengerIndex];
 
   AgeGroup get _ageGroup => AgeGroup.values.firstWhere(
-        (ag) => ag.name == _currentPassenger['ageGroup'],
-      );
+    (ag) => ag.name == _currentPassenger['ageGroup'],
+  );
 
   @override
   void initState() {
@@ -49,9 +54,12 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
   }
 
   void _loadServices() {
+    final zoneId = _currentPassenger['zoneId'] as String? ?? widget.zoneId;
+    final ageGroup = _ageGroup;
     context.read<ServiceSelectionCubit>().loadServices(
-      zoneId: '',
-      ageGroup: _ageGroup,
+      flightId: widget.flightId,
+      zoneId: zoneId,
+      ageGroup: ageGroup,
     );
   }
 
@@ -85,21 +93,21 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
               context.read<ServiceSelectionCubit>().reset();
               _nextPassenger();
             } else {
-              context.push('/booking-detail', extra: {
-                'bookingId': widget.bookingId,
-                'basePrice': widget.basePrice,
-                'seatCount': widget.seatCount,
-              });
+              context.push(
+                BookingDetailScreen.routerName,
+                extra: {
+                  'bookingId': widget.bookingId,
+                  'basePrice': widget.basePrice,
+                  'seatCount': widget.seatCount,
+                },
+              );
             }
           }
         },
         builder: (context, state) {
-          if (state.isLoading && state.serviceGroup == null) {
-            return const Center(child: CircularProgressIndicator());
-          }
           return Column(
             children: [
-              _PassengerIndicator(
+              PassengerIndicator(
                 current: _currentPassengerIndex + 1,
                 total: widget.passengers.length,
                 name: _currentPassenger['name'] as String? ?? '',
@@ -118,7 +126,7 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            _ServiceSection(
+                            ServiceSection(
                               title: 'Meals',
                               icon: Icons.restaurant,
                               services: state.serviceGroup!.meals,
@@ -128,7 +136,7 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
                                   .toggleService(s, d),
                             ),
                             const SizedBox(height: 20),
-                            _ServiceSection(
+                            ServiceSection(
                               title: 'Drinks',
                               icon: Icons.local_drink,
                               services: state.serviceGroup!.drinks,
@@ -138,15 +146,18 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
                                   .toggleService(s, d),
                             ),
                             const SizedBox(height: 20),
-                            _ServiceSection(
-                              title: 'Baggage',
-                              icon: Icons.luggage,
-                              services: state.serviceGroup!.baggage,
-                              selections: state.tempSelections,
-                              onToggle: (s, d) => context
-                                  .read<ServiceSelectionCubit>()
-                                  .toggleService(s, d),
-                            ),
+                            if ((_currentPassenger['baggageLevel'] as String?)
+                                    ?.isEmpty ??
+                                true)
+                              ServiceSection(
+                                title: 'Baggage',
+                                icon: Icons.luggage,
+                                services: state.serviceGroup!.baggage,
+                                selections: state.tempSelections,
+                                onToggle: (s, d) => context
+                                    .read<ServiceSelectionCubit>()
+                                    .toggleService(s, d),
+                              ),
                           ],
                         ),
                       ),
@@ -155,218 +166,48 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
           );
         },
       ),
-      bottomNavigationBar: BlocBuilder<ServiceSelectionCubit,
-          ServiceSelectionState>(
-        builder: (context, state) {
-          return BottomPaymentBar(
-            price: widget.basePrice * widget.seatCount,
-            buttonText: _currentPassengerIndex < widget.passengers.length - 1
-                ? 'Save & Next Passenger'
-                : 'Save & Continue',
-            onPressed: state.isSaving || state.serviceGroup == null
-                ? null
-                : () => context.read<ServiceSelectionCubit>().confirmServices(
-                      bookingId: widget.bookingId,
-                      passengerId: '',
-                      seatLabel:
-                          _currentPassenger['seatLabel'] as String? ?? '',
-                    ),
-          );
-        },
-      ),
-    );
-  }
-}
-
-class _PassengerIndicator extends StatelessWidget {
-  final int current;
-  final int total;
-  final String name;
-  final String seatLabel;
-
-  const _PassengerIndicator({
-    required this.current,
-    required this.total,
-    required this.name,
-    required this.seatLabel,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: double.infinity,
-      color: AppColor.background,
-      padding: const EdgeInsets.all(16),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-            decoration: BoxDecoration(
-              color: AppColor.primary,
-              borderRadius: BorderRadius.circular(6),
-            ),
-            child: Text(
-              '$current / $total',
-              style: AppTextStyles.caption.copyWith(color: AppColor.white),
-            ),
+      bottomNavigationBar:
+          BlocBuilder<ServiceSelectionCubit, ServiceSelectionState>(
+            builder: (context, state) {
+              final serviceTotal = state.serviceGroup == null
+                  ? 0.0
+                  : state.tempSelections.entries.fold<double>(0, (sum, e) {
+                      final allServices = [
+                        ...state.serviceGroup!.meals,
+                        ...state.serviceGroup!.drinks,
+                        ...state.serviceGroup!.baggage,
+                      ];
+                      final svc = allServices.firstWhere(
+                        (s) => s.serviceId == e.key,
+                        orElse: () => const ServiceEntity(
+                          serviceId: '',
+                          type: '',
+                          name: '',
+                          price: 0,
+                          maxPerPassenger: 0,
+                        ),
+                      );
+                      return sum + svc.price * e.value;
+                    });
+              return BottomPaymentBar(
+                price: widget.basePrice * widget.seatCount + serviceTotal,
+                buttonText:
+                    _currentPassengerIndex < widget.passengers.length - 1
+                    ? 'Save & Next Passenger'
+                    : 'Save & Continue',
+                onPressed: state.isSaving || state.serviceGroup == null
+                    ? null
+                    : () =>
+                          context.read<ServiceSelectionCubit>().confirmServices(
+                            bookingId: widget.bookingId,
+                            passengerId:
+                                _currentPassenger['passengerId'] as String,
+                            seatLabel:
+                                _currentPassenger['seatLabel'] as String? ?? '',
+                          ),
+              );
+            },
           ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  name.isEmpty ? 'Passenger $current' : name,
-                  style: AppTextStyles.bodyLarge,
-                ),
-                if (seatLabel.isNotEmpty)
-                  Text(
-                    'Seat $seatLabel',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColor.greyDark,
-                    ),
-                  ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _ServiceSection extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final List<ServiceEntity> services;
-  final Map<String, int> selections;
-  final void Function(ServiceEntity service, int delta) onToggle;
-
-  const _ServiceSection({
-    required this.title,
-    required this.icon,
-    required this.services,
-    required this.selections,
-    required this.onToggle,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    if (services.isEmpty) return const SizedBox.shrink();
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Row(
-          children: [
-            Icon(icon, size: 20, color: AppColor.primary),
-            const SizedBox(width: 8),
-            Text(title, style: AppTextStyles.heading3),
-          ],
-        ),
-        const SizedBox(height: 12),
-        for (final service in services)
-          _ServiceTile(
-            service: service,
-            count: selections[service.serviceId] ?? 0,
-            onIncrement: () => onToggle(service, 1),
-            onDecrement: () => onToggle(service, -1),
-          ),
-      ],
-    );
-  }
-}
-
-class _ServiceTile extends StatelessWidget {
-  final ServiceEntity service;
-  final int count;
-  final VoidCallback onIncrement;
-  final VoidCallback onDecrement;
-
-  const _ServiceTile({
-    required this.service,
-    required this.count,
-    required this.onIncrement,
-    required this.onDecrement,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      margin: const EdgeInsets.only(bottom: 8),
-      elevation: 0,
-      color: AppColor.background,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        child: Row(
-          children: [
-            Expanded(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text(
-                    service.name,
-                    style: AppTextStyles.bodyLarge,
-                  ),
-                  Text(
-                    '\$${service.price.toStringAsFixed(0)}',
-                    style: AppTextStyles.caption.copyWith(
-                      color: AppColor.primary,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Row(
-              children: [
-                _IconButton(
-                  icon: Icons.remove,
-                  onPressed: count <= 0 ? null : onDecrement,
-                ),
-                SizedBox(
-                  width: 32,
-                  child: Text(
-                    '$count',
-                    textAlign: TextAlign.center,
-                    style: AppTextStyles.bodyLarge,
-                  ),
-                ),
-                _IconButton(
-                  icon: Icons.add,
-                  onPressed: count >= service.maxPerPassenger
-                      ? null
-                      : onIncrement,
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _IconButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onPressed;
-
-  const _IconButton({required this.icon, this.onPressed});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: onPressed != null
-          ? AppColor.primary.withValues(alpha: 0.1)
-          : AppColor.border,
-      shape: const CircleBorder(),
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onPressed,
-        child: Padding(
-          padding: const EdgeInsets.all(6),
-          child: Icon(icon, size: 18, color: onPressed != null ? AppColor.primary : AppColor.greyDark),
-        ),
-      ),
     );
   }
 }

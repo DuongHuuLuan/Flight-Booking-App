@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
@@ -40,15 +41,11 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
 
   void _save() {
     if (_passwordController.text != _confirmPasswordController.text) {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
+      context.showError("Passwords do not match");
       return;
     }
     if (_passwordController.text.length < 6) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text("Password must be at least 6 characters")),
-      );
+      context.showError("Password must be at least 6 characters");
       return;
     }
     _authBloc.add(
@@ -80,12 +77,7 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
             context.hideLoading();
           }
           if (state.errorMessage != null) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(state.errorMessage!),
-                backgroundColor: AppColor.error,
-              ),
-            );
+            context.showError(state.errorMessage!);
           }
         },
         builder: (context, state) {

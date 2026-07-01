@@ -15,15 +15,7 @@ class FlightDetailMapper {
       arrivalTime: model.arrivalTime,
       stops: model.stops,
       duration: model.duration,
-      cabinClass: model.cabinClass
-          .map(
-            (e) => CabinClassOption(
-              cabinClass: e.cabinClass,
-              price: e.price,
-              amenities: e.amenities,
-            ),
-          )
-          .toList(),
+      basePrice: model.basePrice,
     );
   }
 }
