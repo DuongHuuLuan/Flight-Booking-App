@@ -59,6 +59,15 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     final next = current + delta;
     if (next < 0 || next > service.maxPerPassenger) return;
     final updated = Map<String, int>.from(state.tempSelections);
+    if (service.type == 'baggage' && delta > 0) {
+      final baggageIds =
+          state.serviceGroup?.baggage.map((e) => e.serviceId).toList() ?? [];
+      for (final id in baggageIds) {
+        if (id != service.serviceId) {
+          updated[id] = 0;
+        }
+      }
+    }
     updated[service.serviceId] = next;
     emit(state.copyWith(tempSelections: updated));
   }
