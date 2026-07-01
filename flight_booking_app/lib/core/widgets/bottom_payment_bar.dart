@@ -7,6 +7,7 @@ class BottomPaymentBar extends StatelessWidget {
   final String? label;
   final double? price;
   final String? buttonText;
+  final TextStyle? buttonTextStyle;
   final VoidCallback? onPressed;
   final bool? showShadow;
   final String? currency;
@@ -18,6 +19,7 @@ class BottomPaymentBar extends StatelessWidget {
     this.label,
     this.price,
     this.buttonText,
+    this.buttonTextStyle,
     this.onPressed,
     this.showShadow,
     this.currency,
@@ -99,9 +101,11 @@ class BottomPaymentBar extends StatelessWidget {
                 ),
                 child: Text(
                   displayButtonText,
-                  style: AppTextStyles.button.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style:
+                      buttonTextStyle ??
+                      AppTextStyles.button.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
             ),
