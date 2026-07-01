@@ -193,8 +193,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
                 price: widget.basePrice * widget.seatCount + serviceTotal,
                 buttonText:
                     _currentPassengerIndex < widget.passengers.length - 1
-                    ? 'Save & Next Passenger'
-                    : 'Save & Continue',
+                    ? 'Next Passenger'
+                    : 'Continue',
                 onPressed: state.isSaving || state.serviceGroup == null
                     ? null
                     : () =>
