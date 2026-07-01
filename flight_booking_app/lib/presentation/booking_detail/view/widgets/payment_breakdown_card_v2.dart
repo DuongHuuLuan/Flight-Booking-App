@@ -17,12 +17,12 @@ class PriceBreakdownCardV2 extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final pb = priceBreakdown;
-    final zoneTotal = pb?['zone_price_total'] as num? ?? bookingDetail.zonePriceTotal ?? 0;
-    final serviceTotal = pb?['service_total'] as num? ?? bookingDetail.serviceTotal ?? 0;
-    final baggageTotal = pb?['baggage_total'] as num? ?? bookingDetail.baggageTotal ?? 0;
-    final baseTotal = pb?['base_price_total'] as num? ??
+    final zoneTotal = pb?['zoneSurchargeTotal'] as num? ?? bookingDetail.zonePriceTotal ?? 0;
+    final serviceTotal = pb?['serviceTotal'] as num? ?? bookingDetail.serviceTotal ?? 0;
+    final baggageTotal = pb?['baggageTotal'] as num? ?? bookingDetail.baggageTotal ?? 0;
+    final baseTotal = pb?['baseFare'] as num? ??
         (bookingDetail.totalPrice - zoneTotal - serviceTotal - baggageTotal);
-    final total = pb?['total_price'] as num? ?? bookingDetail.totalPrice;
+    final total = pb?['grandTotal'] as num? ?? bookingDetail.totalPrice;
     final passengerCount = bookingDetail.passengers.length;
 
     return SectionCard(

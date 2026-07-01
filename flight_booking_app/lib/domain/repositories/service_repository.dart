@@ -6,10 +6,12 @@ class PassengerServiceInput {
   final String passengerId;
   final String seatLabel;
   final List<String> serviceIds;
+  final String baggageLevel;
   const PassengerServiceInput({
     required this.passengerId,
     required this.seatLabel,
     required this.serviceIds,
+    this.baggageLevel = '',
   });
 }
 

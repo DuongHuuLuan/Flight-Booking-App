@@ -81,6 +81,7 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     required String bookingId,
     required String passengerId,
     required String seatLabel,
+    required String baggageLevel,
   }) async {
     emit(state.copyWith(isSaving: true));
     final selected = state.tempSelections.entries
@@ -92,6 +93,7 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
       passengerId: passengerId,
       seatLabel: seatLabel,
       serviceIds: selected,
+      baggageLevel: baggageLevel,
     );
 
     final result = await assignServices(
