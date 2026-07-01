@@ -1,4 +1,3 @@
-import 'package:flight_booking_app/domain/enums/cabin_class.dart';
 import 'package:flight_booking_app/domain/enums/trip_type.dart';
 
 class FlightSearchParams {
@@ -8,7 +7,6 @@ class FlightSearchParams {
   final DateTime departureDate;
   final DateTime? returnDate;
   final int passengerCount;
-  final CabinClass cabinClass;
 
   FlightSearchParams({
     required this.tripType,
@@ -17,7 +15,6 @@ class FlightSearchParams {
     required this.departureDate,
     this.returnDate,
     required this.passengerCount,
-    required this.cabinClass,
   });
 
   FlightSearchParams copyWith({
@@ -27,7 +24,6 @@ class FlightSearchParams {
     DateTime? departureDate,
     DateTime? returnDate,
     int? passengerCount,
-    CabinClass? cabinClass,
   }) {
     return FlightSearchParams(
       tripType: tripType ?? this.tripType,
@@ -36,7 +32,6 @@ class FlightSearchParams {
       departureDate: departureDate ?? this.departureDate,
       returnDate: returnDate ?? this.returnDate,
       passengerCount: passengerCount ?? this.passengerCount,
-      cabinClass: cabinClass ?? this.cabinClass,
     );
   }
 }

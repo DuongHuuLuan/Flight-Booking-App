@@ -23,7 +23,7 @@ class SeatRemoteDataSource {
     // MỚI
     try {
       final response = await _seatService.getSeatZones(flightId);
-      final models = response.data.data!;
+      final models = response.data;
       return models.map(SeatZoneMapper.fromModel).toList();
     } catch (e) {
       throw Exception(e.toString());

@@ -5,7 +5,6 @@ class SeatMapper {
   static SeatEntity fromModel(SeatModel model) {
     return SeatEntity(
       seatLabel: model.seatLabel,
-      cabinClass: model.cabinClass,
       rowNumber: model.rowNumber,
       position: model.position,
       status: model.status,

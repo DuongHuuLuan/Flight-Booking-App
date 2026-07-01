@@ -339,7 +339,6 @@ Future<void> init() async {
       getSeatZones: getIt<GetSeatZonesUsecase>(),
       createBooking: getIt<CreateBookingUsecase>(),
       flightId: '',
-      cabinClass: '',
       basePrice: 0,
     ),
   );

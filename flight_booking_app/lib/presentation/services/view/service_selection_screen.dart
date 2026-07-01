@@ -1,11 +1,10 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
-import 'package:flight_booking_app/domain/entities/eligible_service_group.dart';
 import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/domain/enums/age_group.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/booking_detail_screen.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_state.dart';
 import 'package:flutter/material.dart';
@@ -15,17 +14,21 @@ import 'package:go_router/go_router.dart';
 class ServiceSelectionScreen extends StatefulWidget {
   static String get routerName => '/service-selection';
 
+  final String flightId;
   final String bookingId;
   final double basePrice;
   final int seatCount;
   final List<Map<String, dynamic>> passengers;
+  final String zoneId;
 
   const ServiceSelectionScreen({
     super.key,
+    required this.flightId,
     required this.bookingId,
     required this.basePrice,
     required this.seatCount,
     required this.passengers,
+    this.zoneId = '',
   });
 
   @override
@@ -39,8 +42,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
       widget.passengers[_currentPassengerIndex];
 
   AgeGroup get _ageGroup => AgeGroup.values.firstWhere(
-        (ag) => ag.name == _currentPassenger['ageGroup'],
-      );
+    (ag) => ag.name == _currentPassenger['ageGroup'],
+  );
 
   @override
   void initState() {
@@ -50,7 +53,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
 
   void _loadServices() {
     context.read<ServiceSelectionCubit>().loadServices(
-      zoneId: '',
+      flightId: widget.flightId,
+      zoneId: widget.zoneId,
       ageGroup: _ageGroup,
     );
   }
@@ -85,11 +89,14 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
               context.read<ServiceSelectionCubit>().reset();
               _nextPassenger();
             } else {
-              context.push('/booking-detail', extra: {
-                'bookingId': widget.bookingId,
-                'basePrice': widget.basePrice,
-                'seatCount': widget.seatCount,
-              });
+              context.push(
+                BookingDetailScreen.routerName,
+                extra: {
+                  'bookingId': widget.bookingId,
+                  'basePrice': widget.basePrice,
+                  'seatCount': widget.seatCount,
+                },
+              );
             }
           }
         },
@@ -155,8 +162,7 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
           );
         },
       ),
-      bottomNavigationBar: BlocBuilder<ServiceSelectionCubit,
-          ServiceSelectionState>(
+      bottomNavigationBar: BlocBuilder<ServiceSelectionCubit, ServiceSelectionState>(
         builder: (context, state) {
           return BottomPaymentBar(
             price: widget.basePrice * widget.seatCount,
@@ -166,11 +172,11 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
             onPressed: state.isSaving || state.serviceGroup == null
                 ? null
                 : () => context.read<ServiceSelectionCubit>().confirmServices(
-                      bookingId: widget.bookingId,
-                      passengerId: '',
-                      seatLabel:
-                          _currentPassenger['seatLabel'] as String? ?? '',
-                    ),
+                    bookingId: widget.bookingId,
+                    passengerId:
+                        'p-${_currentPassenger['index'] ?? _currentPassengerIndex}',
+                    seatLabel: _currentPassenger['seatLabel'] as String? ?? '',
+                  ),
           );
         },
       ),
@@ -304,10 +310,7 @@ class _ServiceTile extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text(
-                    service.name,
-                    style: AppTextStyles.bodyLarge,
-                  ),
+                  Text(service.name, style: AppTextStyles.bodyLarge),
                   Text(
                     '\$${service.price.toStringAsFixed(0)}',
                     style: AppTextStyles.caption.copyWith(
@@ -364,7 +367,11 @@ class _IconButton extends StatelessWidget {
         onTap: onPressed,
         child: Padding(
           padding: const EdgeInsets.all(6),
-          child: Icon(icon, size: 18, color: onPressed != null ? AppColor.primary : AppColor.greyDark),
+          child: Icon(
+            icon,
+            size: 18,
+            color: onPressed != null ? AppColor.primary : AppColor.greyDark,
+          ),
         ),
       ),
     );

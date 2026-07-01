@@ -17,11 +17,13 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
   }) : super(const ServiceSelectionState());
 
   Future<void> loadServices({
+    required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
     emit(state.copyWith(isLoading: true));
     final result = await getEligibleServices(
+      flightId: flightId,
       zoneId: zoneId,
       ageGroup: ageGroup,
     );

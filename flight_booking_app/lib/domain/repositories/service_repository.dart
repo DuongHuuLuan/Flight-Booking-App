@@ -15,6 +15,7 @@ class PassengerServiceInput {
 
 abstract class ServiceRepository {
   Future<Either<Exception, EligibleServiceGroup>> getEligibleServices({
+    required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   });

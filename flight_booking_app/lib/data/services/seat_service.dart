@@ -18,7 +18,7 @@ abstract class SeatService {
     @Path("flightId") String flightId,
   );
   @GET("/flights/{flightId}/zones")
-  Future<HttpResponse<BaseResponse<List<SeatZoneModel>>>> getSeatZones(
+  Future<HttpResponse<List<SeatZoneModel>>> getSeatZones(
     @Path("flightId") String flightId,
   );
 

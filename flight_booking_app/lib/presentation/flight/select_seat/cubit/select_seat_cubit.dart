@@ -1,3 +1,4 @@
+import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
 import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
@@ -11,9 +12,10 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   final GetSeatZonesUsecase getSeatZones;
   final CreateBookingUsecase createBooking;
   String _flightId;
-  String _cabinClass;
+  int _children;
   set flightId(String v) => _flightId = v;
-  set cabinClass(String v) => _cabinClass = v;
+  String get flightId => _flightId;
+  set children(int v) => _children = v;
   void setBasePrice(double v) => emit(state.copyWith(basePrice: v));
 
   SelectSeatCubit({
@@ -21,23 +23,19 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     required this.getSeatZones,
     required this.createBooking,
     required String flightId,
-    required String cabinClass,
     required double basePrice,
   }) : _flightId = flightId,
-       _cabinClass = cabinClass,
+       _children = 0,
        super(SelectSeatState(basePrice: basePrice));
 
   Future<void> loadSeats() async {
     emit(state.copyWith(isLoading: true));
-    final results = await Future.wait([
-      getSeatLayout(_flightId),
-      getSeatZones(_flightId),
-    ]);
-    results[0].fold(
+    final seatsResult = await getSeatLayout(_flightId);
+    final zonesResult = await getSeatZones(_flightId);
+    seatsResult.fold(
       (error) =>
           emit(state.copyWith(isLoading: false, error: error.toString())),
       (seats) {
-        final zonesResult = results[1];
         if (zonesResult.isRight()) {
           final zones = zonesResult.getOrElse(() => <SeatZoneEntity>[]);
           emit(
@@ -59,13 +57,62 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     emit(state.copyWith(selectedZoneId: zoneId));
   }
 
+  SeatEntity? _findSeat(String seatLabel) {
+    return state.seats.cast<SeatEntity?>().firstWhere(
+      (s) => s?.seatLabel == seatLabel,
+      orElse: () => null,
+    );
+  }
+
+  String? _adjacentLabel(SeatEntity seat) {
+    final adj = state.seats.cast<SeatEntity?>().firstWhere(
+      (s) => s?.rowNumber == seat.rowNumber && s?.position == seat.position + 1,
+      orElse: () => null,
+    );
+    return adj?.seatLabel;
+  }
+
+  int get _unpairedChildCount {
+    if (_children == 0) return 0;
+    final selected = state.selectedSeats;
+    final used = <String>{};
+    int pairs = 0;
+    for (final s in selected) {
+      if (used.contains(s.seatLabel)) continue;
+      final entity = _findSeat(s.seatLabel);
+      if (entity == null) continue;
+      final adj = _adjacentLabel(entity);
+      if (adj != null && selected.any((x) => x.seatLabel == adj)) {
+        pairs++;
+        used.add(s.seatLabel);
+        used.add(adj);
+      }
+    }
+    return _children - pairs;
+  }
+
   void toggleSeat(String seatLabel, String zoneId) {
     final updated = List<SeatInput>.from(state.selectedSeats);
     final idx = updated.indexWhere((s) => s.seatLabel == seatLabel);
+    final seat = _findSeat(seatLabel);
+    final actualZoneId = seat?.zoneId ?? zoneId;
+
     if (idx >= 0) {
       updated.removeAt(idx);
+      if (_children > 0 && seat != null) {
+        final adj = _adjacentLabel(seat);
+        if (adj != null) {
+          updated.removeWhere((s) => s.seatLabel == adj);
+        }
+      }
     } else {
-      updated.add(SeatInput(seatLabel: seatLabel, zoneId: zoneId));
+      updated.add(SeatInput(seatLabel: seatLabel, zoneId: actualZoneId));
+      if (_children > 0 && seat != null && _unpairedChildCount > 0) {
+        final adj = _adjacentLabel(seat);
+        if (adj != null && !updated.any((s) => s.seatLabel == adj)) {
+          updated.add(SeatInput(seatLabel: adj, zoneId: actualZoneId));
+        }
+      }
     }
     emit(state.copyWith(selectedSeats: updated));
   }
@@ -80,7 +127,6 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
 
     final result = await createBooking(
       flightId: _flightId,
-      cabinClass: _cabinClass,
       seats: state.selectedSeats,
     );
 

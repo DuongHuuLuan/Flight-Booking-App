@@ -11,17 +11,19 @@ class ServiceRemoteDataSource {
   ServiceRemoteDataSource(this._serviceService);
 
   Future<EligibleServiceGroup> getEligibleServices({
+    required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
     try {
       final response = await _serviceService.getEligibleServices(
+        flightId,
         zoneId,
         ageGroup.name,
       );
       final data = response.data.data!;
 
-      List<ServiceEntity> _parseList(String key) => (data[key] as List)
+      List<ServiceEntity> parseList(String key) => (data[key] as List)
           .map(
             (e) => ServiceMapper.fromModel(
               ServiceModel.fromJson(e as Map<String, dynamic>),
@@ -30,10 +32,15 @@ class ServiceRemoteDataSource {
           .toList();
 
       return EligibleServiceGroup(
-        meals: _parseList('meals'),
-        drinks: _parseList('drinks'),
-        baggage: _parseList('baggage'),
-        limits: Map<String, int>.from(data['limits'] ?? {}),
+        meals: parseList('meals'),
+        drinks: parseList('drinks'),
+        baggage: parseList('baggage'),
+        limits: (data['limits'] as List?)
+            ?.map((e) => MapEntry(e['serviceType'] as String, e['maxQuantity'] as int))
+            .fold<Map<String, int>>({}, (map, entry) {
+              map[entry.key] = entry.value;
+              return map;
+            }) ?? <String, int>{},
       );
     } catch (e) {
       throw Exception(e.toString());
@@ -46,7 +53,7 @@ class ServiceRemoteDataSource {
   }) async {
     try {
       await _serviceService.assignServices(bookingId, {
-        'passenger_services': passengerServices,
+        'passengers': passengerServices,
       });
     } catch (e) {
       throw Exception(e.toString());

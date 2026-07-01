@@ -14,13 +14,11 @@ class BookingRepositoryImpl implements BookingRepository {
   @override
   Future<Either<Exception, BookingEntity>> createBooking({
     required String flightId,
-    required String cabinClass,
     required List<SeatInput> seats,
   }) async {
     try {
       final result = await _dataSource.createBooking(
         flightId: flightId,
-        cabinClass: cabinClass,
         seats: seats,
       );
       return Right(result);

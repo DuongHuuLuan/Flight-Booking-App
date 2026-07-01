@@ -2,7 +2,6 @@ import 'package:equatable/equatable.dart';
 
 class SeatEntity extends Equatable {
   final String seatLabel;
-  final String cabinClass;
   final int rowNumber;
   final int position;
   final String status;
@@ -12,7 +11,6 @@ class SeatEntity extends Equatable {
 
   const SeatEntity({
     required this.seatLabel,
-    required this.cabinClass,
     required this.rowNumber,
     required this.position,
     required this.status,
@@ -24,7 +22,6 @@ class SeatEntity extends Equatable {
   @override
   List<Object?> get props => [
     seatLabel,
-    cabinClass,
     rowNumber,
     position,
     status,

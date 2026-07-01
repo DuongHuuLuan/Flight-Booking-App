@@ -1,8 +1,10 @@
 import 'package:json_annotation/json_annotation.dart';
+
 part 'service_model.g.dart';
 
 @JsonSerializable()
 class ServiceModel {
+  @JsonKey(name: "id")
   final String serviceId;
   final String type;
   final String name;
@@ -15,8 +17,9 @@ class ServiceModel {
     required this.name,
     required this.price,
     required this.maxPerPassenger,
-});
+  });
 
-  factory ServiceModel.fromJson(Map<String, dynamic> json) => _$ServiceModelFromJson(json);
+  factory ServiceModel.fromJson(Map<String, dynamic> json) =>
+      _$ServiceModelFromJson(json);
   Map<String, dynamic> toJson() => _$ServiceModelToJson(this);
 }

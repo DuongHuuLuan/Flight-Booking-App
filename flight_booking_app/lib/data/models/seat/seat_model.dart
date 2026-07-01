@@ -5,7 +5,6 @@ part 'seat_model.g.dart';
 @JsonSerializable()
 class SeatModel {
   final String seatLabel;
-  final String cabinClass;
   final int rowNumber;
   final int position;
   final String status;
@@ -15,7 +14,6 @@ class SeatModel {
 
   SeatModel({
     required this.seatLabel,
-    required this.cabinClass,
     required this.rowNumber,
     required this.position,
     required this.status,

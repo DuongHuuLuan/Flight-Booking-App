@@ -1,11 +1,10 @@
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_cubit.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_state.dart';
 import 'package:flight_booking_app/presentation/passenger/view/widgets/v2_passenger_form_card.dart';
+import 'package:flight_booking_app/presentation/services/view/service_selection_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -16,12 +15,16 @@ class PassengerDetailScreen extends StatefulWidget {
   final String bookingId;
   final int seatCount;
   final double basePrice;
+  final String zoneId;
+  final String flightId;
 
   const PassengerDetailScreen({
     super.key,
     required this.bookingId,
     required this.seatCount,
     required this.basePrice,
+    this.zoneId = '',
+    required this.flightId,
   });
 
   @override
@@ -29,39 +32,39 @@ class PassengerDetailScreen extends StatefulWidget {
 }
 
 class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
-  bool _allValid = false;
-
-  void _validate() {
-    final cubit = context.read<PassengerCubit>();
-    final forms = cubit.state.forms;
-    setState(() {
-      _allValid = forms.every((f) => f.name.isNotEmpty && f.mobilePhone.isNotEmpty);
-    });
-  }
-
   Future<void> _onSave() async {
     final cubit = context.read<PassengerCubit>();
     final success = await cubit.savePassengers(bookingId: widget.bookingId);
     if (success && mounted) {
-      final passengers = cubit.state.forms.map((f) => {
-        'seatLabel': f.seatLabel,
-        'ageGroup': f.ageGroup.name,
-        'name': f.name,
-        'mobilePhone': f.mobilePhone,
-        'passportNumber': f.passportNumber,
-        'nationality': f.nationality,
-        'address': f.address,
-        'email': f.email,
-        'idNumber': f.idNumber,
-        'baggageLevel': f.baggageLevel,
-        'dateOfBirth': f.dateOfBirth?.toIso8601String(),
+      final passengers = cubit.state.forms.asMap().entries.map((e) {
+        final i = e.key;
+        final f = e.value;
+        return {
+          'index': i,
+          'seatLabel': f.seatLabel,
+          'ageGroup': f.ageGroup.name,
+          'name': f.name,
+          'mobilePhone': f.mobilePhone,
+          'passportNumber': f.passportNumber,
+          'nationality': f.nationality,
+          'address': f.address,
+          'email': f.email,
+          'idNumber': f.idNumber,
+          'baggageLevel': f.baggageLevel,
+          'dateOfBirth': f.dateOfBirth?.toIso8601String(),
+        };
       }).toList();
-      context.push('/service-selection', extra: {
-        'bookingId': widget.bookingId,
-        'seatCount': widget.seatCount,
-        'basePrice': widget.basePrice,
-        'passengers': passengers,
-      });
+      context.push(
+        ServiceSelectionScreen.routerName,
+        extra: {
+          'bookingId': widget.bookingId,
+          'seatCount': widget.seatCount,
+          'basePrice': widget.basePrice,
+          'passengers': passengers,
+          'zoneId': widget.zoneId,
+          'flightId': widget.flightId,
+        },
+      );
     }
   }
 
@@ -93,9 +96,9 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
                         V2PassengerFormCard(
                           formData: state.forms[i],
                           index: i + 1,
-                          onChanged: _validate,
-                          onUpdateField: (field, value) =>
-                              context.read<PassengerCubit>().updateField(i, field, value),
+                          onUpdateField: (field, value) => context
+                              .read<PassengerCubit>()
+                              .updateField(i, field, value),
                         ),
                       const SizedBox(height: 100),
                     ],
@@ -104,7 +107,7 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
               ),
               BottomPaymentBar(
                 price: widget.basePrice * widget.seatCount,
-                buttonText: 'Continue to Services',
+                buttonText: 'Continue',
                 onPressed: state.isLoading ? null : _onSave,
               ),
             ],

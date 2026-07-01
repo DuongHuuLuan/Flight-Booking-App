@@ -38,7 +38,6 @@ class BookingDetailMapper {
     return BookingDetailEntity(
       id: model.id,
       flightId: model.flightId,
-      cabinClass: model.cabinClass,
       totalPrice: model.totalPrice,
       status: model.status,
       selectedSeats: model.selectedSeats,

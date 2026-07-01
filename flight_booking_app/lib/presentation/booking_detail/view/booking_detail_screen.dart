@@ -1,5 +1,5 @@
-import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/error_snack_bar.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
@@ -32,11 +32,7 @@ class BookingDetailScreen extends StatefulWidget {
 }
 
 class _BookingDetailScreenState extends State<BookingDetailScreen> {
-  @override
-  void initState() {
-    super.initState();
-    context.read<BookingDetailCubit>().loadPriceBreakdown(widget.bookingId);
-  }
+  bool _priceBreakdownFetched = false;
 
   @override
   Widget build(BuildContext context) {
@@ -48,21 +44,21 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
       body: BlocConsumer<BookingDetailCubit, BookingDetailState>(
         listenWhen: (previous, current) =>
             previous.isLoading != current.isLoading ||
-            previous.error != current.error,
+            previous.error != current.error ||
+            previous.bookingDetail != current.bookingDetail,
         listener: (context, state) {
           if (state.isLoading) {
             context.showLoading();
           } else {
             context.hideLoading();
           }
+          if (state.bookingDetail != null && !_priceBreakdownFetched) {
+            _priceBreakdownFetched = true;
+            context.read<BookingDetailCubit>().loadPriceBreakdown(widget.bookingId);
+          }
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
-                  content: Text(state.error!),
-                  backgroundColor: AppColor.error,
-                ),
-              );
+              context.showError(state.error!);
             });
           }
         },
@@ -74,14 +70,12 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
               children: [
                 FlightInfoCard(
                   flight: detail.flight,
-                  cabinClass: detail.cabinClass,
                   price: detail.totalPrice,
                 ),
                 PassengerInfoCard(passengers: detail.passengers),
                 TicketInfoCard(
                   flight: detail.flight,
                   selectedSeats: detail.selectedSeats,
-                  cabinClass: detail.cabinClass,
                 ),
                 if (detail.services != null && detail.services!.isNotEmpty)
                   ServiceListCard(services: detail.services!),

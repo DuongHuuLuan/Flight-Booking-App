@@ -8,9 +8,14 @@ class GetEligibleServicesUsecase {
   GetEligibleServicesUsecase(this.repository);
 
   Future<Either<Exception, EligibleServiceGroup>> call({
+    required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   }) {
-    return repository.getEligibleServices(zoneId: zoneId, ageGroup: ageGroup);
+    return repository.getEligibleServices(
+      flightId: flightId,
+      zoneId: zoneId,
+      ageGroup: ageGroup,
+    );
   }
 }

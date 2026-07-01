@@ -11,11 +11,13 @@ class ServiceRepositoryImpl implements ServiceRepository {
 
   @override
   Future<Either<Exception, EligibleServiceGroup>> getEligibleServices({
+    required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
     try {
       final result = await _dataSource.getEligibleServices(
+        flightId: flightId,
         zoneId: zoneId,
         ageGroup: ageGroup,
       );
@@ -35,8 +37,8 @@ class ServiceRepositoryImpl implements ServiceRepository {
           .map(
             (ps) => {
               'passenger_id': ps.passengerId,
-              'seat_label': ps.seatLabel,
               'service_ids': ps.serviceIds,
+              'baggage_level': 'none',
             },
           )
           .toList();

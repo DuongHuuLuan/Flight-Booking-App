@@ -8,6 +8,7 @@ import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_map_view.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_status_legend.dart';
+import 'package:flight_booking_app/presentation/passenger/view/passenger_detail_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -71,11 +72,20 @@ class SelectSeatScreen extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                const SeatStatusLegend(),
+                SeatStatusLegend(
+                  zoneColors: state.zones.map((z) => ZoneColorInfo(
+                    color: parseZoneColor(z.colorHex),
+                    name: z.zoneName,
+                  )).toList(),
+                ),
 
                 const SizedBox(height: 32),
                 Expanded(
-                  child: SeatMapView(state: state, onSeatTap: cubit.toggleSeat),
+                  child: SeatMapView(
+                    state: state,
+                    onSeatTap: (seatLabel) =>
+                        cubit.toggleSeat(seatLabel, state.selectedZoneId ?? ""),
+                  ),
                 ),
 
                 BottomPaymentBar(
@@ -93,16 +103,21 @@ class SelectSeatScreen extends StatelessWidget {
                           final bookingId = await cubit.confirmSeat();
                           if (bookingId != null && context.mounted) {
                             final ageGroups = _ageGroups;
-                            final seatLabels =
-                                state.selectedSeats.map((s) => s.seatLabel).toList();
+                            final seatLabels = state.selectedSeats
+                                .map((s) => s.seatLabel)
+                                .toList();
                             context.push(
-                              '/passenger-detail',
+                              PassengerDetailScreen.routerName,
                               extra: {
                                 'bookingId': bookingId,
                                 'seatCount': state.selectedSeats.length,
                                 'basePrice': state.basePrice,
-                                'ageGroups': ageGroups.map((ag) => ag.name).toList(),
+                                'ageGroups': ageGroups
+                                    .map((ag) => ag.name)
+                                    .toList(),
                                 'seatLabels': seatLabels,
+                                'zoneId': state.selectedZoneId ?? '',
+                                'flightId': cubit.flightId,
                               },
                             );
                           }

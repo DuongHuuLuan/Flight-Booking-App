@@ -89,8 +89,8 @@ class PaymentMethodScreen extends StatelessWidget {
             onPressed: state.selectedCard == null || state.isProcessing
                 ? null
                 : () async {
-                    final success = await cubit.processPayment();
-                    if (success && context.mounted && booking != null) {
+                    final success = await cubit.processPayment(booking!.id);
+                    if (success && context.mounted) {
                       _showSuccessDialog(context, booking);
                     }
                   },

@@ -19,7 +19,7 @@ class HorizontalChipList extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         itemCount: chips.length,
-        separatorBuilder: (_, __) => SizedBox(width: spacing),
+        separatorBuilder: (_, _) => SizedBox(width: spacing),
         itemBuilder: (_, index) => chips[index],
       ),
     );

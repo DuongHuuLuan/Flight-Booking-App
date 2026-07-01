@@ -69,13 +69,12 @@ class BoardingPassCard extends StatelessWidget {
                   flight.flightNumber,
                 ),
                 InfoRow(
-                  'Class',
-                  booking.cabinClass[0].toUpperCase() +
-                      booking.cabinClass.substring(1),
                   'Seat',
                   seatLabel,
                   'Ticket ID',
                   ticketId,
+                  '',
+                  '',
                 ),
                 InfoRow(
                   'Date',
