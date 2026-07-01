@@ -350,6 +350,7 @@ Future<void> init() async {
     () => PassengerCubit(
       createPassengersUseCase: getIt<CreatePassengersUseCase>(),
       updatePassengerUsecase: getIt<UpdatePassengerUsecase>(),
+      getEligibleServicesUsecase: getIt<GetEligibleServicesUsecase>(),
     ),
   );
   getIt.registerFactory(

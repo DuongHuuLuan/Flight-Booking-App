@@ -1,19 +1,43 @@
 import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/domain/usecase/passenger/create_passengers_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/passenger/update_passenger_usecase.dart';
+import 'package:flight_booking_app/domain/usecase/service/get_eligible_services_usecase.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PassengerCubit extends Cubit<PassengerState> {
   final CreatePassengersUseCase createPassengersUseCase;
   final UpdatePassengerUsecase updatePassengerUsecase;
+  final GetEligibleServicesUsecase getEligibleServicesUsecase;
 
   PassengerCubit({
     required this.createPassengersUseCase,
     required this.updatePassengerUsecase,
+    required this.getEligibleServicesUsecase,
   }) : super(const PassengerState());
 
-  void initForms(int total, List<AgeGroup> ageGroups, List<String> seatLabels) {
+  Future<void> loadBaggageOptions({
+    required String flightId,
+    required String zoneId,
+  }) async {
+    final result = await getEligibleServicesUsecase(
+      flightId: flightId,
+      zoneId: zoneId,
+      ageGroup: AgeGroup.adult,
+    );
+    result.fold((error) {
+      emit(state.copyWith(error: error.toString()));
+    }, (group) => emit(state.copyWith(baggageOptions: group.baggage)));
+  }
+
+  void initForms(
+    int total,
+    List<String> ageGroupNames,
+    List<String> seatLabels,
+  ) {
+    final ageGroups = ageGroupNames
+        .map((s) => AgeGroup.values.firstWhere((ag) => ag.name == s))
+        .toList();
     final forms = List.generate(
       total,
       (i) => PassengerFormData(
@@ -37,11 +61,13 @@ class PassengerCubit extends Cubit<PassengerState> {
           .map((f) => f.toEntity(id: '', bookingId: bookingId))
           .toList();
 
-      await createPassengersUseCase.execute(
+      final created = await createPassengersUseCase.execute(
         bookingId: bookingId,
         passengers: passengers,
       );
-      emit(state.copyWith(isLoading: false, isSuccess: true));
+      emit(
+        state.copyWith(isLoading: false, isSuccess: true, passengers: created),
+      );
       return true;
     } catch (e) {
       emit(state.copyWith(isLoading: false, error: e.toString()));

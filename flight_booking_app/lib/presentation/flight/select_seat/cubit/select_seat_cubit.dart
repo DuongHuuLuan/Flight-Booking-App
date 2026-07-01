@@ -11,12 +11,9 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   final GetSeatLayoutUsecase getSeatLayout;
   final GetSeatZonesUsecase getSeatZones;
   final CreateBookingUsecase createBooking;
+
   String _flightId;
-  int _children;
-  set flightId(String v) => _flightId = v;
-  String get flightId => _flightId;
-  set children(int v) => _children = v;
-  void setBasePrice(double v) => emit(state.copyWith(basePrice: v));
+  int _children = 0;
 
   SelectSeatCubit({
     required this.getSeatLayout,
@@ -25,30 +22,45 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     required String flightId,
     required double basePrice,
   }) : _flightId = flightId,
-       _children = 0,
        super(SelectSeatState(basePrice: basePrice));
 
+  String get flightId => _flightId;
+
+  set flightId(String value) {
+    _flightId = value;
+  }
+
+  int get children => _children;
+  set children(int value) {
+    _children = value < 0 ? 0 : value;
+  }
+
+  void setBasePrice(double value) {
+    emit(state.copyWith(basePrice: value));
+  }
+
   Future<void> loadSeats() async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, error: null));
+
     final seatsResult = await getSeatLayout(_flightId);
     final zonesResult = await getSeatZones(_flightId);
+
     seatsResult.fold(
-      (error) =>
-          emit(state.copyWith(isLoading: false, error: error.toString())),
+      (error) {
+        emit(state.copyWith(isLoading: false, error: error.toString()));
+      },
       (seats) {
-        if (zonesResult.isRight()) {
-          final zones = zonesResult.getOrElse(() => <SeatZoneEntity>[]);
-          emit(
-            state.copyWith(
-              isLoading: false,
-              seats: seats,
-              zones: zones,
-              selectedZoneId: zones.isNotEmpty ? zones.first.zoneId : null,
-            ),
-          );
-        } else {
-          emit(state.copyWith(isLoading: false, seats: seats));
-        }
+        final zones = zonesResult.getOrElse(() => <SeatZoneEntity>[]);
+
+        emit(
+          state.copyWith(
+            isLoading: false,
+            seats: seats,
+            zones: zones,
+            selectedZoneId: zones.isNotEmpty ? zones.first.zoneId : null,
+            error: null,
+          ),
+        );
       },
     );
   }
@@ -57,73 +69,38 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     emit(state.copyWith(selectedZoneId: zoneId));
   }
 
-  SeatEntity? _findSeat(String seatLabel) {
-    return state.seats.cast<SeatEntity?>().firstWhere(
-      (s) => s?.seatLabel == seatLabel,
-      orElse: () => null,
-    );
-  }
-
-  String? _adjacentLabel(SeatEntity seat) {
-    final adj = state.seats.cast<SeatEntity?>().firstWhere(
-      (s) => s?.rowNumber == seat.rowNumber && s?.position == seat.position + 1,
-      orElse: () => null,
-    );
-    return adj?.seatLabel;
-  }
-
-  int get _unpairedChildCount {
-    if (_children == 0) return 0;
-    final selected = state.selectedSeats;
-    final used = <String>{};
-    int pairs = 0;
-    for (final s in selected) {
-      if (used.contains(s.seatLabel)) continue;
-      final entity = _findSeat(s.seatLabel);
-      if (entity == null) continue;
-      final adj = _adjacentLabel(entity);
-      if (adj != null && selected.any((x) => x.seatLabel == adj)) {
-        pairs++;
-        used.add(s.seatLabel);
-        used.add(adj);
-      }
-    }
-    return _children - pairs;
-  }
-
-  void toggleSeat(String seatLabel, String zoneId) {
-    final updated = List<SeatInput>.from(state.selectedSeats);
-    final idx = updated.indexWhere((s) => s.seatLabel == seatLabel);
+  void toggleSeat(String seatLabel, String fallbackZoneId) {
     final seat = _findSeat(seatLabel);
-    final actualZoneId = seat?.zoneId ?? zoneId;
 
-    if (idx >= 0) {
-      updated.removeAt(idx);
-      if (_children > 0 && seat != null) {
-        final adj = _adjacentLabel(seat);
-        if (adj != null) {
-          updated.removeWhere((s) => s.seatLabel == adj);
-        }
-      }
-    } else {
-      updated.add(SeatInput(seatLabel: seatLabel, zoneId: actualZoneId));
-      if (_children > 0 && seat != null && _unpairedChildCount > 0) {
-        final adj = _adjacentLabel(seat);
-        if (adj != null && !updated.any((s) => s.seatLabel == adj)) {
-          updated.add(SeatInput(seatLabel: adj, zoneId: actualZoneId));
-        }
-      }
+    if (seat == null) {
+      emit(state.copyWith(error: 'Seat not found'));
+      return;
     }
-    emit(state.copyWith(selectedSeats: updated));
-  }
 
-  bool isSeatSelected(String seatLabel) {
-    return state.selectedSeats.any((s) => s.seatLabel == seatLabel);
+    if (!_canSelectSeat(seat)) {
+      emit(state.copyWith(error: 'Seat is not available'));
+      return;
+    }
+
+    final updatedSeats = List<SeatInput>.from(state.selectedSeats);
+    final alreadySelected = _isSelected(updatedSeats, seat.seatLabel);
+
+    if (alreadySelected) {
+      _removeSeat(updatedSeats, seat);
+    } else {
+      _addSeat(updatedSeats, seat, fallbackZoneId);
+    }
+
+    emit(state.copyWith(selectedSeats: updatedSeats, error: null));
   }
 
   Future<String?> confirmSeat() async {
-    if (state.selectedSeats.isEmpty) return null;
-    emit(state.copyWith(isBooking: true));
+    if (state.selectedSeats.isEmpty) {
+      emit(state.copyWith(error: 'Please select at least one seat'));
+      return null;
+    }
+
+    emit(state.copyWith(isBooking: true, error: null));
 
     final result = await createBooking(
       flightId: _flightId,
@@ -136,9 +113,172 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
         return null;
       },
       (booking) {
-        emit(state.copyWith(isBooking: false, bookingId: booking.id));
+        emit(
+          state.copyWith(isBooking: false, bookingId: booking.id, error: null),
+        );
         return booking.id;
       },
     );
+  }
+
+  bool isSeatSelected(String seatLabel) {
+    return state.selectedSeats.any((seat) => seat.seatLabel == seatLabel);
+  }
+
+  SeatEntity? _findSeat(String seatLabel) {
+    try {
+      return state.seats.firstWhere((seat) => seat.seatLabel == seatLabel);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  bool _canSelectSeat(SeatEntity seat) {
+    final status = seat.status.toLowerCase();
+
+    return status != 'booked' &&
+        status != 'reserved' &&
+        status != 'unavailable';
+  }
+
+  bool _isSelected(List<SeatInput> seats, String seatLabel) {
+    return seats.any((seat) => seat.seatLabel == seatLabel);
+  }
+
+  String _resolveZoneId(SeatEntity seat, String fallbackZoneId) {
+    final zoneId = seat.zoneId;
+
+    if (zoneId == null || zoneId.isEmpty) {
+      return fallbackZoneId;
+    }
+
+    return zoneId;
+  }
+
+  void _addSeat(
+    List<SeatInput> selectedSeats,
+    SeatEntity seat,
+    String fallbackZoneId,
+  ) {
+    _addSeatIfNotExists(
+      selectedSeats,
+      seat.seatLabel,
+      _resolveZoneId(seat, fallbackZoneId),
+    );
+
+    if (_children <= 0) return;
+    final unpairedChildren = _calculateUnpairedChildren(selectedSeats);
+    if (unpairedChildren <= 0) return;
+    final adjacentSeat = _findAvailableAdjacentSeat(seat, selectedSeats);
+    if (adjacentSeat == null) {
+      return;
+    }
+
+    _addSeatIfNotExists(
+      selectedSeats,
+      adjacentSeat.seatLabel,
+      _resolveZoneId(adjacentSeat, fallbackZoneId),
+    );
+  }
+
+  void _removeSeat(List<SeatInput> selectedSeats, SeatEntity seat) {
+    selectedSeats.removeWhere(
+      (selectedSeat) => selectedSeat.seatLabel == seat.seatLabel,
+    );
+    if (_children <= 0) return;
+
+    final adjacentSeat = _findSelectedAdjacentSeat(seat, selectedSeats);
+
+    if (adjacentSeat == null) return;
+    selectedSeats.removeWhere(
+      (selectedSeat) => selectedSeat.seatLabel == adjacentSeat.seatLabel,
+    );
+  }
+
+  void _addSeatIfNotExists(
+    List<SeatInput> selectedSeats,
+    String seatLabel,
+    String zoneId,
+  ) {
+    if (_isSelected(selectedSeats, seatLabel)) return;
+    selectedSeats.add(SeatInput(seatLabel: seatLabel, zoneId: zoneId));
+  }
+
+  SeatEntity? _findAvailableAdjacentSeat(
+    SeatEntity seat,
+    List<SeatInput> selectedSeats,
+  ) {
+    final rightSeat = _findAdjacentSeat(seat, 1);
+
+    if (rightSeat != null &&
+        _canSelectSeat(rightSeat) &&
+        !_isSelected(selectedSeats, rightSeat.seatLabel)) {
+      return rightSeat;
+    }
+
+    final leftSeat = _findAdjacentSeat(seat, -1);
+
+    if (leftSeat != null &&
+        _canSelectSeat(leftSeat) &&
+        !_isSelected(selectedSeats, leftSeat.seatLabel)) {
+      return leftSeat;
+    }
+    return null;
+  }
+
+  SeatEntity? _findSelectedAdjacentSeat(
+    SeatEntity seat,
+    List<SeatInput> selectedSeats,
+  ) {
+    final rightSeat = _findAdjacentSeat(seat, 1);
+
+    if (rightSeat != null && _isSelected(selectedSeats, rightSeat.seatLabel)) {
+      return rightSeat;
+    }
+
+    final leftSeat = _findAdjacentSeat(seat, -1);
+
+    if (leftSeat != null && _isSelected(selectedSeats, leftSeat.seatLabel)) {
+      return leftSeat;
+    }
+
+    return null;
+  }
+
+  SeatEntity? _findAdjacentSeat(SeatEntity seat, int offset) {
+    try {
+      return state.seats.firstWhere(
+        (s) =>
+            s.rowNumber == seat.rowNumber &&
+            s.position == seat.position + offset &&
+            s.zoneId == seat.zoneId,
+      );
+    } catch (_) {
+      return null;
+    }
+  }
+
+  int _calculateUnpairedChildren(List<SeatInput> selectedSeats) {
+    if (_children <= 0) return 0;
+
+    final usedSeatLabels = <String>{};
+    int pairCount = 0;
+
+    for (final selectedSeat in selectedSeats) {
+      if (usedSeatLabels.contains(selectedSeat.seatLabel)) continue;
+
+      final seat = _findSeat(selectedSeat.seatLabel);
+      if (seat == null) continue;
+
+      final adjacentSeat = _findSelectedAdjacentSeat(seat, selectedSeats);
+      if (adjacentSeat == null) continue;
+
+      usedSeatLabels.add(seat.seatLabel);
+      usedSeatLabels.add(adjacentSeat.seatLabel);
+      pairCount++;
+    }
+
+    final unpaired = _children - pairCount;
+    return unpaired < 0 ? 0 : unpaired;
   }
 }

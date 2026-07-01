@@ -72,14 +72,64 @@ class SelectSeatScreen extends StatelessWidget {
 
                 const SizedBox(height: 8),
 
-                SeatStatusLegend(
-                  zoneColors: state.zones.map((z) => ZoneColorInfo(
-                    color: parseZoneColor(z.colorHex),
-                    name: z.zoneName,
-                  )).toList(),
+                Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Row(
+                    children: state.zones.map((zone) {
+                      final isActive = zone.zoneId == state.selectedZoneId;
+                      final color = parseZoneColor(zone.colorHex);
+                      return Expanded(
+                        child: GestureDetector(
+                          onTap: () => cubit.selectZone(zone.zoneId),
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 4),
+                            padding: EdgeInsets.symmetric(
+                              vertical: 12,
+                              horizontal: 8,
+                            ),
+                            decoration: BoxDecoration(
+                              color: isActive
+                                  ? color.withValues(alpha: 0.15)
+                                  : AppColor.grey100,
+                              borderRadius: BorderRadius.circular(12),
+                              border: Border.all(
+                                color: isActive ? color : AppColor.grey300,
+                                width: isActive ? 2 : 1,
+                              ),
+                            ),
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: 12,
+                                  height: 12,
+                                  decoration: BoxDecoration(
+                                    color: color,
+                                    shape: BoxShape.circle,
+                                  ),
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                  zone.zoneName,
+                                  style: AppTextStyles.caption.copyWith(
+                                    fontWeight: FontWeight.w600,
+                                    color: isActive ? color : AppColor.greyDark,
+                                  ),
+                                ),
+                                Text(
+                                  '${zone.pricePerSeat.toStringAsFixed(0)}₫',
+                                  style: AppTextStyles.caption.copyWith(
+                                    fontSize: 10,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    }).toList(),
+                  ),
                 ),
 
-                const SizedBox(height: 32),
                 Expanded(
                   child: SeatMapView(
                     state: state,
@@ -106,17 +156,21 @@ class SelectSeatScreen extends StatelessWidget {
                             final seatLabels = state.selectedSeats
                                 .map((s) => s.seatLabel)
                                 .toList();
+                            final seatZoneIds = state.selectedSeats
+                                .map((e) => e.zoneId)
+                                .toList();
                             context.push(
                               PassengerDetailScreen.routerName,
                               extra: {
                                 'bookingId': bookingId,
                                 'seatCount': state.selectedSeats.length,
                                 'basePrice': state.basePrice,
+                                'totalPrice': state.totalPrice,
                                 'ageGroups': ageGroups
                                     .map((ag) => ag.name)
                                     .toList(),
                                 'seatLabels': seatLabels,
-                                'zoneId': state.selectedZoneId ?? '',
+                                'seatZoneIds': seatZoneIds,
                                 'flightId': cubit.flightId,
                               },
                             );

@@ -1,6 +1,5 @@
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
-import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
@@ -183,21 +182,26 @@ class AppRouter {
         path: PassengerDetailScreen.routerName,
         builder: (context, state) {
           final args = state.extra as Map<String, dynamic>;
-          final ageGroupStrings = args['ageGroups'] as List<String>;
-          final ageGroups = ageGroupStrings
-              .map((s) => AgeGroup.values.firstWhere((ag) => ag.name == s))
-              .toList();
           final seatLabels =
               (args['seatLabels'] as List<dynamic>?)?.cast<String>() ?? [];
           return BlocProvider(
-            create: (context) =>
-                getIt<PassengerCubit>()
-                  ..initForms(args['seatCount'] as int, ageGroups, seatLabels),
+            create: (context) => getIt<PassengerCubit>()
+              ..initForms(
+                args['seatCount'] as int,
+                (args['ageGroups'] as List<dynamic>).cast<String>(),
+                seatLabels,
+              )
+              ..loadBaggageOptions(
+                flightId: args['flightId'] as String,
+                zoneId: ((args['seatZoneIds'] as List<dynamic>?) ?? []).cast<String>().firstOrNull ?? '',
+              ),
             child: PassengerDetailScreen(
               bookingId: args['bookingId'] as String,
               seatCount: args['seatCount'] as int,
               basePrice: (args['basePrice'] as num).toDouble(),
-              zoneId: (args['zoneId'] as String?) ?? '',
+              totalPrice: (args['totalPrice'] as num).toDouble(),
+              seatZoneIds:
+                  (args['seatZoneIds'] as List<dynamic>?)?.cast<String>() ?? [],
               flightId: args['flightId'] as String,
             ),
           );

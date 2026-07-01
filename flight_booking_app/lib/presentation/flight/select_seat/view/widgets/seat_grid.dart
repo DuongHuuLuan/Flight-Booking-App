@@ -1,4 +1,4 @@
-import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/color_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
@@ -12,11 +12,6 @@ class SeatGrid extends StatelessWidget {
 
   const SeatGrid({super.key, required this.state, required this.onSeatTap});
 
-  Color _parseColor(String? hex) {
-    if (hex == null || hex.isEmpty) return Colors.grey;
-    return Color(int.parse(hex.replaceFirst('#', '0xFF')));
-  }
-
   @override
   Widget build(BuildContext context) {
     final grouped = <String, List<SeatEntity>>{};
@@ -26,13 +21,18 @@ class SeatGrid extends StatelessWidget {
       grouped[key]!.add(seat);
     }
 
+    final activeZoneId = state.selectedZoneId;
+    final entries = activeZoneId != null
+        ? grouped.entries.where((e) => e.key == activeZoneId)
+        : grouped.entries;
+
     return Column(
-      children: grouped.entries.map((entry) {
+      children: entries.map((entry) {
         final zone = state.zones.cast<SeatZoneEntity?>().firstWhere(
           (z) => z?.zoneId == entry.key,
           orElse: () => null,
         );
-        final zoneColor = _parseColor(zone?.colorHex);
+        final zoneColor = parseHexColor(zone?.colorHex);
         final zonePrice = state.basePrice * (zone?.priceModifier ?? 1.0);
 
         final seats = entry.value;
@@ -40,18 +40,18 @@ class SeatGrid extends StatelessWidget {
 
         return Column(
           children: [
-            Container(
-              width: double.infinity,
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              color: zoneColor.withValues(alpha: 0.08),
-              child: Text(
-                '${zone?.zoneName ?? 'Unknown'} — ${zonePrice.toStringAsFixed(0)}₫/ghế',
-                style: AppTextStyles.bodyMedium.copyWith(
-                  fontWeight: FontWeight.w600,
-                  color: zoneColor,
-                ),
-              ),
-            ),
+            // Container(
+            //   width: double.infinity,
+            //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            //   color: zoneColor.withValues(alpha: 0.08),
+            //   child: Text(
+            //     '${zone?.zoneName ?? 'Unknown'} — ${zonePrice.toStringAsFixed(0)}₫/ghế',
+            //     style: AppTextStyles.bodyMedium.copyWith(
+            //       fontWeight: FontWeight.w600,
+            //       color: zoneColor,
+            //     ),
+            //   ),
+            // ),
             ...rows.map((row) {
               final seatsInRow = seats.where((s) => s.rowNumber == row).toList()
                 ..sort((a, b) => a.position.compareTo(b.position));
@@ -72,7 +72,7 @@ class SeatGrid extends StatelessWidget {
                     onTap: isReserved ? null : () => onSeatTap(seat.seatLabel),
                   );
                 }).toList(),
-              ).paddingVertical(6);
+              ).paddingVertical(10);
             }),
           ],
         );

@@ -15,7 +15,8 @@ class PassengerDetailScreen extends StatefulWidget {
   final String bookingId;
   final int seatCount;
   final double basePrice;
-  final String zoneId;
+  final double totalPrice;
+  final List<String> seatZoneIds;
   final String flightId;
 
   const PassengerDetailScreen({
@@ -23,7 +24,8 @@ class PassengerDetailScreen extends StatefulWidget {
     required this.bookingId,
     required this.seatCount,
     required this.basePrice,
-    this.zoneId = '',
+    required this.totalPrice,
+    required this.seatZoneIds,
     required this.flightId,
   });
 
@@ -36,12 +38,15 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
     final cubit = context.read<PassengerCubit>();
     final success = await cubit.savePassengers(bookingId: widget.bookingId);
     if (success && mounted) {
+      final created = cubit.state.passengers ?? [];
       final passengers = cubit.state.forms.asMap().entries.map((e) {
         final i = e.key;
         final f = e.value;
         return {
           'index': i,
+          'passengerId': created[i].id,
           'seatLabel': f.seatLabel,
+          'zoneId': widget.seatZoneIds.length > i ? widget.seatZoneIds[i] : '',
           'ageGroup': f.ageGroup.name,
           'name': f.name,
           'mobilePhone': f.mobilePhone,
@@ -61,7 +66,6 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
           'seatCount': widget.seatCount,
           'basePrice': widget.basePrice,
           'passengers': passengers,
-          'zoneId': widget.zoneId,
           'flightId': widget.flightId,
         },
       );
@@ -96,6 +100,7 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
                         V2PassengerFormCard(
                           formData: state.forms[i],
                           index: i + 1,
+                          baggageOptions: state.baggageOptions,
                           onUpdateField: (field, value) => context
                               .read<PassengerCubit>()
                               .updateField(i, field, value),
@@ -106,7 +111,7 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
                 ),
               ),
               BottomPaymentBar(
-                price: widget.basePrice * widget.seatCount,
+                price: widget.totalPrice,
                 buttonText: 'Continue',
                 onPressed: state.isLoading ? null : _onSave,
               ),

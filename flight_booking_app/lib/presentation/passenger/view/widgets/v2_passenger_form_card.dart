@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
+import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/presentation/passenger/cubit/passenger_state.dart';
 import 'package:flutter/material.dart';
@@ -9,12 +10,14 @@ class V2PassengerFormCard extends StatelessWidget {
   final PassengerFormData formData;
   final int index;
   final void Function(String field, dynamic value) onUpdateField;
+  final List<ServiceEntity> baggageOptions;
 
   const V2PassengerFormCard({
     super.key,
     required this.formData,
     required this.index,
     required this.onUpdateField,
+    required this.baggageOptions,
   });
 
   @override
@@ -105,6 +108,7 @@ class V2PassengerFormCard extends StatelessWidget {
           _BaggageDropdown(
             baggageLevel: formData.baggageLevel,
             onChanged: (v) => onUpdateField('baggageLevel', v ?? ''),
+            baggageOptions: baggageOptions,
           ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
           const SizedBox(height: 8),
         ],
@@ -207,12 +211,16 @@ class _DateField extends StatelessWidget {
 class _BaggageDropdown extends StatelessWidget {
   final String baggageLevel;
   final ValueChanged<String?> onChanged;
+  final List<ServiceEntity> baggageOptions;
 
-  const _BaggageDropdown({required this.baggageLevel, required this.onChanged});
+  const _BaggageDropdown({
+    required this.baggageLevel,
+    required this.onChanged,
+    required this.baggageOptions,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final levels = ['', 'economy', 'standard', 'premium'];
     return DropdownButtonFormField<String>(
       initialValue: baggageLevel.isEmpty ? null : baggageLevel,
       decoration: InputDecoration(
@@ -226,10 +234,10 @@ class _BaggageDropdown extends StatelessWidget {
       ),
       items: [
         const DropdownMenuItem(value: null, child: Text('Select baggage')),
-        for (final l in levels.where((l) => l.isNotEmpty))
+        for (final bag in baggageOptions)
           DropdownMenuItem(
-            value: l,
-            child: Text(l[0].toUpperCase() + l.substring(1)),
+            value: bag.serviceId,
+            child: Text("${bag.name} - ${bag.price.toStringAsFixed(0)}đ"),
           ),
       ],
       onChanged: onChanged,
