@@ -16,6 +16,7 @@ class PassengerEntity extends Equatable {
   final String? email;
   final String? idNumber;
   final String? baggageLevel;
+  final String? baggageName;
 
   const PassengerEntity({
     required this.id,
@@ -32,6 +33,7 @@ class PassengerEntity extends Equatable {
     this.email,
     this.idNumber,
     this.baggageLevel,
+    this.baggageName,
   });
 
   @override
@@ -49,5 +51,6 @@ class PassengerEntity extends Equatable {
     email,
     idNumber,
     baggageLevel,
+    baggageName,
   ];
 }

@@ -32,6 +32,8 @@ class PassengerModel {
   final String? idNumber;
   @JsonKey(name: 'baggageLevel')
   final String? baggageLevel;
+  @JsonKey(name: 'baggageName')
+  final String? baggageName;
 
   const PassengerModel({
     required this.id,
@@ -48,6 +50,7 @@ class PassengerModel {
     this.email,
     this.idNumber,
     this.baggageLevel,
+    this.baggageName,
   });
 
   factory PassengerModel.fromJson(Map<String, dynamic> json) =>

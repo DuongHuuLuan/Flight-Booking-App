@@ -33,13 +33,39 @@ class PassengerTile extends StatelessWidget {
           showDivider: true,
         ),
         LabelValueRow(
-          label: "Full Name",
-          value: passenger.name,
+          label: "Seat",
+          value: passenger.seatLabel ?? '—',
           showDivider: true,
         ),
         LabelValueRow(
-          label: "Full Name",
-          value: passenger.name,
+          label: "Age Group",
+          value: passenger.ageGroup?.name ?? '—',
+          showDivider: true,
+        ),
+        LabelValueRow(
+          label: "Mobile Phone",
+          value: passenger.mobilePhone,
+          showDivider: true,
+        ),
+        LabelValueRow(
+          label: "Passport Number",
+          value: passenger.passportNumber,
+          showDivider: true,
+        ),
+        LabelValueRow(
+          label: "Nationality",
+          value: passenger.nationality,
+          showDivider: true,
+        ),
+        LabelValueRow(
+          label: "Date of Birth",
+          value:
+              '${passenger.dateOfBirth.day}/${passenger.dateOfBirth.month}/${passenger.dateOfBirth.year}',
+          showDivider: true,
+        ),
+        LabelValueRow(
+          label: "Baggage",
+          value: passenger.baggageName ?? passenger.baggageLevel ?? 'None',
           showDivider: true,
         ),
         if (showDivider)
