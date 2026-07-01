@@ -38,7 +38,7 @@ class ServiceRepositoryImpl implements ServiceRepository {
             (ps) => {
               'passenger_id': ps.passengerId,
               'service_ids': ps.serviceIds,
-              'baggage_level': 'none',
+              'baggage_level': ps.baggageLevel,
             },
           )
           .toList();

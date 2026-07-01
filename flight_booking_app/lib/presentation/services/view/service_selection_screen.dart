@@ -204,6 +204,9 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
                                 _currentPassenger['passengerId'] as String,
                             seatLabel:
                                 _currentPassenger['seatLabel'] as String? ?? '',
+                            baggageLevel:
+                                _currentPassenger['baggageLevel'] as String? ??
+                                '',
                           ),
               );
             },
