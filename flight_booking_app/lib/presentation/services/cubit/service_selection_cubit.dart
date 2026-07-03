@@ -21,7 +21,7 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
-    emit(state.copyWith(isLoading: true));
+    emit(state.copyWith(isLoading: true, serviceGroup: null));
     final result = await getEligibleServices(
       flightId: flightId,
       zoneId: zoneId,
@@ -93,16 +93,26 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     required String baggageLevel,
   }) async {
     emit(state.copyWith(isSaving: true));
+    final baggageServiceIds =
+        state.serviceGroup?.baggage.map((e) => e.serviceId).toList() ?? [];
+
     final selected = state.tempSelections.entries
         .where((e) => e.value > 0)
         .map((e) => e.key)
         .toList();
 
+    final selectedBaggage = state.tempSelections.entries.firstWhere(
+      (e) => baggageServiceIds.contains(e.key) && e.value > 0,
+      orElse: () => const MapEntry('', 0),
+    );
+
     final input = PassengerServiceInput(
       passengerId: passengerId,
       seatLabel: seatLabel,
       serviceIds: selected,
-      baggageLevel: baggageLevel,
+      baggageLevel: selectedBaggage.key.isNotEmpty
+          ? selectedBaggage.key
+          : baggageLevel,
     );
 
     final result = await assignServices(

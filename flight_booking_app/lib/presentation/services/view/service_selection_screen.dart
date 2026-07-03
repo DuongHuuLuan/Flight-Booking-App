@@ -39,6 +39,7 @@ class ServiceSelectionScreen extends StatefulWidget {
 
 class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
   int _currentPassengerIndex = 0;
+  double _accumulatedServicePrice = 0;
 
   Map<String, dynamic> get _currentPassenger =>
       widget.passengers[_currentPassengerIndex];
@@ -46,6 +47,27 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
   AgeGroup get _ageGroup => AgeGroup.values.firstWhere(
     (ag) => ag.name == _currentPassenger['ageGroup'],
   );
+  double _currentServiceTotal(ServiceSelectionState state) {
+    if (state.serviceGroup == null) return 0;
+    final allServices = [
+      ...state.serviceGroup!.meals,
+      ...state.serviceGroup!.drinks,
+      ...state.serviceGroup!.baggage,
+    ];
+    return state.tempSelections.entries.fold<double>(0, (sum, e) {
+      final svc = allServices.firstWhere(
+        (s) => s.serviceId == e.key,
+        orElse: () => const ServiceEntity(
+          serviceId: '',
+          type: '',
+          name: '',
+          price: 0,
+          maxPerPassenger: 0,
+        ),
+      );
+      return sum + svc.price * e.value;
+    });
+  }
 
   @override
   void initState() {
@@ -89,6 +111,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
             context.hideLoading();
           }
           if (state.isSuccess) {
+            final currentSvcTotal = _currentServiceTotal(state);
+            _accumulatedServicePrice += currentSvcTotal;
             if (_currentPassengerIndex < widget.passengers.length - 1) {
               context.read<ServiceSelectionCubit>().reset();
               _nextPassenger();
@@ -169,28 +193,12 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
       bottomNavigationBar:
           BlocBuilder<ServiceSelectionCubit, ServiceSelectionState>(
             builder: (context, state) {
-              final serviceTotal = state.serviceGroup == null
-                  ? 0.0
-                  : state.tempSelections.entries.fold<double>(0, (sum, e) {
-                      final allServices = [
-                        ...state.serviceGroup!.meals,
-                        ...state.serviceGroup!.drinks,
-                        ...state.serviceGroup!.baggage,
-                      ];
-                      final svc = allServices.firstWhere(
-                        (s) => s.serviceId == e.key,
-                        orElse: () => const ServiceEntity(
-                          serviceId: '',
-                          type: '',
-                          name: '',
-                          price: 0,
-                          maxPerPassenger: 0,
-                        ),
-                      );
-                      return sum + svc.price * e.value;
-                    });
+              final serviceTotal = _currentServiceTotal(state);
               return BottomPaymentBar(
-                price: widget.basePrice * widget.seatCount + serviceTotal,
+                price:
+                    widget.basePrice * widget.seatCount +
+                    _accumulatedServicePrice +
+                    serviceTotal,
                 buttonText:
                     _currentPassengerIndex < widget.passengers.length - 1
                     ? 'Next Passenger'
