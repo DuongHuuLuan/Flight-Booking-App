@@ -167,7 +167,9 @@ class AppRouter {
             create: (context) => getIt<SelectSeatCubit>()
               ..flightId = args['flightId'] as String
               ..setBasePrice((args['basePrice'] as num).toDouble())
+              ..adults = args['adults'] as int
               ..children = args['children'] as int
+              ..seniors = args['seniors'] as int
               ..loadSeats(),
             child: SelectSeatScreen(
               adults: args['adults'] as int,
@@ -193,7 +195,11 @@ class AppRouter {
               )
               ..loadBaggageOptions(
                 flightId: args['flightId'] as String,
-                zoneId: ((args['seatZoneIds'] as List<dynamic>?) ?? []).cast<String>().firstOrNull ?? '',
+                zoneId:
+                    ((args['seatZoneIds'] as List<dynamic>?) ?? [])
+                        .cast<String>()
+                        .firstOrNull ??
+                    '',
               ),
             child: PassengerDetailScreen(
               bookingId: args['bookingId'] as String,

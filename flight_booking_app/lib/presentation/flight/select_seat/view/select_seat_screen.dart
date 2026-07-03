@@ -32,6 +32,7 @@ class SelectSeatScreen extends StatelessWidget {
     for (int i = 0; i < children; i++) AgeGroup.child,
     for (int i = 0; i < seniors; i++) AgeGroup.senior,
   ];
+  int get _totalPassengers => adults + children + seniors;
 
   @override
   Widget build(BuildContext context) {
@@ -141,13 +142,13 @@ class SelectSeatScreen extends StatelessWidget {
                 BottomPaymentBar(
                   label: state.selectedSeats.isEmpty
                       ? "No seat selected"
-                      : "${state.selectedSeats.length} seat${state.selectedSeats.length > 1 ? 's' : ''} selected",
+                      : "${state.selectedSeats.length} of $_totalPassengers seats selected",
                   buttonText: "Continue",
                   price: state.totalPrice,
                   priceStyle: AppTextStyles.heading3.copyWith(
                     color: AppColor.black,
                   ),
-                  onPressed: state.selectedSeats.isEmpty
+                  onPressed: state.selectedSeats.length != _totalPassengers
                       ? null
                       : () async {
                           final bookingId = await cubit.confirmSeat();
