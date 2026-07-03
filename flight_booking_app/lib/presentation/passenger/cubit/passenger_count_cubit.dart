@@ -20,6 +20,7 @@ class PassengerCountCubit extends Cubit<PassengerCountState> {
 
   void incrementChildren() {
     if (state.total >= 9) return;
+    if (state.children >= state.adults) return;
     emit(state.copyWith(children: state.children + 1));
   }
 
@@ -30,6 +31,7 @@ class PassengerCountCubit extends Cubit<PassengerCountState> {
 
   void incrementSeniors() {
     if (state.total >= 9) return;
+    if (state.seniors >= state.adults) return;
     emit(state.copyWith(seniors: state.seniors + 1));
   }
 
