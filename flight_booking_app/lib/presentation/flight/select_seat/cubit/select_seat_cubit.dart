@@ -14,6 +14,8 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
 
   String _flightId;
   int _children = 0;
+  int _adults = 0;
+  int _seniors = 0;
 
   SelectSeatCubit({
     required this.getSeatLayout,
@@ -33,6 +35,14 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   int get children => _children;
   set children(int value) {
     _children = value < 0 ? 0 : value;
+  }
+
+  set adults(int value) {
+    _adults = value < 0 ? 0 : value;
+  }
+
+  set seniors(int value) {
+    _seniors = value < 0 ? 0 : value;
   }
 
   void setBasePrice(double value) {
@@ -88,6 +98,8 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     if (alreadySelected) {
       _removeSeat(updatedSeats, seat);
     } else {
+      final totalPassengers = _adults + _children + _seniors;
+      if (updatedSeats.length >= totalPassengers) return;
       _addSeat(updatedSeats, seat, fallbackZoneId);
     }
 
@@ -95,8 +107,14 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   }
 
   Future<String?> confirmSeat() async {
-    if (state.selectedSeats.isEmpty) {
-      emit(state.copyWith(error: 'Please select at least one seat'));
+    final totalPassengers = _adults + _children + _seniors;
+    if (state.selectedSeats.length != totalPassengers) {
+      emit(
+        state.copyWith(
+          isBooking: false,
+          error: 'Please select exactly $totalPassengers seats',
+        ),
+      );
       return null;
     }
 
@@ -169,6 +187,8 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     if (_children <= 0) return;
     final unpairedChildren = _calculateUnpairedChildren(selectedSeats);
     if (unpairedChildren <= 0) return;
+    final totalPassengers = _adults + _children + _seniors;
+    if (selectedSeats.length >= totalPassengers) return;
     final adjacentSeat = _findAvailableAdjacentSeat(seat, selectedSeats);
     if (adjacentSeat == null) {
       return;
