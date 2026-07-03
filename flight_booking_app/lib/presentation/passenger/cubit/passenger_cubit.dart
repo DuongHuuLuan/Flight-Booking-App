@@ -1,3 +1,5 @@
+import 'package:flight_booking_app/domain/entities/passenger_entity.dart';
+import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/domain/usecase/passenger/create_passengers_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/passenger/update_passenger_usecase.dart';
@@ -27,7 +29,24 @@ class PassengerCubit extends Cubit<PassengerState> {
     );
     result.fold((error) {
       emit(state.copyWith(error: error.toString()));
-    }, (group) => emit(state.copyWith(baggageOptions: group.baggage)));
+    }, (group) {
+      emit(state.copyWith(baggageOptions: group.baggage));
+      _recompute();
+    });
+  }
+
+  void _recompute() {
+    final total = state.forms.fold<double>(0, (sum, f) {
+      if (f.baggageLevel.isEmpty) return sum;
+      final bag = state.baggageOptions.firstWhere(
+        (b) => b.serviceId == f.baggageLevel,
+        orElse: () => const ServiceEntity(
+          serviceId: '', type: '', name: '', price: 0, maxPerPassenger: 0,
+        ),
+      );
+      return sum + bag.price;
+    });
+    emit(state.copyWith(totalBaggagePrice: total));
   }
 
   void initForms(
@@ -52,6 +71,7 @@ class PassengerCubit extends Cubit<PassengerState> {
     final forms = List<PassengerFormData>.from(state.forms);
     forms[index] = forms[index].copyWithField(field, value);
     emit(state.copyWith(forms: forms));
+    _recompute();
   }
 
   Future<bool> savePassengers({required String bookingId}) async {
@@ -94,4 +114,30 @@ class PassengerCubit extends Cubit<PassengerState> {
   }
 
   void reset() => emit(const PassengerState());
+
+  List<Map<String, dynamic>> buildPassengerPayloads(
+    List<PassengerEntity> created,
+    List<String> seatZoneIds,
+  ) {
+    return state.forms.asMap().entries.map((e) {
+      final i = e.key;
+      final f = e.value;
+      return {
+        'index': i,
+        'passengerId': created[i].id,
+        'seatLabel': f.seatLabel,
+        'zoneId': seatZoneIds.length > i ? seatZoneIds[i] : '',
+        'ageGroup': f.ageGroup.name,
+        'name': f.name,
+        'mobilePhone': f.mobilePhone,
+        'passportNumber': f.passportNumber,
+        'nationality': f.nationality,
+        'address': f.address,
+        'email': f.email,
+        'idNumber': f.idNumber,
+        'baggageLevel': f.baggageLevel,
+        'dateOfBirth': f.dateOfBirth?.toIso8601String(),
+      };
+    }).toList();
+  }
 }

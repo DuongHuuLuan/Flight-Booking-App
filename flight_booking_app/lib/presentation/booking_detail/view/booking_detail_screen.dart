@@ -17,13 +17,13 @@ class BookingDetailScreen extends StatefulWidget {
   static String get routerName => '/booking-detail';
 
   final String bookingId;
-  final double basePrice;
+  final double totalPrice;
   final int seatCount;
 
   const BookingDetailScreen({
     super.key,
     required this.bookingId,
-    required this.basePrice,
+    required this.totalPrice,
     required this.seatCount,
   });
 
@@ -78,10 +78,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
                 ),
                 if (detail.services != null && detail.services!.isNotEmpty)
                   ServiceListCard(services: detail.services!),
-                PriceBreakdownCardV2(
-                  bookingDetail: detail,
-                  priceBreakdown: state.priceBreakdown,
-                ),
+                PriceBreakdownCardV2(state: state),
                 const SizedBox(height: 100),
               ],
             ),
@@ -94,16 +91,10 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           if (detail == null) return const SizedBox.shrink();
           return BottomPaymentBar(
             label: "Total Price",
-            price:
-                (state.priceBreakdown?['grandTotal'] as num? ??
-                        detail.totalPrice)
-                    .toDouble(),
+            price: state.grandTotal,
             buttonText: "Pay Now",
             onPressed: () {
-              final grandTotal =
-                  (state.priceBreakdown?['grandTotal'] as num? ??
-                          detail.totalPrice)
-                      .toDouble();
+              final grandTotal = state.grandTotal;
 
               context.goToPaymentMethod(
                 totalPrice: grandTotal,

@@ -265,12 +265,3 @@ class _InfoChip extends StatelessWidget {
   }
 }
 
-extension on AgeGroup {
-  String get displayName {
-    return switch (this) {
-      AgeGroup.child => 'Child',
-      AgeGroup.adult => 'Adult',
-      AgeGroup.senior => 'Senior',
-    };
-  }
-}

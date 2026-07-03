@@ -38,18 +38,10 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   void _continue() {
-    final phone = _phoneController.text.trim();
-    final email = _emailController.text.trim();
-
-    if (phone.isNotEmpty) {
-      _authBloc.add(ForgotPasswordEmailEvent(phone));
-    } else if (email.isNotEmpty) {
-      _authBloc.add(ForgotPasswordEmailEvent(email));
-    } else {
-      ScaffoldMessenger.of(
-        context,
-      ).showSnackBar(SnackBar(content: Text("Please enter phone or email")));
-    }
+    _authBloc.add(ForgotPasswordRawEvent(
+      phone: _phoneController.text.trim(),
+      email: _emailController.text.trim(),
+    ));
   }
 
   @override

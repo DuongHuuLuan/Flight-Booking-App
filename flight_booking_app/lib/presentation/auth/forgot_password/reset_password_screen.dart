@@ -40,17 +40,10 @@ class _ResetPasswordScreenState extends State<ResetPasswordScreen> {
   }
 
   void _save() {
-    if (_passwordController.text != _confirmPasswordController.text) {
-      context.showError("Passwords do not match");
-      return;
-    }
-    if (_passwordController.text.length < 6) {
-      context.showError("Password must be at least 6 characters");
-      return;
-    }
     _authBloc.add(
       ResetPasswordEvent(
         newPassword: _passwordController.text,
+        confirmPassword: _confirmPasswordController.text,
         phone: "(808) 555-0111",
       ),
     );

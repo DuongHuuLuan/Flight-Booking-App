@@ -5,7 +5,6 @@ import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/widgets/app_background_image.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/submit_button.dart';
-import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_state.dart';
@@ -56,24 +55,15 @@ class _RegisterScreenState extends State<RegisterScreen> {
 
   void _register() {
     if (_formKey.currentState!.validate()) {
-      if (passwordController.text != confirmPasswordController.text) {
-        ScaffoldMessenger.of(
-          context,
-        ).showSnackBar(const SnackBar(content: Text("Passwords do not match")));
-        return;
-      }
-
-      final user = UserEntity(
-        id: DateTime.now().microsecondsSinceEpoch,
+      _authBloc.add(RegisterRawEvent(
         name: nameController.text.trim(),
         email: emailController.text.trim(),
         phone: phoneController.text.trim(),
         country: selectedCountry ?? '',
         city: selectedCity ?? '',
         password: passwordController.text.trim(),
-      );
-
-      _authBloc.add(RegisterEvent(user));
+        confirmPassword: confirmPasswordController.text.trim(),
+      ));
     }
   }
 

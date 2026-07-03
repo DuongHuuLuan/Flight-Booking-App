@@ -39,32 +39,16 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
     final success = await cubit.savePassengers(bookingId: widget.bookingId);
     if (success && mounted) {
       final created = cubit.state.passengers ?? [];
-      final passengers = cubit.state.forms.asMap().entries.map((e) {
-        final i = e.key;
-        final f = e.value;
-        return {
-          'index': i,
-          'passengerId': created[i].id,
-          'seatLabel': f.seatLabel,
-          'zoneId': widget.seatZoneIds.length > i ? widget.seatZoneIds[i] : '',
-          'ageGroup': f.ageGroup.name,
-          'name': f.name,
-          'mobilePhone': f.mobilePhone,
-          'passportNumber': f.passportNumber,
-          'nationality': f.nationality,
-          'address': f.address,
-          'email': f.email,
-          'idNumber': f.idNumber,
-          'baggageLevel': f.baggageLevel,
-          'dateOfBirth': f.dateOfBirth?.toIso8601String(),
-        };
-      }).toList();
+      final passengers = cubit.buildPassengerPayloads(
+        created,
+        widget.seatZoneIds,
+      );
       context.push(
         ServiceSelectionScreen.routerName,
         extra: {
           'bookingId': widget.bookingId,
           'seatCount': widget.seatCount,
-          'basePrice': widget.basePrice,
+          'totalPrice': widget.totalPrice,
           'passengers': passengers,
           'flightId': widget.flightId,
         },
@@ -111,7 +95,7 @@ class _PassengerDetailScreenState extends State<PassengerDetailScreen> {
                 ),
               ),
               BottomPaymentBar(
-                price: widget.totalPrice,
+                price: widget.totalPrice + state.totalBaggagePrice,
                 buttonText: 'Continue',
                 onPressed: state.isLoading ? null : _onSave,
               ),

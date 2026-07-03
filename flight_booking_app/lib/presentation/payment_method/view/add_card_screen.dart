@@ -2,8 +2,9 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
-import 'package:flight_booking_app/domain/entities/payment_method_entity.dart';
+import 'package:flight_booking_app/presentation/payment_method/cubit/payment_method_cubit.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class AddCardScreen extends StatefulWidget {
   static String get routerName => '/add-card';
@@ -32,20 +33,12 @@ class _AddCardScreenState extends State<AddCardScreen> {
   void _onSave() {
     if (!_formKey.currentState!.validate()) return;
 
-    final raw = _cardNumberController.text.replaceAll(' ', '');
-    final masked = '•••• ${raw.substring(raw.length - 4)}';
-    final type = raw.startsWith('4') ? 'Visa' : 'Mastercard';
-
-    final card = PaymentMethodEntity(
-      id: DateTime.now().millisecondsSinceEpoch.toString(),
-      maskedNumber: masked,
-      cardHolderName: _holderController.text,
+    context.read<PaymentMethodCubit>().createCard(
+      rawCardNumber: _cardNumberController.text,
+      holderName: _holderController.text,
       expiryDate: _expiryController.text,
-      cardType: type,
-      isDefault: false,
     );
-
-    Navigator.of(context).pop(card);
+    Navigator.of(context).pop();
   }
 
   @override

@@ -75,9 +75,7 @@ class FlightSummaryCard extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      detail.stops == 0
-                          ? "Non Stop"
-                          : "${detail.stops} Stop",
+                      detail.stopsDisplay,
                       style: AppTextStyles.caption.copyWith(
                         color: AppColor.greyDark,
                       ),

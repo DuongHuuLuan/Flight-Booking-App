@@ -74,7 +74,7 @@ class ZoneServiceInfo extends StatelessWidget {
                       ),
                     ),
                     Text(
-                      '\$${(s.price * s.quantity).toStringAsFixed(0)}',
+                      '\$${(s.totalPrice).toStringAsFixed(0)}',
                       style: AppTextStyles.bodySmall.copyWith(
                         fontWeight: FontWeight.bold,
                       ),

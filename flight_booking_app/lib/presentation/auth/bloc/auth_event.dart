@@ -12,6 +12,19 @@ class RegisterEvent extends AuthEvent {
   RegisterEvent(this.user);
 }
 
+class RegisterRawEvent extends AuthEvent {
+  final String name, email, phone, country, city, password, confirmPassword;
+  RegisterRawEvent({
+    required this.name,
+    required this.email,
+    required this.phone,
+    required this.country,
+    required this.city,
+    required this.password,
+    required this.confirmPassword,
+  });
+}
+
 class GetUserEvent extends AuthEvent {}
 
 class LogoutEvent extends AuthEvent {}
@@ -28,6 +41,12 @@ class ForgotPasswordEmailEvent extends ForgotPasswordEvent {
   ForgotPasswordEmailEvent(this.email);
 }
 
+class ForgotPasswordRawEvent extends AuthEvent {
+  final String? phone;
+  final String? email;
+  ForgotPasswordRawEvent({this.phone, this.email});
+}
+
 class VerifyOtpEvent extends ForgotPasswordEvent {
   final String otp;
   final String? email;
@@ -37,7 +56,13 @@ class VerifyOtpEvent extends ForgotPasswordEvent {
 
 class ResetPasswordEvent extends ForgotPasswordEvent {
   final String newPassword;
+  final String confirmPassword;
   final String? email;
   final String? phone;
-  ResetPasswordEvent({required this.newPassword, this.email, this.phone});
+  ResetPasswordEvent({
+    required this.newPassword,
+    this.confirmPassword = '',
+    this.email,
+    this.phone,
+  });
 }

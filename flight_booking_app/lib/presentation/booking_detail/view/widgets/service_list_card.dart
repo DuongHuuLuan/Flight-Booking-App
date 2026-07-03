@@ -39,7 +39,7 @@ class ServiceListCard extends StatelessWidget {
                 ),
               ),
               Text(
-                '\$${(s.price * s.quantity).toStringAsFixed(0)}',
+                '\$${(s.totalPrice).toStringAsFixed(0)}',
                 style: AppTextStyles.bodyMedium.copyWith(
                   fontWeight: FontWeight.bold,
                 ),
