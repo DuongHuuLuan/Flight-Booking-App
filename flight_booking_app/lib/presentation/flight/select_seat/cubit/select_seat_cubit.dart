@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
+import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/get_seat_layout_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/get_seat_zones_usecase.dart';
@@ -48,6 +49,32 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   void setBasePrice(double value) {
     emit(state.copyWith(basePrice: value));
   }
+
+  List<AgeGroup> get ageGroups => [
+    for (int i = 0; i < _adults; i++) AgeGroup.adult,
+    for (int i = 0; i < _children; i++) AgeGroup.child,
+    for (int i = 0; i < _seniors; i++) AgeGroup.senior,
+  ];
+
+  int get totalPassengers => _adults + _children + _seniors;
+
+  List<String> get seatLabels =>
+      state.selectedSeats.map((s) => s.seatLabel).toList();
+  List<String> get seatZoneIds =>
+      state.selectedSeats.map((e) => e.zoneId).toList();
+  List<String> get ageGroupNames =>
+      ageGroups.map((ag) => ag.name).toList();
+
+  Map<String, dynamic> buildNavigationPayload(String bookingId) => {
+    'bookingId': bookingId,
+    'seatCount': state.selectedSeats.length,
+    'basePrice': state.basePrice,
+    'totalPrice': state.totalPrice,
+    'ageGroups': ageGroupNames,
+    'seatLabels': seatLabels,
+    'seatZoneIds': seatZoneIds,
+    'flightId': _flightId,
+  };
 
   Future<void> loadSeats() async {
     emit(state.copyWith(isLoading: true, error: null));

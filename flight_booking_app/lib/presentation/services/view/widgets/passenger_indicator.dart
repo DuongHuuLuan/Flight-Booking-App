@@ -9,6 +9,7 @@ class PassengerIndicator extends StatelessWidget {
   final String seatLabel;
 
   const PassengerIndicator({
+    super.key,
     required this.current,
     required this.total,
     required this.name,

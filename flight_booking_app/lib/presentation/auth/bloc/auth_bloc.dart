@@ -1,4 +1,5 @@
 import 'package:flight_booking_app/data/datasources/local/auth_local_data_source.dart';
+import 'package:flight_booking_app/domain/entities/user_entity.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_email_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/forgot_password_with_sms_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/auth/get_current_user_usecase.dart';
@@ -38,10 +39,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
   }) : super(const AuthState()) {
     on<LoginEvent>(_onLogin);
     on<RegisterEvent>(_onRegister);
+    on<RegisterRawEvent>(_onRegisterRaw);
     on<GetUserEvent>(_onGetUser);
     on<LogoutEvent>(_onLogout);
     on<ForgotPasswordSMSEvent>(_onForgotPasswordSMS);
     on<ForgotPasswordEmailEvent>(_onForgotPasswordEmail);
+    on<ForgotPasswordRawEvent>(_onForgotPasswordRaw);
     on<VerifyOtpEvent>(_onVerifyOtp);
     on<ResetPasswordEvent>(_onResetPassword);
   }
@@ -114,6 +117,27 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
     );
+  }
+
+  Future<void> _onRegisterRaw(
+    RegisterRawEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    if (event.password != event.confirmPassword) {
+      emit(state.copyWith(errorMessage: 'Passwords do not match'));
+      return;
+    }
+    add(RegisterEvent(
+      UserEntity(
+        id: DateTime.now().microsecondsSinceEpoch,
+        name: event.name,
+        email: event.email,
+        phone: event.phone,
+        country: event.country,
+        city: event.city,
+        password: event.password,
+      ),
+    ));
   }
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
@@ -245,6 +269,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     );
   }
 
+  Future<void> _onForgotPasswordRaw(
+    ForgotPasswordRawEvent event,
+    Emitter<AuthState> emit,
+  ) async {
+    if (event.phone != null && event.phone!.isNotEmpty) {
+      add(ForgotPasswordSMSEvent(event.phone!));
+    } else if (event.email != null && event.email!.isNotEmpty) {
+      add(ForgotPasswordEmailEvent(event.email!));
+    } else {
+      emit(state.copyWith(errorMessage: 'Please enter phone or email'));
+    }
+  }
+
   Future<void> _onForgotPasswordEmail(
     ForgotPasswordEmailEvent event,
     Emitter<AuthState> emit,
@@ -298,6 +335,18 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     ResetPasswordEvent event,
     Emitter<AuthState> emit,
   ) async {
+    if (event.newPassword != event.confirmPassword) {
+      emit(state.copyWith(errorMessage: 'Passwords do not match'));
+      return;
+    }
+    if (event.newPassword.length < 6) {
+      emit(
+        state.copyWith(
+          errorMessage: 'Password must be at least 6 characters',
+        ),
+      );
+      return;
+    }
     emit(state.copyWith(isLoading: true));
     final result = event.email != null
         ? await resetPasswordByEmailUsecase(event.email!, event.newPassword)

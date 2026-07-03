@@ -221,10 +221,11 @@ class AppRouter {
           final passengers = (args['passengers'] as List<dynamic>)
               .cast<Map<String, dynamic>>();
           return BlocProvider(
-            create: (context) => getIt<ServiceSelectionCubit>(),
+            create: (context) => getIt<ServiceSelectionCubit>()
+              ..setZoneTotal((args['totalPrice'] as num).toDouble()),
             child: ServiceSelectionScreen(
               bookingId: args['bookingId'] as String,
-              basePrice: (args['basePrice'] as num).toDouble(),
+              totalPrice: (args['totalPrice'] as num).toDouble(),
               seatCount: args['seatCount'] as int,
               passengers: passengers,
               zoneId: (args['zoneId'] as String?) ?? '',
@@ -244,7 +245,7 @@ class AppRouter {
                   ..loadDetail(args['bookingId'] as String),
             child: BookingDetailScreen(
               bookingId: args['bookingId'] as String,
-              basePrice: (args['basePrice'] as num).toDouble(),
+              totalPrice: (args['totalPrice'] as num).toDouble(),
               seatCount: args['seatCount'] as int,
             ),
           );

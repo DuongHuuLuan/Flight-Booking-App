@@ -2,8 +2,6 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/utils/navigation_exp.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
-import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
-import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_state.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/polular_flights_card.dart';
@@ -78,14 +76,9 @@ class PopularFlightsSection extends StatelessWidget {
                   return PopularFlightCard(
                     flight: flight,
                     onTap: () {
-                      final params = FlightSearchParams(
-                        tripType: TripType.roundTrip,
-                        origin: flight.departureAirport.code,
-                        destination: flight.arrivalAirport.code,
-                        departureDate: flight.departureTime,
-                        passengerCount: 1,
-                      );
-
+                      final params = context
+                          .read<HomeCubit>()
+                          .buildSearchParamsFromPopular(flight);
                       context.goToSelectFlight(params);
                     },
                   );

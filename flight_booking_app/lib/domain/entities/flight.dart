@@ -13,6 +13,9 @@ class FlightEntity {
   final double price;
   final int stops;
 
+  String get stopsDisplay =>
+      stops == 0 ? "Non Stop" : "$stops Stop${stops > 1 ? 's' : ''}";
+
   FlightEntity({
     required this.id,
     required this.airline,

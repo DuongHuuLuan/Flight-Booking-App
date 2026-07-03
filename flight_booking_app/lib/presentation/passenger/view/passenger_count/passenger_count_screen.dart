@@ -94,7 +94,7 @@ class PassengerCountScreen extends StatelessWidget {
                     );
                   },
                   child: Text(
-                    'Continue — \$${(basePrice * state.total).toStringAsFixed(0)}',
+                    'Continue — \$${state.estimatedTotal(basePrice).toStringAsFixed(0)}',
                     style: AppTextStyles.button,
                   ),
                 ),

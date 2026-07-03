@@ -1,4 +1,6 @@
+import 'package:flight_booking_app/domain/entities/flight.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/domain/usecase/home/get_popular_flights_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/home/search_flights_usecsase.dart';
 import 'package:flight_booking_app/domain/usecase/search/get_all_flights_usecase.dart';
@@ -15,6 +17,30 @@ class HomeCubit extends Cubit<HomeState> {
     required this.searchFlightsUsecase,
     required this.getAllFlightsUsecase,
   }) : super(const HomeState());
+
+  FlightSearchParams buildSearchParams({
+    required TripType tripType,
+    required String origin,
+    required String destination,
+    required int passengerCount,
+    DateTime? departureDate,
+  }) =>
+      FlightSearchParams(
+        tripType: tripType,
+        origin: origin,
+        destination: destination,
+        departureDate: departureDate ?? DateTime.now(),
+        passengerCount: passengerCount,
+      );
+
+  FlightSearchParams buildSearchParamsFromPopular(FlightEntity flight) =>
+      FlightSearchParams(
+        tripType: TripType.roundTrip,
+        origin: flight.departureAirport.code,
+        destination: flight.arrivalAirport.code,
+        departureDate: flight.departureTime,
+        passengerCount: 1,
+      );
 
   Future<void> loadHomeData() async {
     emit(state.copyWith(status: HomeStatus.loading));

@@ -16,12 +16,23 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     required this.assignServices,
   }) : super(const ServiceSelectionState());
 
+  void setZoneTotal(double total) {
+    emit(state.copyWith(zoneTotal: total));
+  }
+
+  void setFormBaggageLevel(String level) {
+    emit(state.copyWith(formBaggageLevel: level));
+  }
+
+  AgeGroup resolveAgeGroup(String name) =>
+      AgeGroup.values.firstWhere((ag) => ag.name == name);
+
   Future<void> loadServices({
     required String flightId,
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
-    emit(state.copyWith(isLoading: true, serviceGroup: null));
+    emit(state.copyWith(isLoading: true, serviceGroup: null, clearIsSuccess: true));
     final result = await getEligibleServices(
       flightId: flightId,
       zoneId: zoneId,
@@ -97,7 +108,7 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
         state.serviceGroup?.baggage.map((e) => e.serviceId).toList() ?? [];
 
     final selected = state.tempSelections.entries
-        .where((e) => e.value > 0)
+        .where((e) => e.value > 0 && !baggageServiceIds.contains(e.key))
         .map((e) => e.key)
         .toList();
 
@@ -125,7 +136,16 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
         return false;
       },
       (_) {
-        emit(state.copyWith(isSaving: false, isSuccess: true));
+        final accSvc = state.accumulatedServicePrice + state.serviceTotal;
+        final accBag = state.accumulatedBaggagePrice + state.baggageTotal;
+        emit(state.copyWith(
+          isSaving: false,
+          isSuccess: true,
+          serviceGroup: null,
+          tempSelections: const {},
+          accumulatedServicePrice: accSvc,
+          accumulatedBaggagePrice: accBag,
+        ));
         return true;
       },
     );

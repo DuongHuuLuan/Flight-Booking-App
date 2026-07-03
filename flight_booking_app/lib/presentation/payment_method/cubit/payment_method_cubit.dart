@@ -45,6 +45,25 @@ class PaymentMethodCubit extends Cubit<PaymentMethodState> {
     emit(state.copyWith(selectedCard: card, error: null));
   }
 
+  void createCard({
+    required String rawCardNumber,
+    required String holderName,
+    required String expiryDate,
+  }) {
+    final cleaned = rawCardNumber.replaceAll(' ', '');
+    final masked = '•••• ${cleaned.substring(cleaned.length - 4)}';
+    final type = cleaned.startsWith('4') ? 'Visa' : 'Mastercard';
+    final card = PaymentMethodEntity(
+      id: DateTime.now().millisecondsSinceEpoch.toString(),
+      maskedNumber: masked,
+      cardHolderName: holderName,
+      expiryDate: expiryDate,
+      cardType: type,
+      isDefault: false,
+    );
+    addCard(card);
+  }
+
   void selectPaymentMethod(PaymentMethodType type) {
     emit(state.copyWith(selectedMethod: type, error: null));
   }
