@@ -24,6 +24,7 @@ class PassengerMapper {
       email: model.email,
       idNumber: model.idNumber,
       baggageLevel: model.baggageLevel,
+      baggageName: model.baggageName,
     );
   }
 

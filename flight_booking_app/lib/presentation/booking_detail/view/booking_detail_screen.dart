@@ -8,8 +8,8 @@ import 'package:flight_booking_app/presentation/booking_detail/cubit/booking_det
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/flight_info_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/passenger_info_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/payment_breakdown_card_v2.dart';
-import 'package:flight_booking_app/presentation/booking_detail/view/widgets/ticket_info_card.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/widgets/service_list_card.dart';
+import 'package:flight_booking_app/presentation/booking_detail/view/widgets/ticket_info_card.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -54,7 +54,9 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           }
           if (state.bookingDetail != null && !_priceBreakdownFetched) {
             _priceBreakdownFetched = true;
-            context.read<BookingDetailCubit>().loadPriceBreakdown(widget.bookingId);
+            context.read<BookingDetailCubit>().loadPriceBreakdown(
+              widget.bookingId,
+            );
           }
           if (state.error != null) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -68,10 +70,7 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           return SingleChildScrollView(
             child: Column(
               children: [
-                FlightInfoCard(
-                  flight: detail.flight,
-                  price: detail.totalPrice,
-                ),
+                FlightInfoCard(flight: detail.flight, price: detail.totalPrice),
                 PassengerInfoCard(passengers: detail.passengers),
                 TicketInfoCard(
                   flight: detail.flight,
@@ -95,12 +94,19 @@ class _BookingDetailScreenState extends State<BookingDetailScreen> {
           if (detail == null) return const SizedBox.shrink();
           return BottomPaymentBar(
             label: "Total Price",
-            price: detail.totalPrice,
+            price:
+                (state.priceBreakdown?['grandTotal'] as num? ??
+                        detail.totalPrice)
+                    .toDouble(),
             buttonText: "Pay Now",
             onPressed: () {
-              final detail = state.bookingDetail!;
+              final grandTotal =
+                  (state.priceBreakdown?['grandTotal'] as num? ??
+                          detail.totalPrice)
+                      .toDouble();
+
               context.goToPaymentMethod(
-                totalPrice: detail.totalPrice,
+                totalPrice: grandTotal,
                 booking: detail,
               );
             },
