@@ -36,5 +36,6 @@ abstract class BookingService {
   @POST("/bookings/{bookingId}/pay")
   Future<HttpResponse<BaseResponse<dynamic>>> mockPayment(
     @Path("bookingId") String bookingId,
+    @Body() Map<String, dynamic> body,
   );
 }

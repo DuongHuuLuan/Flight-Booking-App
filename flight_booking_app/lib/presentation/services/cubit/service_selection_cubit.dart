@@ -32,7 +32,9 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
     required String zoneId,
     required AgeGroup ageGroup,
   }) async {
-    emit(state.copyWith(isLoading: true, serviceGroup: null, clearIsSuccess: true));
+    emit(
+      state.copyWith(isLoading: true, serviceGroup: null, clearIsSuccess: true),
+    );
     final result = await getEligibleServices(
       flightId: flightId,
       zoneId: zoneId,
@@ -138,14 +140,16 @@ class ServiceSelectionCubit extends Cubit<ServiceSelectionState> {
       (_) {
         final accSvc = state.accumulatedServicePrice + state.serviceTotal;
         final accBag = state.accumulatedBaggagePrice + state.baggageTotal;
-        emit(state.copyWith(
-          isSaving: false,
-          isSuccess: true,
-          serviceGroup: null,
-          tempSelections: const {},
-          accumulatedServicePrice: accSvc,
-          accumulatedBaggagePrice: accBag,
-        ));
+        emit(
+          state.copyWith(
+            isSaving: false,
+            isSuccess: true,
+            serviceGroup: null,
+            tempSelections: const {},
+            accumulatedServicePrice: accSvc,
+            accumulatedBaggagePrice: accBag,
+          ),
+        );
         return true;
       },
     );
