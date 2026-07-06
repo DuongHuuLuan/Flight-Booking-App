@@ -8,7 +8,7 @@ class UserMapper {
     return UserEntity(
       id: json["id"] as int,
       accessToken: json["accessToken"],
-      refresh_token: json["refresh_token"],
+      refreshToken: json["refresh_token"],
       name: json["name"] as String,
       email: json["email"] as String,
       phone: json["phone"] as String,
@@ -23,7 +23,7 @@ class UserMapper {
     return {
       "id": user.id,
       "accessToken": user.accessToken,
-      "refresh_token": user.refresh_token,
+      "refresh_token": user.refreshToken,
       "name": user.name,
       "email": user.email,
       "phone": user.phone,
@@ -54,7 +54,7 @@ class UserMapper {
     return UserEntity(
       id: model.id,
       accessToken: model.accessToken,
-      refresh_token: model.refreshToken,
+      refreshToken: model.refreshToken,
       name: model.name,
       email: model.email,
       phone: model.phone,

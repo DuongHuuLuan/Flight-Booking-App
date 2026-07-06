@@ -27,7 +27,7 @@ class SectionCard extends StatelessWidget {
               children: [
                 if (title != null)
                   Expanded(child: Text(title!, style: AppTextStyles.heading3)),
-                if (trailing != null) trailing!,
+                ?trailing,
               ],
             ).paddingAll(16),
           if (title != null || trailing != null)
