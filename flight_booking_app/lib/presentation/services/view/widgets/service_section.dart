@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
+import 'package:flight_booking_app/presentation/services/view/widgets/service_detail_sheet.dart';
 import 'package:flight_booking_app/presentation/services/view/widgets/service_tile.dart';
 import 'package:flutter/material.dart';
 
@@ -38,6 +39,20 @@ class ServiceSection extends StatelessWidget {
           ServiceTile(
             service: service,
             count: selections[service.serviceId] ?? 0,
+            onTap: () => ServiceDetailSheet.show(
+              context,
+              service: service,
+              initialCount: selections[service.serviceId] ?? 0,
+              onApply: (newCount) {
+                final current = selections[service.serviceId] ?? 0;
+                final delta = newCount - current;
+                if (delta > 0) {
+                  for (int i = 0; i < delta; i++) { onToggle(service, 1); }
+                } else if (delta < 0) {
+                  for (int i = 0; i < -delta; i++) { onToggle(service, -1); }
+                }
+              },
+            ),
             onIncrement: () => onToggle(service, 1),
             onDecrement: () => onToggle(service, -1),
           ),

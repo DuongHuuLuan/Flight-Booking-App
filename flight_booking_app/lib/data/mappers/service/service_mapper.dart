@@ -9,6 +9,7 @@ class ServiceMapper {
       name: model.name,
       price: model.price,
       maxPerPassenger: model.maxPerPassenger,
+      description: model.description,
     );
   }
 }
