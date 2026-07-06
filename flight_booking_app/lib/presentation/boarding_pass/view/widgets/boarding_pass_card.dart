@@ -17,10 +17,8 @@ class BoardingPassCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final flight = booking.flight;
-    final seatLabel = booking.selectedSeats?.split(',').first ?? '—';
-    final ticketId = booking.id.length >= 6
-        ? booking.id.substring(0, 6).toUpperCase()
-        : booking.id.toUpperCase();
+    final seatLabel = booking.primarySeatLabel;
+    final ticketId = booking.shortTicketId;
 
     return ClipPath(
       clipper: const TicketCutoutClipper(),

@@ -25,6 +25,41 @@ class SelectSeatState {
     return total;
   }
 
+  double zonePrice(SeatZoneEntity? zone) =>
+      basePrice * (zone?.priceModifier ?? 1.0);
+
+  Map<String, List<SeatEntity>> get seatsGroupedByZoneId {
+    final map = <String, List<SeatEntity>>{};
+    for (final seat in seats) {
+      final key = seat.zoneId ?? '';
+      map.putIfAbsent(key, () => []);
+      map[key]!.add(seat);
+    }
+    return map;
+  }
+
+  List<SeatEntity> seatsInZone(String zoneId) {
+    final active = selectedZoneId;
+    final entries = active != null
+        ? seatsGroupedByZoneId.entries.where((e) => e.key == active)
+        : seatsGroupedByZoneId.entries;
+    return entries.expand((e) => e.value).toList();
+  }
+
+  List<int> rowsForZone(String zoneId) {
+    final zoneSeats = seatsGroupedByZoneId[zoneId] ?? [];
+    final rowSet = zoneSeats.map((s) => s.rowNumber).toSet().toList()
+      ..sort();
+    return rowSet;
+  }
+
+  List<SeatEntity> seatsInZoneAndRow(String zoneId, int row) {
+    final zoneSeats = seatsGroupedByZoneId[zoneId] ?? [];
+    final filtered = zoneSeats.where((s) => s.rowNumber == row).toList()
+      ..sort((a, b) => a.position.compareTo(b.position));
+    return filtered;
+  }
+
   SelectSeatState({
     this.isLoading = false,
     this.seats = const [],

@@ -50,6 +50,8 @@ class BookingServiceEntity extends Equatable {
   final double price;
   final int quantity;
 
+  double get totalPrice => price * quantity;
+
   const BookingServiceEntity({
     required this.id,
     required this.passengerId,
@@ -87,6 +89,11 @@ class BookingDetailEntity extends Equatable {
   final double? serviceTotal;
   final double? baggageTotal;
   final List<BookingServiceEntity>? services;
+
+  String get primarySeatLabel => selectedSeats?.split(',').first ?? '—';
+  String get shortTicketId => id.length >= 6
+      ? id.substring(0, 6).toUpperCase()
+      : id.toUpperCase();
 
   const BookingDetailEntity({
     required this.id,

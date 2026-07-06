@@ -1,10 +1,11 @@
 import 'package:flight_booking_app/core/utils/color_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
-import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
+import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SeatGrid extends StatelessWidget {
   final SelectSeatState state;
@@ -14,67 +15,49 @@ class SeatGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final grouped = <String, List<SeatEntity>>{};
-    for (final seat in state.seats) {
-      final key = seat.zoneId ?? '';
-      grouped.putIfAbsent(key, () => []);
-      grouped[key]!.add(seat);
-    }
-
+    final cubit = context.read<SelectSeatCubit>();
+    final selectable = cubit.selectableSeatLabels;
     final activeZoneId = state.selectedZoneId;
-    final entries = activeZoneId != null
-        ? grouped.entries.where((e) => e.key == activeZoneId)
-        : grouped.entries;
+    final zoneIds = activeZoneId != null
+        ? [activeZoneId]
+        : state.seatsGroupedByZoneId.keys.toList();
 
     return Column(
-      children: entries.map((entry) {
+      children: zoneIds.map((zoneId) {
         final zone = state.zones.cast<SeatZoneEntity?>().firstWhere(
-          (z) => z?.zoneId == entry.key,
+          (z) => z?.zoneId == zoneId,
           orElse: () => null,
         );
         final zoneColor = parseHexColor(zone?.colorHex);
-        final zonePrice = state.basePrice * (zone?.priceModifier ?? 1.0);
 
-        final seats = entry.value;
-        final rows = seats.map((s) => s.rowNumber).toSet().toList()..sort();
+        final rows = state.rowsForZone(zoneId);
 
         return Column(
-          children: [
-            // Container(
-            //   width: double.infinity,
-            //   padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            //   color: zoneColor.withValues(alpha: 0.08),
-            //   child: Text(
-            //     '${zone?.zoneName ?? 'Unknown'} — ${zonePrice.toStringAsFixed(0)}₫/ghế',
-            //     style: AppTextStyles.bodyMedium.copyWith(
-            //       fontWeight: FontWeight.w600,
-            //       color: zoneColor,
-            //     ),
-            //   ),
-            // ),
-            ...rows.map((row) {
-              final seatsInRow = seats.where((s) => s.rowNumber == row).toList()
-                ..sort((a, b) => a.position.compareTo(b.position));
+          children: rows.map((row) {
+            final seatsInRow = state.seatsInZoneAndRow(zoneId, row);
 
-              return Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: seatsInRow.map((seat) {
-                  final isSelected = state.selectedSeats.any(
-                    (element) => element.seatLabel == seat.seatLabel,
-                  );
-                  final isReserved = seat.status == 'reserved';
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: seatsInRow.map((seat) {
+                final isSelected = state.selectedSeats.any(
+                  (element) => element.seatLabel == seat.seatLabel,
+                );
+                final isReserved = seat.status == 'reserved';
+                final canSelect = selectable.contains(seat.seatLabel);
 
-                  return SeatBox(
-                    label: seat.seatLabel,
-                    isSelected: isSelected,
-                    isReserved: isReserved,
-                    zoneColor: zoneColor,
-                    onTap: isReserved ? null : () => onSeatTap(seat.seatLabel),
-                  );
-                }).toList(),
-              ).paddingVertical(10);
-            }),
-          ],
+                return SeatBox(
+                  label: seat.seatLabel,
+                  isSelected: isSelected,
+                  isReserved: isReserved,
+                  canSelect: canSelect,
+                  zoneColor: zoneColor,
+                  onTap: isReserved || !canSelect
+                      ? null
+                      : () => onSeatTap(seat.seatLabel),
+                );
+              }).toList(),
+            ).paddingVertical(10);
+          }).toList(),
         );
       }).toList(),
     );

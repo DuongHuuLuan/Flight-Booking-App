@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
+import 'package:flight_booking_app/core/utils/date_time_utils.dart';
 import 'package:flight_booking_app/domain/entities/airport.dart';
 import 'package:flight_booking_app/presentation/flight/select_flight/view/widgets/widgets_router_info/airport_info.dart';
 import 'package:flight_booking_app/presentation/flight/select_flight/view/widgets/widgets_router_info/flight_header_painter.dart';
@@ -12,20 +13,13 @@ class RouteInfoBar extends StatelessWidget {
 
   const RouteInfoBar({super.key, this.origin, this.destination, this.duration});
 
-  String get durationText {
-    if (duration == null) return "";
-    final h = duration! ~/ 60;
-    final m = duration! % 60;
-    return "${h}h ${m.toString().padLeft(2, '0')}m";
-  }
-
   @override
   Widget build(BuildContext context) {
-    final originCity = origin?.city ?? "Dubai";
-    final originCode = origin?.code ?? "DXB";
+    final originCity = origin?.city ?? "";
+    final originCode = origin?.code ?? "";
 
-    final destCity = destination?.city ?? "Auckland";
-    final destCode = destination?.code ?? "AKL";
+    final destCity = destination?.city ?? "";
+    final destCode = destination?.code ?? "";
 
     return Container(
       height: MediaQuery.of(context).size.height * 0.26,
@@ -78,7 +72,7 @@ class RouteInfoBar extends StatelessWidget {
                 ),
                 const SizedBox(height: 4),
                 Text(
-                  durationText,
+                  duration?.durationText ?? "",
                   style: AppTextStyles.caption.copyWith(color: AppColor.white),
                 ),
               ],

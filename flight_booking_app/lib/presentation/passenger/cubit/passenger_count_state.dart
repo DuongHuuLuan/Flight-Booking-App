@@ -11,6 +11,8 @@ class PassengerCountState {
 
   int get total => adults + children + seniors;
 
+  double estimatedTotal(double basePrice) => basePrice * total;
+
   PassengerCountState copyWith({
     int? adults,
     int? children,

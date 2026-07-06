@@ -1,6 +1,7 @@
 import 'package:flight_booking_app/domain/entities/seat/seat_entity.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_input.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
+import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/domain/usecase/booking/create_booking_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/get_seat_layout_usecase.dart';
 import 'package:flight_booking_app/domain/usecase/seat/get_seat_zones_usecase.dart';
@@ -14,6 +15,8 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
 
   String _flightId;
   int _children = 0;
+  int _adults = 0;
+  int _seniors = 0;
 
   SelectSeatCubit({
     required this.getSeatLayout,
@@ -35,9 +38,60 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     _children = value < 0 ? 0 : value;
   }
 
+  set adults(int value) {
+    _adults = value < 0 ? 0 : value;
+  }
+
+  set seniors(int value) {
+    _seniors = value < 0 ? 0 : value;
+  }
+
   void setBasePrice(double value) {
     emit(state.copyWith(basePrice: value));
   }
+
+  Set<String> get selectableSeatLabels {
+    if (_children <= 0) {
+      return state.seats
+          .where((element) => _canSelectSeat(element))
+          .map((e) => e.seatLabel)
+          .toSet();
+    }
+    return state.seats
+        .where((element) => _canSelectSeat(element))
+        .where((element) {
+          if (_isSelected(state.selectedSeats, element.seatLabel)) return true;
+          return _findAvailableAdjacentSeat(element, state.selectedSeats) !=
+              null;
+        })
+        .map((e) => e.seatLabel)
+        .toSet();
+  }
+
+  List<AgeGroup> get ageGroups => [
+    for (int i = 0; i < _adults; i++) AgeGroup.adult,
+    for (int i = 0; i < _children; i++) AgeGroup.child,
+    for (int i = 0; i < _seniors; i++) AgeGroup.senior,
+  ];
+
+  int get totalPassengers => _adults + _children + _seniors;
+
+  List<String> get seatLabels =>
+      state.selectedSeats.map((s) => s.seatLabel).toList();
+  List<String> get seatZoneIds =>
+      state.selectedSeats.map((e) => e.zoneId).toList();
+  List<String> get ageGroupNames => ageGroups.map((ag) => ag.name).toList();
+
+  Map<String, dynamic> buildNavigationPayload(String bookingId) => {
+    'bookingId': bookingId,
+    'seatCount': state.selectedSeats.length,
+    'basePrice': state.basePrice,
+    'totalPrice': state.totalPrice,
+    'ageGroups': ageGroupNames,
+    'seatLabels': seatLabels,
+    'seatZoneIds': seatZoneIds,
+    'flightId': _flightId,
+  };
 
   Future<void> loadSeats() async {
     emit(state.copyWith(isLoading: true, error: null));
@@ -88,6 +142,15 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     if (alreadySelected) {
       _removeSeat(updatedSeats, seat);
     } else {
+      final totalPassengers = _adults + _children + _seniors;
+      if (updatedSeats.length >= totalPassengers) {
+        emit(state.copyWith(error: "Đã chọn đủ $totalPassengers ghế"));
+        return;
+      }
+      if (_children > 0 && !selectableSeatLabels.contains(seatLabel)) {
+        emit(state.copyWith(error: "Cần ghế kế bên cho trẻ em"));
+        return;
+      }
       _addSeat(updatedSeats, seat, fallbackZoneId);
     }
 
@@ -95,8 +158,14 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
   }
 
   Future<String?> confirmSeat() async {
-    if (state.selectedSeats.isEmpty) {
-      emit(state.copyWith(error: 'Please select at least one seat'));
+    final totalPassengers = _adults + _children + _seniors;
+    if (state.selectedSeats.length != totalPassengers) {
+      emit(
+        state.copyWith(
+          isBooking: false,
+          error: 'Please select exactly $totalPassengers seats',
+        ),
+      );
       return null;
     }
 
@@ -169,6 +238,8 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     if (_children <= 0) return;
     final unpairedChildren = _calculateUnpairedChildren(selectedSeats);
     if (unpairedChildren <= 0) return;
+    final totalPassengers = _adults + _children + _seniors;
+    if (selectedSeats.length >= totalPassengers) return;
     final adjacentSeat = _findAvailableAdjacentSeat(seat, selectedSeats);
     if (adjacentSeat == null) {
       return;

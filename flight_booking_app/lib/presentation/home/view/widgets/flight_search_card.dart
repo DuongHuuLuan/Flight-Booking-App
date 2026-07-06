@@ -4,7 +4,6 @@ import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/core/widgets/app_dropdown_button_form_field.dart';
 import 'package:flight_booking_app/core/widgets/app_elevated_button.dart';
 import 'package:flight_booking_app/core/widgets/app_text_form_field.dart';
-import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
 import 'package:flight_booking_app/domain/enums/trip_type.dart';
 import 'package:flight_booking_app/presentation/home/cubit/home_cubit.dart';
 import 'package:flight_booking_app/presentation/home/view/widgets/type_button.dart';
@@ -223,15 +222,14 @@ class _FlightSearchCardState extends State<FlightSearchCard> {
                     height: MediaQuery.of(context).size.height * 0.07,
                     backgroundColor: AppColor.primary,
                     onPressed: () {
-                      final params = FlightSearchParams(
+                      final cubit = context.read<HomeCubit>();
+                      final params = cubit.buildSearchParams(
                         tripType: _selectedType,
                         origin: fromController.text.trim(),
                         destination: toController.text.trim(),
-                        departureDate: DateTime.now(),
                         passengerCount: int.parse(_passengerCount),
                       );
-
-                      context.read<HomeCubit>().searchFlights(params);
+                      cubit.searchFlights(params);
                       context.goToSelectFlight(params);
                     },
                   ),

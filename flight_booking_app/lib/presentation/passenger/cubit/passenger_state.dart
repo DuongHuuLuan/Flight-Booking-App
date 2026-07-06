@@ -219,6 +219,7 @@ class PassengerState {
   final List<PassengerFormData> forms;
   final List<AgeGroup> ageGroups;
   final List<ServiceEntity> baggageOptions;
+  final double totalBaggagePrice;
 
   const PassengerState({
     this.isLoading = false,
@@ -228,6 +229,7 @@ class PassengerState {
     this.forms = const [],
     this.ageGroups = const [],
     this.baggageOptions = const [],
+    this.totalBaggagePrice = 0,
   });
 
   PassengerState copyWith({
@@ -238,6 +240,7 @@ class PassengerState {
     List<PassengerFormData>? forms,
     List<AgeGroup>? ageGroups,
     List<ServiceEntity>? baggageOptions,
+    double? totalBaggagePrice,
   }) {
     return PassengerState(
       isLoading: isLoading ?? this.isLoading,
@@ -247,6 +250,11 @@ class PassengerState {
       forms: forms ?? this.forms,
       ageGroups: ageGroups ?? this.ageGroups,
       baggageOptions: baggageOptions ?? this.baggageOptions,
+      totalBaggagePrice: totalBaggagePrice ?? this.totalBaggagePrice,
     );
   }
+}
+
+extension PassengerFormExt on PassengerFormData {
+  bool get isChild => ageGroup == AgeGroup.child;
 }

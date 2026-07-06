@@ -69,12 +69,13 @@ class V2PassengerFormCard extends StatelessWidget {
             onDatePicked: (d) => onUpdateField('dateOfBirth', d),
           ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
 
-          _FormTextField(
-            label: 'Passport Number',
-            initialValue: formData.passportNumber,
-            icon: Icons.assignment_ind,
-            onChanged: (v) => onUpdateField('passportNumber', v),
-          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+          if (!formData.isChild)
+            _FormTextField(
+              label: 'Passport Number',
+              initialValue: formData.passportNumber,
+              icon: Icons.assignment_ind,
+              onChanged: (v) => onUpdateField('passportNumber', v),
+            ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
 
           _FormTextField(
             label: 'Nationality',
@@ -90,20 +91,22 @@ class V2PassengerFormCard extends StatelessWidget {
             onChanged: (v) => onUpdateField('address', v),
           ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
 
-          _FormTextField(
-            label: 'Email',
-            initialValue: formData.email,
-            icon: Icons.email,
-            keyboardType: TextInputType.emailAddress,
-            onChanged: (v) => onUpdateField('email', v),
-          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+          if (!formData.isChild)
+            _FormTextField(
+              label: 'Email',
+              initialValue: formData.email,
+              icon: Icons.email,
+              keyboardType: TextInputType.emailAddress,
+              onChanged: (v) => onUpdateField('email', v),
+            ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
 
-          _FormTextField(
-            label: 'ID Number',
-            initialValue: formData.idNumber,
-            icon: Icons.badge,
-            onChanged: (v) => onUpdateField('idNumber', v),
-          ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
+          if (!formData.isChild)
+            _FormTextField(
+              label: 'ID Number',
+              initialValue: formData.idNumber,
+              icon: Icons.badge,
+              onChanged: (v) => onUpdateField('idNumber', v),
+            ).paddingOnly(left: 16, top: 0, right: 16, bottom: 8),
 
           _BaggageDropdown(
             baggageLevel: formData.baggageLevel,
@@ -146,6 +149,14 @@ class _FormTextFieldState extends State<_FormTextField> {
   }
 
   @override
+  void didUpdateWidget(_FormTextField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    if (widget.initialValue != oldWidget.initialValue) {
+      _controller.text = widget.initialValue;
+    }
+  }
+
+  @override
   void dispose() {
     _controller.dispose();
     super.dispose();
@@ -170,17 +181,46 @@ class _FormTextFieldState extends State<_FormTextField> {
   }
 }
 
-class _DateField extends StatelessWidget {
+class _DateField extends StatefulWidget {
   final PassengerFormData formData;
   final ValueChanged<DateTime> onDatePicked;
 
   const _DateField({required this.formData, required this.onDatePicked});
 
   @override
+  State<_DateField> createState() => _DateFieldState();
+}
+
+class _DateFieldState extends State<_DateField> {
+  late TextEditingController _controller;
+
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController(text: _dateText);
+  }
+
+  @override
+  void didUpdateWidget(_DateField oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    final newText = _dateText;
+    if (newText != _controller.text) {
+      _controller.text = newText;
+    }
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  String get _dateText => widget.formData.dateOfBirth != null
+      ? '${widget.formData.dateOfBirth!.day}/${widget.formData.dateOfBirth!.month}/${widget.formData.dateOfBirth!.year}'
+      : '';
+
+  @override
   Widget build(BuildContext context) {
-    final dateStr = formData.dateOfBirth != null
-        ? '${formData.dateOfBirth!.day}/${formData.dateOfBirth!.month}/${formData.dateOfBirth!.year}'
-        : '';
     return TextField(
       decoration: InputDecoration(
         labelText: 'Date of Birth',
@@ -191,17 +231,17 @@ class _DateField extends StatelessWidget {
           vertical: 12,
         ),
       ),
-      controller: TextEditingController(text: dateStr),
+      controller: _controller,
       readOnly: true,
       onTap: () async {
         final picked = await showDatePicker(
           context: context,
-          initialDate: formData.dateOfBirth ?? DateTime.now(),
+          initialDate: widget.formData.dateOfBirth ?? DateTime.now(),
           firstDate: DateTime(1900),
           lastDate: DateTime.now(),
         );
         if (picked != null) {
-          onDatePicked(picked);
+          widget.onDatePicked(picked);
         }
       },
     );
@@ -262,15 +302,5 @@ class _InfoChip extends StatelessWidget {
         style: AppTextStyles.caption.copyWith(color: AppColor.primary),
       ),
     );
-  }
-}
-
-extension on AgeGroup {
-  String get displayName {
-    return switch (this) {
-      AgeGroup.child => 'Child',
-      AgeGroup.adult => 'Adult',
-      AgeGroup.senior => 'Senior',
-    };
   }
 }

@@ -7,22 +7,26 @@ class BottomPaymentBar extends StatelessWidget {
   final String? label;
   final double? price;
   final String? buttonText;
+  final TextStyle? buttonTextStyle;
   final VoidCallback? onPressed;
   final bool? showShadow;
   final String? currency;
   final TextStyle? priceStyle;
   final TextStyle? labelStyle;
+  final Widget? secondaryButton;
 
   const BottomPaymentBar({
     super.key,
     this.label,
     this.price,
     this.buttonText,
+    this.buttonTextStyle,
     this.onPressed,
     this.showShadow,
     this.currency,
     this.priceStyle,
     this.labelStyle,
+    this.secondaryButton,
   });
 
   @override
@@ -51,6 +55,10 @@ class BottomPaymentBar extends StatelessWidget {
         top: false,
         child: Row(
           children: [
+            if(secondaryButton != null) ...[
+              secondaryButton!,
+              const SizedBox(width: 12,),
+            ],
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,
@@ -99,9 +107,11 @@ class BottomPaymentBar extends StatelessWidget {
                 ),
                 child: Text(
                   displayButtonText,
-                  style: AppTextStyles.button.copyWith(
-                    fontWeight: FontWeight.w600,
-                  ),
+                  style:
+                      buttonTextStyle ??
+                      AppTextStyles.button.copyWith(
+                        fontWeight: FontWeight.w600,
+                      ),
                 ),
               ),
             ),

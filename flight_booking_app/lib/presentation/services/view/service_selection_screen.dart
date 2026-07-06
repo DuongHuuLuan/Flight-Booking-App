@@ -2,8 +2,6 @@ import 'package:flight_booking_app/core/theme/app_color.dart';
 import 'package:flight_booking_app/core/theme/text_style.dart';
 import 'package:flight_booking_app/core/widgets/app_loading_overlay.dart';
 import 'package:flight_booking_app/core/widgets/bottom_payment_bar.dart';
-import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
-import 'package:flight_booking_app/domain/enums/age_group.dart';
 import 'package:flight_booking_app/presentation/booking_detail/view/booking_detail_screen.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_state.dart';
@@ -18,7 +16,7 @@ class ServiceSelectionScreen extends StatefulWidget {
 
   final String flightId;
   final String bookingId;
-  final double basePrice;
+  final double totalPrice;
   final int seatCount;
   final List<Map<String, dynamic>> passengers;
   final String zoneId;
@@ -27,7 +25,7 @@ class ServiceSelectionScreen extends StatefulWidget {
     super.key,
     required this.flightId,
     required this.bookingId,
-    required this.basePrice,
+    required this.totalPrice,
     required this.seatCount,
     required this.passengers,
     this.zoneId = '',
@@ -43,20 +41,23 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
   Map<String, dynamic> get _currentPassenger =>
       widget.passengers[_currentPassengerIndex];
 
-  AgeGroup get _ageGroup => AgeGroup.values.firstWhere(
-    (ag) => ag.name == _currentPassenger['ageGroup'],
-  );
-
   @override
   void initState() {
     super.initState();
+    final cubit = context.read<ServiceSelectionCubit>();
+    cubit.setFormBaggageLevel(
+      _currentPassenger['baggageLevel'] as String? ?? '',
+    );
     _loadServices();
   }
 
   void _loadServices() {
+    final cubit = context.read<ServiceSelectionCubit>();
     final zoneId = _currentPassenger['zoneId'] as String? ?? widget.zoneId;
-    final ageGroup = _ageGroup;
-    context.read<ServiceSelectionCubit>().loadServices(
+    final ageGroup = cubit.resolveAgeGroup(
+      _currentPassenger['ageGroup'] as String,
+    );
+    cubit.loadServices(
       flightId: widget.flightId,
       zoneId: zoneId,
       ageGroup: ageGroup,
@@ -66,6 +67,10 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
   void _nextPassenger() {
     if (_currentPassengerIndex < widget.passengers.length - 1) {
       setState(() => _currentPassengerIndex++);
+      final cubit = context.read<ServiceSelectionCubit>();
+      cubit.setFormBaggageLevel(
+        _currentPassenger['baggageLevel'] as String? ?? '',
+      );
       _loadServices();
     }
   }
@@ -81,7 +86,9 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
       body: BlocConsumer<ServiceSelectionCubit, ServiceSelectionState>(
         listenWhen: (previous, current) =>
             previous.isSaving != current.isSaving ||
-            previous.isSuccess != current.isSuccess,
+            previous.isSuccess != current.isSuccess ||
+            previous.isLoading != current.isLoading,
+
         listener: (context, state) {
           if (state.isLoading || state.isSaving) {
             context.showLoading();
@@ -90,14 +97,13 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
           }
           if (state.isSuccess) {
             if (_currentPassengerIndex < widget.passengers.length - 1) {
-              context.read<ServiceSelectionCubit>().reset();
               _nextPassenger();
             } else {
               context.push(
                 BookingDetailScreen.routerName,
                 extra: {
                   'bookingId': widget.bookingId,
-                  'basePrice': widget.basePrice,
+                  'totalPrice': state.grandTotal,
                   'seatCount': widget.seatCount,
                 },
               );
@@ -169,28 +175,8 @@ class _ServiceSelectionScreenState extends State<ServiceSelectionScreen> {
       bottomNavigationBar:
           BlocBuilder<ServiceSelectionCubit, ServiceSelectionState>(
             builder: (context, state) {
-              final serviceTotal = state.serviceGroup == null
-                  ? 0.0
-                  : state.tempSelections.entries.fold<double>(0, (sum, e) {
-                      final allServices = [
-                        ...state.serviceGroup!.meals,
-                        ...state.serviceGroup!.drinks,
-                        ...state.serviceGroup!.baggage,
-                      ];
-                      final svc = allServices.firstWhere(
-                        (s) => s.serviceId == e.key,
-                        orElse: () => const ServiceEntity(
-                          serviceId: '',
-                          type: '',
-                          name: '',
-                          price: 0,
-                          maxPerPassenger: 0,
-                        ),
-                      );
-                      return sum + svc.price * e.value;
-                    });
               return BottomPaymentBar(
-                price: widget.basePrice * widget.seatCount + serviceTotal,
+                price: state.grandTotal,
                 buttonText:
                     _currentPassengerIndex < widget.passengers.length - 1
                     ? 'Next Passenger'

@@ -59,9 +59,7 @@ class FlightTicketCard extends StatelessWidget {
                 Container(width: 80, height: 1, color: AppColor.greyLight),
                 const SizedBox(height: 4),
                 Text(
-                  flight.stops == 0
-                      ? "Non Stop"
-                      : "${flight.stops} Stop${flight.stops > 1 ? 's' : ''}",
+                  flight.stopsDisplay,
                   style: AppTextStyles.caption.copyWith(
                     color: AppColor.greyDark,
                   ),
