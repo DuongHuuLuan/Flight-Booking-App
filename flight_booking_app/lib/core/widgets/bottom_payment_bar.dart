@@ -13,6 +13,7 @@ class BottomPaymentBar extends StatelessWidget {
   final String? currency;
   final TextStyle? priceStyle;
   final TextStyle? labelStyle;
+  final Widget? secondaryButton;
 
   const BottomPaymentBar({
     super.key,
@@ -25,6 +26,7 @@ class BottomPaymentBar extends StatelessWidget {
     this.currency,
     this.priceStyle,
     this.labelStyle,
+    this.secondaryButton,
   });
 
   @override
@@ -53,6 +55,10 @@ class BottomPaymentBar extends StatelessWidget {
         top: false,
         child: Row(
           children: [
+            if(secondaryButton != null) ...[
+              secondaryButton!,
+              const SizedBox(width: 12,),
+            ],
             Expanded(
               child: Column(
                 mainAxisSize: MainAxisSize.min,

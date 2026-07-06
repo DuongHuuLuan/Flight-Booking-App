@@ -254,3 +254,7 @@ class PassengerState {
     );
   }
 }
+
+extension PassengerFormExt on PassengerFormData {
+  bool get isChild => ageGroup == AgeGroup.child;
+}
