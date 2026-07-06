@@ -1,5 +1,4 @@
-import 'package:flight_booking_app/core/theme/text_style.dart';
-import 'package:flight_booking_app/presentation/passenger/view/passenger_count/widgets/counter_button.dart';
+import 'package:flight_booking_app/core/widgets/quantity_selector.dart';
 import 'package:flutter/material.dart';
 
 class PassengerCounter extends StatelessWidget {
@@ -22,36 +21,13 @@ class PassengerCounter extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(label, style: AppTextStyles.bodyLarge),
-              const SizedBox(height: 2),
-              Text(subtitle, style: AppTextStyles.caption),
-            ],
-          ),
-        ),
-        Row(
-          children: [
-            CounterButton(
-              icon: Icons.remove,
-              onPressed: value <= min ? null : onDecrement,
-            ),
-            SizedBox(
-              width: 48,
-              child: Text(
-                '$value',
-                textAlign: TextAlign.center,
-                style: AppTextStyles.heading3,
-              ),
-            ),
-            CounterButton(icon: Icons.add, onPressed: onIncrement),
-          ],
-        ),
-      ],
+    return QuantitySelector(
+      value: value,
+      min: min,
+      label: label,
+      subtitle: subtitle,
+      onIncrement: onIncrement,
+      onDecrement: onDecrement,
     );
   }
 }

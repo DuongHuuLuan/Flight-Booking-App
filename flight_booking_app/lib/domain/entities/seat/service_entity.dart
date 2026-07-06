@@ -1,11 +1,12 @@
 import 'package:equatable/equatable.dart';
 
-class ServiceEntity extends Equatable{
+class ServiceEntity extends Equatable {
   final String serviceId;
   final String type;
   final String name;
   final double price;
   final int maxPerPassenger;
+  final String? description;
 
   const ServiceEntity({
     required this.serviceId,
@@ -13,7 +14,8 @@ class ServiceEntity extends Equatable{
     required this.name,
     required this.price,
     required this.maxPerPassenger,
-});
+    this.description,
+  });
 
   @override
   List<Object?> get props => [
@@ -21,6 +23,7 @@ class ServiceEntity extends Equatable{
     type,
     name,
     price,
-    maxPerPassenger
+    maxPerPassenger,
+    description,
   ];
 }
