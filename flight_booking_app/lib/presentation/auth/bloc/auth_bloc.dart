@@ -83,7 +83,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
       (user) async {
-        if (user.accessToken == null || user.refresh_token == null) {
+        if (user.accessToken == null || user.refreshToken == null) {
           emit(
             state.copyWith(
               isLoading: false,
@@ -96,7 +96,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         try {
           await localStorage.saveUser(user);
           await localStorage.saveToken(user.accessToken!);
-          await localStorage.saveRefreshToken(user.refresh_token!);
+          await localStorage.saveRefreshToken(user.refreshToken!);
         } catch (e) {
           emit(
             state.copyWith(
@@ -127,17 +127,19 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(state.copyWith(errorMessage: 'Passwords do not match'));
       return;
     }
-    add(RegisterEvent(
-      UserEntity(
-        id: DateTime.now().microsecondsSinceEpoch,
-        name: event.name,
-        email: event.email,
-        phone: event.phone,
-        country: event.country,
-        city: event.city,
-        password: event.password,
+    add(
+      RegisterEvent(
+        UserEntity(
+          id: DateTime.now().microsecondsSinceEpoch,
+          name: event.name,
+          email: event.email,
+          phone: event.phone,
+          country: event.country,
+          city: event.city,
+          password: event.password,
+        ),
       ),
-    ));
+    );
   }
 
   Future<void> _onRegister(RegisterEvent event, Emitter<AuthState> emit) async {
@@ -154,7 +156,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         );
       },
       (user) async {
-        if (user.accessToken == null || user.refresh_token == null) {
+        if (user.accessToken == null || user.refreshToken == null) {
           emit(
             state.copyWith(
               isLoading: false,
@@ -166,7 +168,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         }
         try {
           await localStorage.saveToken(user.accessToken!);
-          await localStorage.saveRefreshToken(user.refresh_token!);
+          await localStorage.saveRefreshToken(user.refreshToken!);
           await localStorage.saveUser(user);
         } catch (e) {
           emit(
@@ -341,9 +343,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
     }
     if (event.newPassword.length < 6) {
       emit(
-        state.copyWith(
-          errorMessage: 'Password must be at least 6 characters',
-        ),
+        state.copyWith(errorMessage: 'Password must be at least 6 characters'),
       );
       return;
     }
