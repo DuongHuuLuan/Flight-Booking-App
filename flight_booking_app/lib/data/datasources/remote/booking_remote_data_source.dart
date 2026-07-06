@@ -61,7 +61,9 @@ class BookingRemoteDataSource {
 
   Future<Map<String, dynamic>> mockPayment(String bookingId) async {
     try {
-      final response = await _bookingService.mockPayment(bookingId);
+      final response = await _bookingService.mockPayment(bookingId, {
+        'payment_method': 'credit_card',
+      });
       return response.data.data!;
     } catch (e) {
       throw Exception(e.toString());
