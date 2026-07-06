@@ -50,6 +50,24 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
     emit(state.copyWith(basePrice: value));
   }
 
+  Set<String> get selectableSeatLabels {
+    if (_children <= 0) {
+      return state.seats
+          .where((element) => _canSelectSeat(element))
+          .map((e) => e.seatLabel)
+          .toSet();
+    }
+    return state.seats
+        .where((element) => _canSelectSeat(element))
+        .where((element) {
+          if (_isSelected(state.selectedSeats, element.seatLabel)) return true;
+          return _findAvailableAdjacentSeat(element, state.selectedSeats) !=
+              null;
+        })
+        .map((e) => e.seatLabel)
+        .toSet();
+  }
+
   List<AgeGroup> get ageGroups => [
     for (int i = 0; i < _adults; i++) AgeGroup.adult,
     for (int i = 0; i < _children; i++) AgeGroup.child,
@@ -62,8 +80,7 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
       state.selectedSeats.map((s) => s.seatLabel).toList();
   List<String> get seatZoneIds =>
       state.selectedSeats.map((e) => e.zoneId).toList();
-  List<String> get ageGroupNames =>
-      ageGroups.map((ag) => ag.name).toList();
+  List<String> get ageGroupNames => ageGroups.map((ag) => ag.name).toList();
 
   Map<String, dynamic> buildNavigationPayload(String bookingId) => {
     'bookingId': bookingId,
@@ -126,7 +143,14 @@ class SelectSeatCubit extends Cubit<SelectSeatState> {
       _removeSeat(updatedSeats, seat);
     } else {
       final totalPassengers = _adults + _children + _seniors;
-      if (updatedSeats.length >= totalPassengers) return;
+      if (updatedSeats.length >= totalPassengers) {
+        emit(state.copyWith(error: "Đã chọn đủ $totalPassengers ghế"));
+        return;
+      }
+      if (_children > 0 && !selectableSeatLabels.contains(seatLabel)) {
+        emit(state.copyWith(error: "Cần ghế kế bên cho trẻ em"));
+        return;
+      }
       _addSeat(updatedSeats, seat, fallbackZoneId);
     }
 
