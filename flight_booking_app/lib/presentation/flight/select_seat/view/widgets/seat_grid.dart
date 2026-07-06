@@ -1,9 +1,11 @@
 import 'package:flight_booking_app/core/utils/color_utils.dart';
 import 'package:flight_booking_app/core/utils/widget_padding.dart';
 import 'package:flight_booking_app/domain/entities/seat/seat_zone_entity.dart';
+import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_cubit.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/cubit/select_seat_state.dart';
 import 'package:flight_booking_app/presentation/flight/select_seat/view/widgets/seat_box.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SeatGrid extends StatelessWidget {
   final SelectSeatState state;
@@ -13,6 +15,8 @@ class SeatGrid extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<SelectSeatCubit>();
+    final selectable = cubit.selectableSeatLabels;
     final activeZoneId = state.selectedZoneId;
     final zoneIds = activeZoneId != null
         ? [activeZoneId]
@@ -39,13 +43,17 @@ class SeatGrid extends StatelessWidget {
                   (element) => element.seatLabel == seat.seatLabel,
                 );
                 final isReserved = seat.status == 'reserved';
+                final canSelect = selectable.contains(seat.seatLabel);
 
                 return SeatBox(
                   label: seat.seatLabel,
                   isSelected: isSelected,
                   isReserved: isReserved,
+                  canSelect: canSelect,
                   zoneColor: zoneColor,
-                  onTap: isReserved ? null : () => onSeatTap(seat.seatLabel),
+                  onTap: isReserved || !canSelect
+                      ? null
+                      : () => onSeatTap(seat.seatLabel),
                 );
               }).toList(),
             ).paddingVertical(10);
