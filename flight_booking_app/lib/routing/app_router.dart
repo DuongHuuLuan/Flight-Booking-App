@@ -1,5 +1,6 @@
 import 'package:flight_booking_app/domain/entities/booking/booking_detail_entity.dart';
 import 'package:flight_booking_app/domain/entities/flight_search_params.dart';
+import 'package:flight_booking_app/domain/entities/seat/service_entity.dart';
 import 'package:flight_booking_app/injection_container.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_bloc.dart';
 import 'package:flight_booking_app/presentation/auth/bloc/auth_event.dart';
@@ -32,6 +33,7 @@ import 'package:flight_booking_app/presentation/payment_method/view/payment_meth
 import 'package:flight_booking_app/presentation/search/cubit/search_cubit.dart';
 import 'package:flight_booking_app/presentation/search/search_screen.dart';
 import 'package:flight_booking_app/presentation/services/cubit/service_selection_cubit.dart';
+import 'package:flight_booking_app/presentation/services/view/service_detail_screen.dart';
 import 'package:flight_booking_app/presentation/services/view/service_selection_screen.dart';
 import 'package:flight_booking_app/presentation/splash/splash_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -210,6 +212,17 @@ class AppRouter {
                   (args['seatZoneIds'] as List<dynamic>?)?.cast<String>() ?? [],
               flightId: args['flightId'] as String,
             ),
+          );
+        },
+      ),
+
+      GoRoute(
+        path: ServiceDetailScreen.routerName,
+        builder: (context, state) {
+          final args = state.extra as Map<String, dynamic>;
+          return ServiceDetailScreen(
+            service: args['service'] as ServiceEntity,
+            initialCount: args['initialCount'] as int,
           );
         },
       ),
